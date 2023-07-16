@@ -14,19 +14,8 @@ CREATE TABLE users
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL
 );
 
-CREATE UNIQUE INDEX users_email_uindex
-    ON users (email);
-
-CREATE UNIQUE INDEX users_id_uindex
-    ON users (id);
-
-CREATE TABLE user_roles
-(
-    user_id INTEGER NOT NULL,
-    role    VARCHAR NOT NULL,
-    CONSTRAINT user_roles_idx UNIQUE (user_id, role),
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-);
+CREATE UNIQUE INDEX users_email_uindex ON users (email);
+CREATE UNIQUE INDEX users_id_uindex ON users (id);
 
 CREATE TABLE costs
 (
@@ -42,6 +31,12 @@ CREATE TABLE costs
     date_of_creation TIMESTAMP           DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX costs_id_uindex
-    ON costs (id);
+CREATE UNIQUE INDEX costs_id_uindex ON costs (id);
 
+CREATE TABLE user_roles
+(
+    user_id INTEGER NOT NULL,
+    role    VARCHAR NOT NULL,
+    CONSTRAINT user_roles_idx UNIQUE (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
