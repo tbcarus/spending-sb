@@ -1,7 +1,18 @@
 spring:
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/spending-sb
     username: postgres
     password: postgres
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath*:initDB.sql
+      data-locations: classpath*:populateDB.sql
+
 
