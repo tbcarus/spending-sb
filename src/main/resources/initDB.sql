@@ -11,7 +11,9 @@ CREATE TABLE users
     NAME              TEXT                DEFAULT 'Имя не задано'::TEXT,
     email             TEXT                              NOT NULL,
     PASSWORD          TEXT                              NOT NULL,
-    start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL
+    enabled           bool                DEFAULT TRUE  NOT NULL,
+    start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
+    friends         TEXT                DEFAULT ''    NOT NULL
 );
 
 CREATE UNIQUE INDEX users_email_uindex ON users (email);

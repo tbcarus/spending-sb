@@ -27,12 +27,12 @@ public class User {
     @OneToMany
     private List<Payment> payments;
 
-    private String users;
+    private String friends;
     @Transient
-    private List<Integer> userList;
+    private List<Integer> friendsIdList;
 
-    public List<Integer> getUserList() {
-        return Arrays.stream(users.split(" "))
+    public List<Integer> getFriendsIdList() {
+        return Arrays.stream(friends.split(" "))
                 .map(s -> Integer.parseInt(s))
                 .collect(Collectors.toList());
     }
