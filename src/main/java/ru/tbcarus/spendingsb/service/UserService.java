@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public User getById(int id) {
-        return userRepository.getReferenceById(id);
+        return userRepository.findById(id).get();
     }
 
     public User getByEmail(String email) {
