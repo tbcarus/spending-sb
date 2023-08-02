@@ -2,6 +2,7 @@ package ru.tbcarus.spendingsb.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -13,11 +14,9 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends AbstractBaseEntity {
+    public static final int START_SEQ = 100000;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
     private String name;
     private String email;
     private String password;
