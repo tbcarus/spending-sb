@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
+import ru.tbcarus.spendingsb.util.ValidationUtil;
 
 import java.util.List;
 
@@ -26,5 +27,20 @@ public abstract class AbstractUserController {
     public User getByEmail(String email) {
         log.info("get user by email {}", email);
         return userService.getByEmail(email);
+    }
+
+    public User create(User user) {
+        log.info("create new user {}", user);
+        return userService.create(user);
+    }
+
+    public User update(User user, int id) {
+        log.info("update user {}", user);
+        ValidationUtil.assureIdConsistent(user, id);
+        return userService.update(user, id);
+    }
+
+    public void delete(int id) {
+        userService.delete(id);
     }
 }
