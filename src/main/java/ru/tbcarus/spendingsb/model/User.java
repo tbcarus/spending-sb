@@ -1,15 +1,17 @@
 package ru.tbcarus.spendingsb.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 @Entity
@@ -28,6 +30,35 @@ public class User extends AbstractBaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "role")
     private Set<Role> roles;
+
+    public User(String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Set<Role> roles) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.startPeriodDate = startPeriodDate;
+        this.roles = roles;
+    }
+
+    public User(Integer id, String name, String email, String password, Role... roles) {
+        this(id, name, email,password,true, LocalDate.now(), roles);
+    }
+    public User(Integer id, String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Role... roles) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.startPeriodDate = startPeriodDate;
+        this.roles = Stream.of(roles).collect(Collectors.toSet());
+    }
+
+    public User() {
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
 
 
 //    @OneToMany
