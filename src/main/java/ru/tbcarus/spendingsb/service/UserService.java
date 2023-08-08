@@ -23,7 +23,7 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByName();
     }
 
     public User getById(int id) {
