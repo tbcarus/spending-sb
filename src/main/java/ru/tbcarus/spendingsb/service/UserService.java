@@ -7,6 +7,7 @@ import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -27,11 +28,19 @@ public class UserService {
     }
 
     public User getById(int id) {
-        return userRepository.findById(id).get();
+        Optional<User> opt = userRepository.findById(id);
+        if(!opt.isPresent()) {
+            throw new NotFoundException();
+        }
+        return opt.get();
     }
 
     public User getByEmail(String email) {
-        return userRepository.getByEmail(email);
+        Optional<User> opt = userRepository.findByEmail(email);
+        if(!opt.isPresent()) {
+            throw new NotFoundException();
+        }
+        return opt.get();
     }
 
     public User update(User update, int id) {
