@@ -29,7 +29,7 @@ public class UserService {
 
     public User getById(int id) {
         Optional<User> opt = userRepository.findById(id);
-        if(!opt.isPresent()) {
+        if (!opt.isPresent()) {
             throw new NotFoundException();
         }
         return opt.get();
@@ -37,14 +37,14 @@ public class UserService {
 
     public User getByEmail(String email) {
         Optional<User> opt = userRepository.findByEmail(email);
-        if(!opt.isPresent()) {
+        if (!opt.isPresent()) {
             throw new NotFoundException();
         }
         return opt.get();
     }
 
     public User update(User update, int id) {
-        if(!userRepository.existsById(id)){
+        if (!userRepository.existsById(id)) {
             throw new NotFoundException("User with id = " + id + " not found");
         }
         User user = userRepository.findById(id).get();
@@ -57,13 +57,22 @@ public class UserService {
         if (update.getPassword() != null) {
             user.setPassword(update.getPassword());
         }
+        user.setEnabled(update.isEnabled());
         if (update.getStartPeriodDate() != null) {
             user.setStartPeriodDate(update.getStartPeriodDate());
         }
+        if (update.getRoles() != null) {
+            user.setRoles(update.getRoles());
+        }
+
         return userRepository.save(user);
     }
 
     public void delete(int id) {
+        Optional<User> opt = userRepository.findById(id);
+        if (opt.isEmpty()) {
+            throw new NotFoundException();
+        }
         userRepository.deleteById(id);
     }
 

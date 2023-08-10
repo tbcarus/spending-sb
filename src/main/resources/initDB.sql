@@ -13,7 +13,7 @@ CREATE TABLE users
     PASSWORD          TEXT                              NOT NULL,
     enabled           bool                DEFAULT TRUE  NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
-    friends         TEXT                DEFAULT ''    NOT NULL
+    friends           TEXT                DEFAULT ''    NOT NULL
 );
 
 CREATE UNIQUE INDEX users_email_uindex ON users (email);
@@ -25,7 +25,7 @@ CREATE TABLE costs
     type             TEXT,
     price            INTEGER                           NOT NULL,
     description      TEXT,
-    date             TIMESTAMP           DEFAULT NOW() NOT NULL,
+    date             DATE                DEFAULT NOW() NOT NULL,
     user_id          INTEGER                           NOT NULL
         CONSTRAINT costs_user_id_fk
             REFERENCES users

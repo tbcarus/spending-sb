@@ -5,9 +5,7 @@ import lombok.Data;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,17 +36,26 @@ public class User extends AbstractBaseEntity {
         this.roles = roles;
     }
 
-    public User(Integer id, String name, String email, String password, Role... roles) {
-        this(id, name, email,password,true, LocalDate.now(), roles);
+    public User(User u) {
+        this(u.id, u.name, u.email, u.password, u.enabled, u.startPeriodDate, u.roles);
     }
-    public User(Integer id, String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Role... roles) {
+
+    public User(Integer id, String name, String email, String password, Role... roles) {
+        this(id, name, email,password,true, LocalDate.now(), Arrays.asList(roles));
+    }
+
+    public User(Integer id, String name, String email, String password, LocalDate startPeriodDate, Role... roles) {
+        this(id, name, email,password,true, startPeriodDate, Arrays.asList(roles));
+    }
+
+    public User(Integer id, String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Collection<Role> roles) {
         super(id);
         this.name = name;
         this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.startPeriodDate = startPeriodDate;
-        this.roles = Stream.of(roles).collect(Collectors.toSet());
+        this.roles = new HashSet<>(roles);
     }
 
     public User() {

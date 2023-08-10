@@ -1,8 +1,8 @@
 DELETE FROM users;
 INSERT INTO users(name, email, password, start_period_date)
-VALUES ( 'User', 'l2@og.in', 'password2', '2022-04-03 19:53:02.946299'),        --100000
-       ( 'Admin', 'l@og.in', 'password', '2022-04-10 12:00:00.000000'),         --100001
-       ( 'SuperUser', 'l3@og.in', 'password3', '2022-04-10 12:00:00.000000');   --100002
+VALUES ( 'User', 'l2@og.in', 'password2', '2022-04-03'),                    --100000
+       ( 'Admin', 'l@og.in', 'password', '2022-04-10'),                     --100001
+       ( 'SuperUser', 'l3@og.in', 'password3', '2022-04-10');               --100002
 
 DELETE FROM costs;
 INSERT INTO costs(type, price, description, date, user_id)
@@ -24,5 +24,5 @@ INSERT INTO user_roles(user_id, role)
 VALUES (100000, 'USER'),
        (100001, 'USER'),
        (100002, 'USER'),
-       (100001, 'SUPERUSER'),
-       (100002, 'ADMIN')
+       (100001, 'ADMIN'),
+       (100002, 'SUPERUSER')
