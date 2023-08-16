@@ -1,6 +1,8 @@
 package ru.tbcarus.spendingsb.controller.payment;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
@@ -31,5 +33,20 @@ public class AdminPaymentRestController extends AbstractPaymentController {
         return super.getPayments(type, userId, after, before);
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Payment create(@RequestBody Payment payment) {
+        return super.create(payment);
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Payment update(@RequestBody Payment payment) {
+        return super.update(payment);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        super.delete(id);
+    }
 
 }

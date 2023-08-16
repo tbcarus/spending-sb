@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.service.PaymentService;
+import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,17 +49,21 @@ public abstract class AbstractPaymentController {
         return paymentService.getByTypeBetween(type, after, before, userId);
     }
 
-    public Payment save(Payment p, int userid) {
-        log.info("save payment {}", p);
-        return paymentService.create(p, userid);
+    public Payment create(Payment p) {
+        int userId = SecurityUtil.authUserId();
+        log.info("save payment {} by user {}", p, userId);
+        return paymentService.create(p, userId);
     }
 
-    public Payment update(Payment p, int userId) {
-        log.info("update payment {}", p);
+    public Payment update(Payment p) {
+        int userId = SecurityUtil.authUserId();
+        log.info("update payment {} by user {}", p, userId);
         return paymentService.update(p, userId);
     }
 
     public void delete(int id) {
-
+        int userId = SecurityUtil.authUserId();
+        log.info("delete payment {} for user {}", id, userId);
+        paymentService.delete(id, userId);
     }
 }
