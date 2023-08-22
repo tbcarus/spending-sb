@@ -4,6 +4,8 @@ import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static ru.tbcarus.spendingsb.model.AbstractBaseEntity.START_SEQ;
@@ -39,10 +41,16 @@ public class PaymentTestData {
     public static final Payment P11 = new Payment(PID11, PaymentType.DINNER, 320, "", LocalDate.parse("2023-02-01"), UserTestData.SUPER_USER);
     public static final Payment P12 = new Payment(PID12, PaymentType.TRANSIT, 1500, "Метро", LocalDate.parse("2023-02-11"), UserTestData.SUPER_USER);
 
-    public static List<Payment> allPayments = List.of(P6, P11, P1, P4, P9, P7, P12, P10, P5, P8, P2, P3); // Sorted by date after by e-mail after price ASC
+    public static List<Payment> allPayments = List.of(P6, P11, P1, P4, P9, P7, P12, P10, P5, P8, P2, P3); // Sorted by date after by userID after price ASC
 
     public static List<Payment> getAllPayments() {
         List<Payment> allPayments = List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12);
+        return allPayments;
+    }
+
+    public static List<Payment> getAllPaymentsSorted() {
+        List<Payment> allPayments = new ArrayList<>(List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12));
+        Collections.sort(allPayments);
         return allPayments;
     }
 }
