@@ -3,6 +3,7 @@ package ru.tbcarus.spendingsb.controller.payment;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import ru.tbcarus.spendingsb.controller.AbstractControllerTest;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.service.PaymentService;
 import org.springframework.test.util.AssertionErrors;
+import ru.tbcarus.spendingsb.util.json.JacksonObjectMapper;
 
 import java.util.List;
 
@@ -50,7 +52,10 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
                 .andDo(print());
         String contentAsString = actions.andReturn().getResponse().getContentAsString();
         List<Payment> actual = objectMapper.readValue(contentAsString, typeReference);
-        AssertionErrors.assertEquals("Возвращается не правильный результат при запросе GET " + REST_URL, PaymentTestData.getAllPayments(), actual);
+//        AssertionErrors.assertEquals("Возвращается не правильный результат при запросе GET " + REST_URL, PaymentTestData.getAllPayments(), actual);
+
+
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.getAllPaymentsSorted());
     }
 
     @Test
