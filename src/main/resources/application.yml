@@ -27,3 +27,8 @@ spring:
 server:
   servlet:
     context-path: /spending
+
+lombok:
+  anyConstructor:
+    addConstructorProperties: true
+

@@ -34,20 +34,20 @@ public abstract class AbstractPaymentController {
         return paymentService.getAll();
     };
 
-    public List<Payment> getAllByUser(int userId) {
-        log.info("get all payments by user {}", userId);
-        return paymentService.getAllByUser(userId);
-    }
+//    public List<Payment> getAllByUser(int userId) {
+//        log.info("get all payments by user {}", userId);
+//        return paymentService.getAllByUser(userId);
+//    }
 
-    public List<Payment> getAllByUserAndDate(LocalDate after, LocalDate before, int userId) {
-        log.info("get all by user {} and date {}-{}", userId, after, before);
-        return paymentService.getBetween(after, before, userId);
-    }
+//    public List<Payment> getAllByUserAndDate(LocalDate after, LocalDate before, int userId) {
+//        log.info("get all by user {} and date {}-{}", userId, after, before);
+//        return paymentService.getBetween(after, before, userId);
+//    }
 
-    public List<Payment> getAllByTypeBetween(PaymentType type, LocalDate after, LocalDate before, int userId) {
-        log.info("get all by type {}", type.getTitle());
-        return paymentService.getByTypeBetween(type, after, before, userId);
-    }
+//    public List<Payment> getAllByTypeBetween(PaymentType type, LocalDate after, LocalDate before, int userId) {
+//        log.info("get all by type {}", type.getTitle());
+//        return paymentService.getByTypeBetween(type, after, before, userId);
+//    }
 
     public Payment create(Payment p) {
         int userId = SecurityUtil.authUserId();

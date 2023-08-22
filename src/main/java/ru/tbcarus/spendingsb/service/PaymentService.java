@@ -38,24 +38,24 @@ public class PaymentService {
     }
 
     public List<Payment> getAll() {
-        return paymentRepository.findAll();
+        return paymentRepository.getAll();
     }
 
-    public List<Payment> getAllByUser(int userId) {
-        return paymentRepository.findAllByUserId(userId);
-    }
+//    public List<Payment> getAllByUser(int userId) {
+//        return paymentRepository.findAllByUserId(userId);
+//    }
 
-    public List<Payment> getAllByType(PaymentType type, int userId) {
-        return paymentRepository.findAllByUserIdAndType(type, userId);
-    }
+//    public List<Payment> getAllByType(PaymentType type, int userId) {
+//        return paymentRepository.findAllByUserIdAndType(type, userId);
+//    }
 
-    public List<Payment> getBetween(LocalDate after, LocalDate before, int userId) {
-        return paymentRepository.getBetween(after, before, userId);
-    }
+//    public List<Payment> getBetween(LocalDate after, LocalDate before, int userId) {
+//        return paymentRepository.getBetween(after, before, userId);
+//    }
 
-    public List<Payment> getByTypeBetween(PaymentType type, LocalDate after, LocalDate before, int userId) {
-        return paymentRepository.getBetweenByType(type, after, before, userId);
-    }
+//    public List<Payment> getByTypeBetween(PaymentType type, LocalDate after, LocalDate before, int userId) {
+//        return paymentRepository.getBetweenByType(type, after, before, userId);
+//    }
 
     public Payment create(Payment payment, int userId) {
         return paymentRepository.save(payment);

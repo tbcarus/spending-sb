@@ -1,6 +1,5 @@
 package ru.tbcarus.spendingsb.controller.payment;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
