@@ -13,7 +13,7 @@ import static ru.tbcarus.spendingsb.model.AbstractBaseEntity.START_SEQ;
 public class PaymentTestData {
     public static final MatcherFactory.Matcher<Payment> PAYMENT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Payment.class, "user");
 
-    public static final int NOT_FOUND = 10;
+    public static final int NOT_FOUND = 1;
 
     public static final int PID1 = START_SEQ + 3;
     public static final int PID2 = START_SEQ + 4;
@@ -41,16 +41,23 @@ public class PaymentTestData {
     public static final Payment P11 = new Payment(PID11, PaymentType.DINNER, 320, "", LocalDate.parse("2023-02-01"), UserTestData.SUPER_USER);
     public static final Payment P12 = new Payment(PID12, PaymentType.TRANSIT, 1500, "Метро", LocalDate.parse("2023-02-11"), UserTestData.SUPER_USER);
 
-    public static List<Payment> allPayments = List.of(P6, P11, P1, P4, P9, P7, P12, P10, P5, P8, P2, P3); // Sorted by date after by userID after price ASC
-
-    public static List<Payment> getAllPayments() {
-        List<Payment> allPayments = List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12);
-        return allPayments;
-    }
-
     public static List<Payment> getAllPaymentsSorted() {
+        // Sorted by date after by userID after price ASC
         List<Payment> allPayments = new ArrayList<>(List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12));
         Collections.sort(allPayments);
         return allPayments;
+    }
+
+    public static Payment getNew() {
+        return new Payment(null, PaymentType.CLOTH, 5500, "Брюки", LocalDate.parse("2023-04-08"), 100001);
+    }
+
+    public static Payment getUpdated() {
+        Payment updated = new Payment(P9);
+        updated.setType(PaymentType.ENTERTAINMENT);
+        updated.setDescription("Хоккей");
+        updated.setPrice(1500);
+        updated.setDate(LocalDate.parse("2023-02-05"));
+        return updated;
     }
 }

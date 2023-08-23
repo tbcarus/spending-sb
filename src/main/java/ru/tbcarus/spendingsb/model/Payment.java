@@ -26,6 +26,15 @@ public class Payment extends AbstractBaseEntity implements Comparable<Payment> {
 
     }
 
+    public Payment(Payment p) {
+        this.id = p.id;
+        this.type = p.type;
+        this.price = p.price;
+        this.description = p.description;
+        this.date = p.date;
+        this.userID = p.userID;
+    }
+
     public Payment(PaymentType type, int price, LocalDate date, Integer userID) {
         this(type, price, null, date, userID);
     }

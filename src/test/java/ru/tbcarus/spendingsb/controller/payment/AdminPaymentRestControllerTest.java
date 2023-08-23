@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.tbcarus.spendingsb.PaymentTestData;
 import ru.tbcarus.spendingsb.controller.AbstractControllerTest;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.service.PaymentService;
-import org.springframework.test.util.AssertionErrors;
-import ru.tbcarus.spendingsb.util.json.JacksonObjectMapper;
 
 import java.util.List;
 
@@ -42,7 +42,14 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void get() {
+    void get() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + PaymentTestData.PID11))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String stringContent = result.getResponse().getContentAsString();
+        Payment actual = objectMapper.readValue(stringContent, Payment.class);
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.P11);
     }
 
     @Test
@@ -53,24 +60,55 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
         String contentAsString = actions.andReturn().getResponse().getContentAsString();
         List<Payment> actual = objectMapper.readValue(contentAsString, typeReference);
 //        AssertionErrors.assertEquals("Возвращается не правильный результат при запросе GET " + REST_URL, PaymentTestData.getAllPayments(), actual);
-
-
         Assertions.assertThat(actual).isEqualTo(PaymentTestData.getAllPaymentsSorted());
     }
 
     @Test
-    void getPayments() {
+    void getNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + PaymentTestData.NOT_FOUND))
+                .andExpect(status().isNotFound())
+                .andDo(print())
+                .andReturn();
     }
 
     @Test
-    void create() {
+    void create() throws Exception {
+        Payment newP = PaymentTestData.getNew();
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(AdminPaymentRestController.REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newP)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String stringContent = result.getResponse().getContentAsString();
+        Payment resultPayment = objectMapper.readValue(stringContent, Payment.class);
+        Payment avtual = paymentService.get(resultPayment.getId(), resultPayment.getUserID());
+        Assertions.assertThat(avtual).isEqualTo(newP);
     }
 
     @Test
-    void update() {
+    void update() throws Exception {
+        Payment updated = PaymentTestData.getUpdated();
+        mockMvc.perform(MockMvcRequestBuilders.put(REST_URL + updated.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updated)))
+                .andExpect(status().isNoContent())
+                .andReturn();
+        Payment actual = paymentService.get(updated.getId(), updated.getUserID());
+        Assertions.assertThat(actual).isEqualTo(updated);
     }
 
     @Test
-    void delete() {
+    void delete() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete(REST_URL + PaymentTestData.PID4))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + PaymentTestData.PID4))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete(REST_URL + PaymentTestData.NOT_FOUND))
+                .andExpect(status().isNotFound());
     }
 }

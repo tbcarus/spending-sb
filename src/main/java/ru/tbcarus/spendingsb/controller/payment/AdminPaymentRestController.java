@@ -33,13 +33,15 @@ public class AdminPaymentRestController extends AbstractPaymentController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public Payment create(@RequestBody Payment payment) {
         return super.create(payment);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Payment update(@RequestBody Payment payment) {
-        return super.update(payment);
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Payment update(@RequestBody Payment payment, @PathVariable int id) {
+        return super.update(id, payment);
     }
 
     @DeleteMapping("/{id}")

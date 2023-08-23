@@ -31,7 +31,7 @@ public class PaymentService {
 
     public Payment get(int id, int userId) {
         Optional<Payment> opt = paymentRepository.findById(id);
-        if (!opt.isEmpty()) {
+        if (opt.isEmpty()) {
             throw new NotFoundException();
         }
         return opt.get();
@@ -66,6 +66,9 @@ public class PaymentService {
     }
 
     public void delete(int id, int userId) {
+        if (!paymentRepository.existsById(id)) {
+            throw new NotFoundException();
+        }
         paymentRepository.deleteById(id);
     }
 
