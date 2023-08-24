@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.tbcarus.spendingsb.model.AbstractBaseEntity.START_SEQ;
 
@@ -36,16 +37,54 @@ public class PaymentTestData {
     public static final Payment P6 = new Payment(PID6, PaymentType.DINNER, 280, "", LocalDate.parse("2023-02-01"), UserTestData.ADMIN_ID);
     public static final Payment P7 = new Payment(PID7, PaymentType.TRANSIT, 500, "", LocalDate.parse("2023-02-11"), UserTestData.ADMIN_ID);
     public static final Payment P8 = new Payment(PID8, PaymentType.ENTERTAINMENT, 3600, "", LocalDate.parse("2023-02-18"), UserTestData.ADMIN_ID);
-    public static final Payment P9 = new Payment(PID9, PaymentType.OTHER, 4100, "Озон", LocalDate.parse("2023-02-04"), UserTestData.SUPER_USER);
-    public static final Payment P10 = new Payment(PID10, PaymentType.FOOD, 1564, "", LocalDate.parse("2023-02-11"), UserTestData.SUPER_USER);
-    public static final Payment P11 = new Payment(PID11, PaymentType.DINNER, 320, "", LocalDate.parse("2023-02-01"), UserTestData.SUPER_USER);
-    public static final Payment P12 = new Payment(PID12, PaymentType.TRANSIT, 1500, "Метро", LocalDate.parse("2023-02-11"), UserTestData.SUPER_USER);
+    public static final Payment P9 = new Payment(PID9, PaymentType.OTHER, 4100, "Озон", LocalDate.parse("2023-02-04"), UserTestData.SUPER_USER_ID);
+    public static final Payment P10 = new Payment(PID10, PaymentType.FOOD, 1564, "", LocalDate.parse("2023-02-11"), UserTestData.SUPER_USER_ID);
+    public static final Payment P11 = new Payment(PID11, PaymentType.DINNER, 320, "", LocalDate.parse("2023-02-01"), UserTestData.SUPER_USER_ID);
+    public static final Payment P12 = new Payment(PID12, PaymentType.TRANSIT, 1500, "Метро", LocalDate.parse("2023-02-11"), UserTestData.SUPER_USER_ID);
 
     public static List<Payment> getAllPaymentsSorted() {
         // Sorted by date after by userID after price ASC
         List<Payment> allPayments = new ArrayList<>(List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12));
         Collections.sort(allPayments);
         return allPayments;
+    }
+
+    public static List<Payment> getByType(PaymentType type) {
+        List<Payment> allPayments = new ArrayList<>(List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12));
+        List<Payment> filteredList = allPayments.stream().filter(p -> p.getType() == type).collect(Collectors.toList());
+        Collections.sort(filteredList);
+        return filteredList;
+    }
+
+    public static List<Payment> getByUserId(int userId) {
+        List<Payment> allPayments = new ArrayList<>(List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12));
+        List<Payment> filteredList = allPayments.stream().filter(p -> p.getUserID() == userId).collect(Collectors.toList());
+        Collections.sort(filteredList);
+        return filteredList;
+    }
+
+    public static List<Payment> getByDateBetween(LocalDate after, LocalDate before) {
+        List<Payment> allPayments = new ArrayList<>(List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12));
+        List<Payment> filteredList = allPayments
+                .stream()
+                .filter(p -> (p.getDate().isAfter(after) || p.getDate().isEqual(after))
+                        && (p.getDate().isBefore(before) || p.getDate().isEqual(before)))
+                .collect(Collectors.toList());
+        Collections.sort(filteredList);
+        return filteredList;
+    }
+
+    public static List<Payment> getFiltered(PaymentType type, int userId, LocalDate after, LocalDate before) {
+        List<Payment> allPayments = new ArrayList<>(List.of(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12));
+        List<Payment> filteredList = allPayments
+                .stream()
+                .filter(p -> p.getType() == type
+                        && p.getUserID() == userId
+                        && (p.getDate().isAfter(after) || p.getDate().isEqual(after))
+                        && (p.getDate().isBefore(before) || p.getDate().isEqual(before)))
+                .collect(Collectors.toList());
+        Collections.sort(filteredList);
+        return filteredList;
     }
 
     public static Payment getNew() {

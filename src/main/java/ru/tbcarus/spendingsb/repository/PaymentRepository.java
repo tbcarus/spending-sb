@@ -1,5 +1,6 @@
 package ru.tbcarus.spendingsb.repository;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +15,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer>, JpaS
 
     @Query("SELECT p from Payment p ORDER BY p.date, p.userID, p.price")
     List<Payment> getAll();
+
+//    @Query("SELECT p from Payment p ORDER BY p.date, p.userID, p.price")
+//    List<Payment> getAll(Specification<Payment> specification);
 
 //    @Query("SELECT p FROM Payment p WHERE p.userID = :userId AND p.date >= :after AND p.date <= :brfore")
 //    List<Payment> getBetween(LocalDate after, LocalDate before, int userId);

@@ -26,7 +26,7 @@ public class AdminPaymentRestController extends AbstractPaymentController {
 
     @GetMapping("/by")
     public List<Payment> getPayments(@RequestParam(required = false) PaymentType type,
-                                      @RequestParam(required = false) int userId,
+                                      @RequestParam(required = false) Integer userId,
                                       @RequestParam(required = false) LocalDate after,
                                       @RequestParam(required = false) LocalDate before) {
         return super.getPayments(type, userId, after, before);

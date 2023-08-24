@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
@@ -20,13 +21,14 @@ import java.util.Optional;
 @Slf4j
 public class PaymentService {
     private final PaymentRepository paymentRepository;
+    Sort sort = Sort.by("date", "userID", "price");
 
     public PaymentService(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
 
     public List<Payment> getPayments(Specification<Payment> specification) {
-        return paymentRepository.findAll(specification);
+        return paymentRepository.findAll(specification, sort);
     }
 
     public Payment get(int id, int userId) {
@@ -40,22 +42,6 @@ public class PaymentService {
     public List<Payment> getAll() {
         return paymentRepository.getAll();
     }
-
-//    public List<Payment> getAllByUser(int userId) {
-//        return paymentRepository.findAllByUserId(userId);
-//    }
-
-//    public List<Payment> getAllByType(PaymentType type, int userId) {
-//        return paymentRepository.findAllByUserIdAndType(type, userId);
-//    }
-
-//    public List<Payment> getBetween(LocalDate after, LocalDate before, int userId) {
-//        return paymentRepository.getBetween(after, before, userId);
-//    }
-
-//    public List<Payment> getByTypeBetween(PaymentType type, LocalDate after, LocalDate before, int userId) {
-//        return paymentRepository.getBetweenByType(type, after, before, userId);
-//    }
 
     public Payment create(Payment payment, int userId) {
         return paymentRepository.save(payment);
@@ -100,8 +86,8 @@ public class PaymentService {
         return new Specification<Payment>() {
             @Override
             public Predicate toPredicate(Root<Payment> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                LocalDate tempAfter = after == null ? LocalDate.MIN : after;
-                LocalDate tempBefore = before == null ? LocalDate.MAX : before;
+                LocalDate tempAfter = after == null ? LocalDate.parse("1900-01-01") : after;
+                LocalDate tempBefore = before == null ? LocalDate.parse("3000-01-01") : before;
                 return criteriaBuilder.between(root.get("date"), tempAfter, tempBefore);
             }
         };

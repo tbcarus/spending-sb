@@ -17,7 +17,7 @@ public abstract class AbstractPaymentController {
     protected PaymentService paymentService;
 
     public List<Payment> getPayments(PaymentType type, Integer userId, LocalDate after, LocalDate before) {
-        log.info("get filtered payments by type {}, userID {} and between {} - {}", type.getTitle(), userId, after, before);
+        log.info("get filtered payments by type {}, userID {} and between {} - {}", type, userId, after, before);
         Specification<Payment> specification = Specification.where(paymentService.filterByType(type)
                 .and(paymentService.filterByUser(userId))
                 .and(paymentService.filterByDate(after, before)));

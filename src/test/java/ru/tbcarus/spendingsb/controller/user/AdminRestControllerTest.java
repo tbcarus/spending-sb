@@ -106,10 +106,10 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(REST_URL + SUPER_USER))
+        mockMvc.perform(MockMvcRequestBuilders.delete(REST_URL + SUPER_USER_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        mockMvc.perform((MockMvcRequestBuilders.get(REST_URL + SUPER_USER)))
+        mockMvc.perform((MockMvcRequestBuilders.get(REST_URL + SUPER_USER_ID)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

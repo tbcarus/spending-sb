@@ -16,10 +16,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.tbcarus.spendingsb.PaymentTestData;
+import ru.tbcarus.spendingsb.UserTestData;
 import ru.tbcarus.spendingsb.controller.AbstractControllerTest;
 import ru.tbcarus.spendingsb.model.Payment;
+import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.service.PaymentService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -61,6 +64,57 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
         List<Payment> actual = objectMapper.readValue(contentAsString, typeReference);
 //        AssertionErrors.assertEquals("Возвращается не правильный результат при запросе GET " + REST_URL, PaymentTestData.getAllPayments(), actual);
         Assertions.assertThat(actual).isEqualTo(PaymentTestData.getAllPaymentsSorted());
+    }
+
+    @Test
+    void getAllFilteredByNone() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String contentContent = result.getResponse().getContentAsString();
+        List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.getAllPaymentsSorted());
+    }
+    @Test
+    void getAllFilteredByType() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?type=GAS"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String contentContent = result.getResponse().getContentAsString();
+        List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.getByType(PaymentType.GAS));
+    }
+    @Test
+    void getAllFilteredByUser() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?userId=100002"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String contentContent = result.getResponse().getContentAsString();
+        List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.getByUserId(UserTestData.SUPER_USER_ID));
+    }
+    @Test
+    void getAllFilteredByDate() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?after=2023-01-30&before=2023-02-11"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String contentContent = result.getResponse().getContentAsString();
+        List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.getByDateBetween(LocalDate.parse("2023-01-30"), LocalDate.parse("2023-02-11")));
+    }
+    @Test
+    void getAllFiltered() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?type=DINNER&userId=100002&after=2023-01-30&before=2023-02-11"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        String contentContent = result.getResponse().getContentAsString();
+        List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.getFiltered(PaymentType.DINNER, UserTestData.SUPER_USER_ID, LocalDate.parse("2023-01-30"), LocalDate.parse("2023-02-11")));
     }
 
     @Test
