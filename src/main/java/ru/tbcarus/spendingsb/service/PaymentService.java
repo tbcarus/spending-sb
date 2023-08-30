@@ -15,6 +15,7 @@ import ru.tbcarus.spendingsb.repository.PaymentRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -93,10 +94,6 @@ public class PaymentService {
         };
     }
 
-    // Методы ниже, наверное, следует вынести в утильный класс
-//    public int size() {
-//
-//    }
 //
 //    public int getSumType(PaymentType type, int userId) {
 //
