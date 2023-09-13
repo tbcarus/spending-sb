@@ -16,7 +16,8 @@ import java.util.Map;
 @RequestMapping(value = "/payments")
 public class PaymentController extends AbstractPaymentController {
 
-    @GetMapping()
+    // Все записи за всё время
+    @GetMapping("")
     public String getAll(Model model) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(super.getAll());
         Map<PaymentType, Integer> sumMapByType = PaymentsUtil.getSumMapByType(paymentsMap);
@@ -28,9 +29,28 @@ public class PaymentController extends AbstractPaymentController {
         return "list";
     }
 
+    // Записи за выбранный период (месяц от начальной даты)
+    @GetMapping("/selectedPeriod")
+    public String getAllSelectedPeriod(Model model) {
+        return "list";
+    }
+
+    // Записи от выбранной даты до текущего момента
+    @GetMapping("/toCurrentDate")
+    public String getAllToCurrentDate(Model model) {
+        return "list";
+    }
+
+    // Записи всех пользователей за всё время
+    @GetMapping("/allUsersPayments")
+    public String getAllPayments(Model model) {
+        return "list";
+    }
+
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable int id) {
-
+        Payment payment = super.get(id);
+        model.addAttribute("payment", payment);
         return "edit";
     }
 }
