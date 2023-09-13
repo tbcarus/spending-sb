@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+    <div th:replace="fragments/fragments :: headTag"></div>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<nav th:replace="fragments/fragments :: bodyHeader"></nav>
+<!--@thymesVar id="payment" type="ru.tbcarus.spendingsb.model.Payment"-->
+<!--@thymesVar id="paymentType" type="ru.tbcarus.spendingsb.model.PaymentType"-->
+<div class="position-absolute top-50 start-50 translate-middle">
+    <table class="table-primary table-bordered">
+        <tr>
+            <td colspan="2" class="text-center">
+                <input type="button" value="Удалить запись">
+            </td>
+        </tr>
+        <tr>
+            <td class="d-flex justify-content-end">Тип:</td>
+            <td>
+                <select name="payment_type">
+                    <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
+                            th:value="${paymentType}" th:text="${paymentType.title}">Type
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="d-flex justify-content-end">Сумма:</td>
+            <td>
+                <input type="text" name="price" th:value="${payment.price}">
+            </td>
+        </tr>
+        <tr>
+            <td class="d-flex justify-content-end">Описание:</td>
+            <td>
+                <input type="text" name="description" th:value="${payment.description}">
+            </td>
+        </tr>
+        <tr>
+            <td class="d-flex justify-content-end">Дата:</td>
+            <td>
+                <input type="date" name="date" th:value="${payment.date}">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="d-flex justify-content-around">
+                    <button type="submit">Сохранить</button>
+                    <input type="button" value=" Отменить ">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
