@@ -1,5 +1,6 @@
 package ru.tbcarus.spendingsb.controller.payment;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
+import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.PaymentsUtil;
 
 import java.util.List;
@@ -15,6 +17,9 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/payments")
 public class PaymentController extends AbstractPaymentController {
+
+    @Autowired
+    UserService userService;
 
     // Все записи за всё время
     @GetMapping("")
@@ -26,6 +31,7 @@ public class PaymentController extends AbstractPaymentController {
         model.addAttribute("maxSize", PaymentsUtil.maxSize(paymentsMap));
         model.addAttribute("sumMapByType", sumMapByType);
         model.addAttribute("sumAll", PaymentsUtil.getSumAll(sumMapByType));
+        model.addAttribute("user", userService.getByEmail("l@og.in"));
         return "list";
     }
 

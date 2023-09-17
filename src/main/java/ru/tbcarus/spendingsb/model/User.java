@@ -65,6 +65,10 @@ public class User extends AbstractBaseEntity {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
 
+    // Дата окончания периода учёта трат. Период в программе принят равным 1 месяц с начала периода
+    public LocalDate getEndPeriodDate() {
+        return startPeriodDate.plusMonths(1).minusDays(1);
+    }
 
 //    @OneToMany
 //    private List<Payment> payments;
