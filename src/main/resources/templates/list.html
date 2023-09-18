@@ -1,3 +1,7 @@
+<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
+<!--@thymesVar id="DU" type="ru.tbcarus.spendingsb.util.DateUtil"-->
+<!--@thymesVar id="pt" type="ru.tbcarus.spendingsb.model.PaymentType"-->
+<!--@thymesVar id="p" type="ru.tbcarus.spendingsb.model.Payment"-->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
@@ -12,152 +16,149 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
 <nav th:replace="fragments/fragments :: bodyHeader"></nav>
-<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
-<!--@thymesVar id="DU" type="ru.tbcarus.spendingsb.util.DateUtil"-->
-<!--@thymesVar id="pt" type="ru.tbcarus.spendingsb.model.PaymentType"-->
-<!--@thymesVar id="p" type="ru.tbcarus.spendingsb.model.Payment"-->
-<div class="container">
 
-    <table class="table w-auto table-striped table-sm table-bordered align-middle text-center">
-        <thead class="">
-        </thead>
-        <tbody>
-        <tr>
-            <div class="row" style="background-color: rgb(255, 87, 34)">
-                <div class="col-md-2">
+<div class="container shadow">
 
-                </div>
-                <div class="col-md-8 d-flex justify-content-center">
+    <!--    Верхняя строка-->
+    <div class="row" style="background-color: rgb(255, 87, 34)">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 d-flex justify-content-center">
                     <span th:text="'Период: ' + ${user.startPeriodDate.format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY_RU)}
                         + ' - '
                         + ${user.getEndPeriodDate().format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY_RU)}"
                           class="text-white">Period
                     </span>
-                </div>
-                <div class="col-md-2 d-flex justify-content-end">
-                    <a th:href="'spending/settings?uuid=' + ${user.id}" th:text="${user.name}"
-                       class="text-white">User</a>
-                </div>
-            </div>
-        </tr>
-        <tr>
-            <div class="row">
-                <div class="col-md-2">
-                    <input type="button" onclick="window.location.href = 'payments'"
-                           value="Обновить"
-                           class="btn btn-secondary"
-                    />
-                </div>
-                <div class="col-md-8 d-flex justify-content-center">
-                    <button type="submit"
-                            class="btn btn-secondary">
-                        Сохранить
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <input type="button" onclick="window.location.href = 'payments/edit?action=create'"
-                           value="Добавить новую запись"
-                           class="btn btn-secondary"/>
-                </div>
-            </div>
-        </tr>
-
-        <!--        Вывод суммы всех затрат-->
-        <tr>
-            <div class="row text-warning" style="background-color: rgb(96, 125, 139)">
-                <div class="col-md-2 text-warning">
-                    <p th:text="'Всего: ' + ${sumAll}"></p>
-                </div>
-                <div class="col-md-8 d-flex justify-content-center">
-                    <b> Внести записи на дату:&nbsp;</b>
-                    <input type="date" name="chosen_date"
-                           th:value="${T(ru.tbcarus.spendingsb.util.DateUtil).getLocalDateTimeNow().format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY)}">
-                </div>
-                <div class="col-md-2 d-flex justify-content-end">
-
-                </div>
-            </div>
-        </tr>
-
-        <!--        Заполнение шапки таблицы-->
-        <tr>
-            <!--        <th th:each="pt:${paymentTypes}" th:utext="${pt.descriptionOutput} ? ${pt.title}+'<th>Описание</th>' : ${pt.title}">-->
-            <!--        </th>-->
-            <div th:each="pt : ${paymentTypes}">
-                <td th:text="${pt.title}">ТИП</td>
-                <td th:if="${pt.descriptionOutput}" th:text="Описание">ОП</td>
-            </div>
-        </tr>
-
-        <!--        Вывод сумм трат по типам-->
-        <tr>
-            <div th:each="pt : ${paymentTypes}">
-                <td>
-                    <p th:text="${sumMapByType.get(pt)}">SUM</p>
-                </td>
-                <td th:if="${pt.descriptionOutput}"></td>
-            </div>
-        </tr>
-
-        <!--        Вывод ячеек для добавления трат-->
-        <div th:each="i : ${#numbers.sequence(0,1,1)}">
-            <tr>
-                <div th:each="pt : ${paymentTypes}">
-                    <td>
-                        <input type="text" th:name="${pt.name}" style="width: 70px">
-                    </td>
-                    <td th:if="${pt.descriptionOutput}">
-                        <input type="text" th:name="${pt.name + 'description'}" style="width: 120px">
-                    </td>
-                </div>
-            </tr>
         </div>
+        <div class="col-md-2 d-flex justify-content-end">
+            <a th:href="'spending/settings?uuid=' + ${user.id}" th:text="${user.name}"
+               class="text-white">User</a>
+        </div>
+    </div>
 
-        <!--        Вывод записей затрат в таблицу-->
-        <div th:if="${maxSize} > 0">
-            <th:block th:each="i : ${#numbers.sequence(0, maxSize - 1, 1)}">
+    <!--    Вторая строка-->
+    <div class="row">
+        <div class="col-md-2">
+            <input type="button" onclick="window.location.href = 'payments'"
+                   value="Обновить"
+                   class="btn btn-secondary"
+            />
+        </div>
+        <div class="col-md-8 d-flex justify-content-center">
+            <button type="submit"
+                    class="btn btn-secondary">
+                Сохранить
+            </button>
+        </div>
+        <div class="col-md-2">
+            <input type="button" onclick="window.location.href = 'payments/edit?action=create'"
+                   value="Добавить новую запись"
+                   class="btn btn-secondary"/>
+        </div>
+    </div>
+
+    <!--    Строка с суммой всех затрат и выбором даты-->
+    <div class="row align-items-center text-warning" style="background-color: rgb(96, 125, 139); height: 40px">
+        <div class="col-md-2 text-warning">
+            <strong th:text="'Всего: ' + ${sumAll}"></strong>
+        </div>
+        <div class="col-md-8 d-flex justify-content-center">
+            <strong> Внести записи на дату:&nbsp;</strong>
+            <input type="date" name="chosen_date"
+                   th:value="${T(ru.tbcarus.spendingsb.util.DateUtil).getLocalDateTimeNow().format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY)}">
+        </div>
+        <div class="col-md-2 d-flex justify-content-end"></div>
+    </div>
+
+    <!--    Таблица затрат-->
+    <div class="row">
+        <div class="col-md-12">
+            <!--            <table class="table w-auto table-striped table-sm table-bordered align-middle text-center">-->
+            <table class="table table-bordered table-striped table-sm align-middle text-center">
+                <thead class="">
+                </thead>
+                <tbody>
+                <!--        Заполнение шапки таблицы-->
+                <tr>
+                    <!--        <th th:each="pt:${paymentTypes}" th:utext="${pt.descriptionOutput} ? ${pt.title}+'<th>Описание</th>' : ${pt.title}">-->
+                    <!--        </th>-->
+                    <div th:each="pt : ${paymentTypes}">
+                        <td th:text="${pt.title}">ТИП</td>
+                        <td th:if="${pt.descriptionOutput}" th:text="Описание">ОП</td>
+                    </div>
+                </tr>
+
+                <!--        Вывод сумм трат по типам-->
                 <tr>
                     <div th:each="pt : ${paymentTypes}">
                         <td>
-                            <!--                        <span th:if="${i < PaymentsMap.get(pt).size()}"-->
-                            <!--                              th:text="${PaymentsMap.get(pt)[i].price}">V</span>-->
-                            <input type="button" th:if="${i < PaymentsMap.get(pt).size()}"
-                                   th:onclick="|window.location.href = 'payments/${PaymentsMap.get(pt)[i].id}'|"
-                                   th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-secondary"/>
+                            <p th:text="${sumMapByType.get(pt)}">SUM</p>
                         </td>
-                        <td th:if="${pt.descriptionOutput}">
-                        <span th:if="${i < PaymentsMap.get(pt).size()}"
-                              th:text="${PaymentsMap.get(pt)[i].description}"></span>
-                        </td>
+                        <td th:if="${pt.descriptionOutput}"></td>
                     </div>
                 </tr>
-            </th:block>
+
+                <!--        Вывод ячеек для добавления трат-->
+                <div th:each="i : ${#numbers.sequence(0,1,1)}">
+                    <tr>
+                        <div th:each="pt : ${paymentTypes}">
+                            <td>
+                                <input type="text" th:name="${pt.name}" style="width: 70px">
+                            </td>
+                            <td th:if="${pt.descriptionOutput}">
+                                <input type="text" th:name="${pt.name + 'description'}" style="width: 110px">
+                            </td>
+                        </div>
+                    </tr>
+                </div>
+
+                <!--        Вывод записей затрат в таблицу-->
+                <div th:if="${maxSize} > 0">
+                    <th:block th:each="i : ${#numbers.sequence(0, maxSize - 1, 1)}">
+                        <tr>
+                            <div th:each="pt : ${paymentTypes}">
+                                <td>
+                                    <!--                        <span th:if="${i < PaymentsMap.get(pt).size()}"-->
+                                    <!--                              th:text="${PaymentsMap.get(pt)[i].price}">V</span>-->
+                                    <input type="button" th:if="${i < PaymentsMap.get(pt).size()}"
+                                           th:onclick="|window.location.href = 'payments/${PaymentsMap.get(pt)[i].id}'|"
+                                           th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-secondary"/>
+                                </td>
+                                <td th:if="${pt.descriptionOutput}">
+                        <span th:if="${i < PaymentsMap.get(pt).size()}"
+                              th:text="${PaymentsMap.get(pt)[i].description}"></span>
+                                </td>
+                            </div>
+                        </tr>
+                    </th:block>
+                </div>
+                </tbody>
+            </table>
         </div>
+    </div>
 
-        <!--        Вывод нижних кнопок-->
+    <!--    Нижние кнопки-->
+    <div class="row">
+        <div class="col-md-4">
+            <input type="button" onclick="window.location.href = 'spending/toCurrentDate';"
+                   value="Показать записи до сегодняшней даты"
+                   class="btn btn-secondary"/>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center">
+            <input type="button" onclick="window.location.href = 'spending';"
+                   value="Показать записи за всё время"
+                   class="btn btn-secondary"/>
 
-        <tr>
-            <td colspan="5">
-                <input type="button" onclick="window.location.href = 'spending/toCurrentDate';"
-                       value="Показать записи до сегодняшней даты"
-                       class="btn btn-secondary"/>
-            </td>
-            <td colspan="4">
-                <input type="button" onclick="window.location.href = 'spending';"
-                       value="Показать записи за всё время"
-                       class="btn btn-secondary"/>
-
-            </td>
-            <td colspan="5">
-                <input type="button" onclick="window.location.href = 'spending/allUsersPayments';"
-                       value="Показать записи всех пользователей"
-                       class="btn btn-secondary"/>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        </div>
+        <div class="col-md-4 d-flex justify-content-end">
+            <input type="button" onclick="window.location.href = 'spending/allUsersPayments';"
+                   value="Показать записи всех пользователей"
+                   class="btn btn-secondary"/>
+        </div>
+    </div>
 
     <hr>
+
+    <!--    Изменение начальной даты-->
     <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
             <select name="start_day">
@@ -194,6 +195,8 @@
             </button>
         </div>
     </div>
+
+    <!--    copyright-->
     <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
             <span th:text="'=' + ${T(ru.tbcarus.spendingsb.util.DateUtil)
@@ -202,6 +205,7 @@
             </span>
         </div>
     </div>
+
 </div>
 </body>
 </html>
