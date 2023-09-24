@@ -22,7 +22,7 @@ import java.util.Optional;
 @Slf4j
 public class PaymentService {
     private final PaymentRepository paymentRepository;
-    Sort sort = Sort.by("date", "userID", "price");
+    Sort sort = Sort.by(Sort.Direction.DESC, "date", "userID", "price");
 
     public PaymentService(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
@@ -71,7 +71,7 @@ public class PaymentService {
         };
     }
 
-    public Specification<Payment> filterByUser(Integer userId) {
+    public Specification<Payment> filterByUserId(Integer userId) {
         return new Specification<Payment>() {
             @Override
             public Predicate toPredicate(Root<Payment> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

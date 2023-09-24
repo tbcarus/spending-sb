@@ -1,6 +1,5 @@
 package ru.tbcarus.spendingsb.repository;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +12,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer>, JpaS
     List<Payment> findAllByUserId(int userId);
     List<Payment> findAllByUserIdAndType(PaymentType type, int userId);
 
-    @Query("SELECT p from Payment p ORDER BY p.date, p.userID, p.price")
+    @Query("SELECT p from Payment p ORDER BY p.date DESC, p.userID, p.price")
     List<Payment> getAll();
 
 //    @Query("SELECT p from Payment p ORDER BY p.date, p.userID, p.price")
