@@ -20,15 +20,19 @@ spring:
     password: postgres
   sql:
     init:
-      mode: always
+      mode: never
       schema-locations: classpath*:initDB.sql
       data-locations: classpath*:populateDB.sql
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
 
 server:
   servlet:
-    context-path: /spending
+    context-path:
 
 lombok:
   anyConstructor:
     addConstructorProperties: true
+
 

@@ -35,10 +35,10 @@
         </div>
     </div>
 
-    <!--    Вторая строка-->
+    <!--    Вторая строка - кнопки-->
     <div class="row">
         <div class="col-md-2">
-            <input type="button" onclick="window.location.href = 'payments'"
+            <input type="button" onclick="window.location.href = '/payments'"
                    value="Обновить"
                    class="btn btn-secondary"
             />
@@ -50,7 +50,7 @@
             </button>
         </div>
         <div class="col-md-2">
-            <input type="button" onclick="window.location.href = 'payments/edit?action=create'"
+            <input type="button" onclick="window.location.href = 'payments/create'"
                    value="Добавить новую запись"
                    class="btn btn-secondary"/>
         </div>
@@ -120,7 +120,7 @@
                                     <!--                        <span th:if="${i < PaymentsMap.get(pt).size()}"-->
                                     <!--                              th:text="${PaymentsMap.get(pt)[i].price}">V</span>-->
                                     <input type="button" th:if="${i < PaymentsMap.get(pt).size()}"
-                                           th:onclick="|window.location.href = 'payments/${PaymentsMap.get(pt)[i].id}'|"
+                                           th:onclick="|window.location.href = '/payments/${PaymentsMap.get(pt)[i].id}'|"
                                            th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-secondary"/>
                                 </td>
                                 <td th:if="${pt.descriptionOutput}">
@@ -139,18 +139,18 @@
     <!--    Нижние кнопки-->
     <div class="row">
         <div class="col-md-4">
-            <input type="button" onclick="window.location.href = 'spending/toCurrentDate';"
+            <input type="button" onclick="window.location.href = '/payments/toCurrentDate';"
                    value="Показать записи до сегодняшней даты"
                    class="btn btn-secondary"/>
         </div>
         <div class="col-md-4 d-flex justify-content-center">
-            <input type="button" onclick="window.location.href = 'spending';"
+            <input type="button" onclick="window.location.href = '/payments/allTime';"
                    value="Показать записи за всё время"
                    class="btn btn-secondary"/>
 
         </div>
         <div class="col-md-4 d-flex justify-content-end">
-            <input type="button" onclick="window.location.href = 'spending/allUsersPayments';"
+            <input type="button" onclick="window.location.href = '/payments/allUsersPayments';"
                    value="Показать записи всех пользователей"
                    class="btn btn-secondary"/>
         </div>
@@ -159,42 +159,44 @@
     <hr>
 
     <!--    Изменение начальной даты-->
-    <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-            <select name="start_day">
-                <option th:value="${user.startPeriodDate.dayOfMonth}"
-                        th:text="${user.startPeriodDate.dayOfMonth}" selected hidden>TEXT
-                </option>
-                <option th:each="i : ${#numbers.sequence(1, 28, 1)}" th:value="${i}" th:text="${i}"></option>
-            </select>
-            <select name="start_month">
-                <option th:value="${user.startPeriodDate.month.value}"
-                        th:text="${user.startPeriodDate.month.getDisplayName(
+    <form th:method="POST" th:action="@{/profile/changeStartDate}">
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-center">
+                <select name="start_day">
+                    <option th:value="${user.startPeriodDate.dayOfMonth}"
+                            th:text="${user.startPeriodDate.dayOfMonth}" selected hidden>TEXT
+                    </option>
+                    <option th:each="i : ${#numbers.sequence(1, 28, 1)}" th:value="${i}" th:text="${i}"></option>
+                </select>
+                <select name="start_month">
+                    <option th:value="${user.startPeriodDate.month.value}"
+                            th:text="${user.startPeriodDate.month.getDisplayName(
                             T(java.time.format.TextStyle).FULL,
                             T(java.util.Locale).forLanguageTag('ru'))}" selected hidden>
-                </option>
-                <option th:each="i : ${#numbers.sequence(1, 12, 1)}"
-                        th:value="${i}"
-                        th:text="${T(java.time.Month).of(i).getDisplayName(
+                    </option>
+                    <option th:each="i : ${#numbers.sequence(1, 12, 1)}"
+                            th:value="${i}"
+                            th:text="${T(java.time.Month).of(i).getDisplayName(
                             T(java.time.format.TextStyle).FULL,
                             T(java.util.Locale).forLanguageTag('ru'))}">
-                </option>
-            </select>
-            <select name="start_year">
-                <option th:value="${user.startPeriodDate.year}"
-                        th:text="${user.startPeriodDate.year}" selected hidden>
+                    </option>
+                </select>
+                <select name="start_year">
+                    <option th:value="${user.startPeriodDate.year}"
+                            th:text="${user.startPeriodDate.year}" selected hidden>
 
-                </option>
-                <option th:each="i : ${#numbers.sequence(2010, T(java.time.Year).now().getValue(), 1)}"
-                        th:value="${i}"
-                        th:text="${i}">
-                </option>
-            </select>
-            <button type="submit" class="btn btn-secondary">
-                Изменить начальную дату
-            </button>
+                    </option>
+                    <option th:each="i : ${#numbers.sequence(2010, T(java.time.Year).now().getValue(), 1)}"
+                            th:value="${i}"
+                            th:text="${i}">
+                    </option>
+                </select>
+                <button type="submit" class="btn btn-secondary">
+                    Изменить начальную дату
+                </button>
+            </div>
         </div>
-    </div>
+    </form>
 
     <!--    copyright-->
     <div class="row">
