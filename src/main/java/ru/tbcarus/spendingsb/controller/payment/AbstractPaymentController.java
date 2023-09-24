@@ -10,20 +10,11 @@ import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public abstract class AbstractPaymentController {
     @Autowired
     protected PaymentService paymentService;
-
-    public List<Payment> getPayments(PaymentType type, Integer userId, LocalDate after, LocalDate before) {
-        log.info("get filtered payments by type {}, userID {} and between {} - {}", type, userId, after, before);
-        Specification<Payment> specification = Specification.where(paymentService.filterByType(type)
-                .and(paymentService.filterByUser(userId))
-                .and(paymentService.filterByDate(after, before)));
-        return paymentService.getPayments(specification);
-    }
 
     public Payment get(int id) {
         log.info("get payment {}", id);
@@ -35,20 +26,26 @@ public abstract class AbstractPaymentController {
         return paymentService.getAll();
     };
 
-//    public List<Payment> getAllByUser(int userId) {
-//        log.info("get all payments by user {}", userId);
-//        return paymentService.getAllByUser(userId);
-//    }
+    public List<Payment> getAllByUserId(int userId) {
+        log.info("get all by user {}", userId);
+        Specification<Payment> specification = Specification.where(paymentService.filterByUserId(userId));
+        return paymentService.getPayments(specification);
+    }
 
-//    public List<Payment> getAllByUserAndDate(LocalDate after, LocalDate before, int userId) {
-//        log.info("get all by user {} and date {}-{}", userId, after, before);
-//        return paymentService.getBetween(after, before, userId);
-//    }
+    public List<Payment> getAllByUserIdAndDateBetween(int userId, LocalDate after, LocalDate before) {
+        log.info("get all by user {} and date {}-{}", userId, after, before);
+        Specification<Payment> specification = Specification.where(paymentService.filterByUserId(userId)
+        .and(paymentService.filterByDate(after, before)));
+        return paymentService.getPayments(specification);
+    }
 
-//    public List<Payment> getAllByTypeBetween(PaymentType type, LocalDate after, LocalDate before, int userId) {
-//        log.info("get all by type {}", type.getTitle());
-//        return paymentService.getByTypeBetween(type, after, before, userId);
-//    }
+    public List<Payment> getPaymentsByTypeUserIdBetween(PaymentType type, Integer userId, LocalDate after, LocalDate before) {
+        log.info("get filtered payments by type {}, userID {} and between {} - {}", type, userId, after, before);
+        Specification<Payment> specification = Specification.where(paymentService.filterByType(type)
+                .and(paymentService.filterByUserId(userId))
+                .and(paymentService.filterByDate(after, before)));
+        return paymentService.getPayments(specification);
+    }
 
     public Payment create(Payment p) {
         int userId = SecurityUtil.authUserId();

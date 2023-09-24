@@ -25,11 +25,11 @@ public class AdminPaymentRestController extends AbstractPaymentController {
     }
 
     @GetMapping("/by")
-    public List<Payment> getPayments(@RequestParam(required = false) PaymentType type,
-                                      @RequestParam(required = false) Integer userId,
-                                      @RequestParam(required = false) LocalDate after,
-                                      @RequestParam(required = false) LocalDate before) {
-        return super.getPayments(type, userId, after, before);
+    public List<Payment> getPaymentsByTypeUserIdBetween(@RequestParam(required = false) PaymentType type,
+                                                        @RequestParam(required = false) Integer userId,
+                                                        @RequestParam(required = false) LocalDate after,
+                                                        @RequestParam(required = false) LocalDate before) {
+        return super.getPaymentsByTypeUserIdBetween(type, userId, after, before);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
