@@ -5,39 +5,39 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
-import ru.tbcarus.spendingsb.repository.PaymentRepository;
+import ru.tbcarus.spendingsb.repository.DataJpaPaymentRepository;
+import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Slf4j
 public class PaymentService {
-    private final PaymentRepository paymentRepository;
+    @Autowired
+    DataJpaPaymentRepository paymentRepository;
+    @Autowired
+    JpaUserRepository userRepository;
+
     Sort sort = Sort.by(Sort.Direction.DESC, "date", "userID", "price");
 
-    public PaymentService(PaymentRepository paymentRepository) {
-        this.paymentRepository = paymentRepository;
-    }
-
     public List<Payment> getPayments(Specification<Payment> specification) {
-        return paymentRepository.findAll(specification, sort);
+        return paymentRepository.getPayments(specification, sort);
     }
 
     public Payment get(int id, int userId) {
-        Optional<Payment> opt = paymentRepository.findById(id);
-        if (opt.isEmpty()) {
+        Payment payment = paymentRepository.get(id, userId);
+        if (payment == null) {
             throw new NotFoundException();
         }
-        return opt.get();
+        return payment;
     }
 
     public List<Payment> getAll() {
@@ -45,18 +45,21 @@ public class PaymentService {
     }
 
     public Payment create(Payment payment, int userId) {
-        return paymentRepository.save(payment);
+        payment.setUserID(userId);
+        payment.setUser(userRepository.getByEmail("l2@og.in"));
+        return paymentRepository.save(payment, userId);
     }
 
     public Payment update(Payment payment, int userId) {
-        return paymentRepository.save(payment);
+        payment.setUserID(userId);
+        payment.setUser(userRepository.getByEmail("l2@og.in"));
+        return paymentRepository.save(payment, userId);
     }
 
     public void delete(int id, int userId) {
-        if (!paymentRepository.existsById(id)) {
+        if (!paymentRepository.delete(id, userId)) {
             throw new NotFoundException();
         }
-        paymentRepository.deleteById(id);
     }
 
     public Specification<Payment> filterByType(PaymentType type) {

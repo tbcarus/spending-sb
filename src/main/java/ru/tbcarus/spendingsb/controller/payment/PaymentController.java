@@ -1,20 +1,23 @@
 package ru.tbcarus.spendingsb.controller.payment;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.DateUtil;
 import ru.tbcarus.spendingsb.util.PaymentsUtil;
+import ru.tbcarus.spendingsb.util.SecurityUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/payments")
@@ -23,13 +26,13 @@ public class PaymentController extends AbstractPaymentController {
     @Autowired
     UserService userService;
 
-    // Все записи за всё время
+    // Записи за выбранный период (месяц от начальной даты)
     @GetMapping("")
     public String getAll(Model model) {
         User user = userService.getByEmail("l2@og.in");
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
-        addStandartAttr(model, user, paymentsMap);
+        addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
@@ -39,17 +42,17 @@ public class PaymentController extends AbstractPaymentController {
         User user = userService.getByEmail("l2@og.in");
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), DateUtil.getLocalDateTimeNow().toLocalDate()));
-        addStandartAttr(model, user, paymentsMap);
+        addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
-    // Записи за выбранный период (месяц от начальной даты)
+    // Все записи за всё время
     @GetMapping("/allTime")
     public String getAllSelectedPeriod(Model model) {
         User user = userService.getByEmail("l2@og.in");
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserId(user.id()));
-        addStandartAttr(model, user, paymentsMap);
+        addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
@@ -59,7 +62,7 @@ public class PaymentController extends AbstractPaymentController {
         User user = userService.getByEmail("l2@og.in");
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAll());
-        addStandartAttr(model, user, paymentsMap);
+        addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
@@ -72,12 +75,48 @@ public class PaymentController extends AbstractPaymentController {
 
     @GetMapping("/create")
     public String create(Model model) {
-        Payment payment = new Payment();
+        Payment payment = new Payment(LocalDate.now());
         model.addAttribute("payment", payment);
         return "edit";
     }
 
-    private void addStandartAttr(Model model, User user, Map<PaymentType, List<Payment>> paymentsMap) {
+    @PostMapping
+    public String updateOrCreate(HttpServletRequest request,
+                                 @RequestParam(value = "id", required = false) String id,
+                                 @RequestParam("payment_type") PaymentType type,
+                                 @RequestParam("price") int price,
+                                 @RequestParam("description") String description,
+                                 @RequestParam("date") LocalDate date) {
+        try {
+            if (price == 0) {
+                // Если трата нулевая, то это считается ошибкой
+                throw new IllegalRequestDataException("Сумма траты не должна быть нулевой");
+            }
+        } catch (IllegalRequestDataException exc) {
+            if (id.isEmpty()) {
+                return "redirect:/payments/create";
+            } else {
+                return "redirect:/payments/" + id;
+            }
+        }
+        Payment payment = new Payment(type, price, description, date);
+        if (id.isEmpty()) {
+            super.create(payment);
+        } else {
+            int paymentId = Integer.parseInt(id);
+            payment.setId(paymentId);
+            super.update(payment, paymentId);
+        }
+        return "redirect:/payments";
+    }
+
+    @GetMapping("/delete")
+    public String deleteStr(@RequestParam String id) {
+        super.delete(getId(id));
+        return "redirect:/payments";
+    }
+
+    private void addStandardAttr(Model model, User user, Map<PaymentType, List<Payment>> paymentsMap) {
         Map<PaymentType, Integer> sumMapByType = PaymentsUtil.getSumMapByType(paymentsMap);
         model.addAttribute("PaymentsMap", paymentsMap);
         model.addAttribute("paymentTypes", PaymentType.values());
@@ -85,5 +124,15 @@ public class PaymentController extends AbstractPaymentController {
         model.addAttribute("sumMapByType", sumMapByType);
         model.addAttribute("sumAll", PaymentsUtil.getSumAll(sumMapByType));
         model.addAttribute("user", user);
+    }
+
+    private int getId(HttpServletRequest request) {
+        String paramId = Objects.requireNonNull(request.getParameter("id"));
+        return Integer.parseInt(paramId);
+    }
+
+    private int getId(String id) {
+        String paramId = Objects.requireNonNull(id);
+        return Integer.parseInt(paramId);
     }
 }

@@ -7,6 +7,7 @@ import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.service.PaymentService;
 import ru.tbcarus.spendingsb.util.SecurityUtil;
+import ru.tbcarus.spendingsb.util.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +19,8 @@ public abstract class AbstractPaymentController {
 
     public Payment get(int id) {
         log.info("get payment {}", id);
-        return paymentService.get(id, 100000);
+        int userId = SecurityUtil.authUserId();
+        return paymentService.get(id, userId);
     }
 
     public List<Payment> getAll() {
@@ -50,10 +52,11 @@ public abstract class AbstractPaymentController {
     public Payment create(Payment p) {
         int userId = SecurityUtil.authUserId();
         log.info("save payment {} by user {}", p, userId);
+        ValidationUtil.checkNew(p);
         return paymentService.create(p, userId);
     }
 
-    public Payment update(int id, Payment p) {
+    public Payment update(Payment p, int id) {
         int userId = SecurityUtil.authUserId();
         log.info("update payment {} by user {}", p, userId);
         return paymentService.update(p, userId);

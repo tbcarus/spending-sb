@@ -14,49 +14,54 @@
 <!--@thymesVar id="payment" type="ru.tbcarus.spendingsb.model.Payment"-->
 <!--@thymesVar id="paymentType" type="ru.tbcarus.spendingsb.model.PaymentType"-->
 <div class="position-absolute top-50 start-50 translate-middle">
-    <table class="table-primary table-bordered">
-        <tr>
-            <td colspan="2" class="text-center">
-                <input th:if="${payment.id}" type="button" value="Удалить запись">
-            </td>
-        </tr>
-        <tr>
-            <td class="d-flex justify-content-end">Тип:</td>
-            <td>
-                <select name="payment_type">
-                    <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
-                            th:value="${paymentType}" th:text="${paymentType.title}">Type
-                    </option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="d-flex justify-content-end">Сумма:</td>
-            <td>
-                <input type="text" name="price" th:value="${payment.price}">
-            </td>
-        </tr>
-        <tr>
-            <td class="d-flex justify-content-end">Описание:</td>
-            <td>
-                <input type="text" name="description" th:value="${payment.description}">
-            </td>
-        </tr>
-        <tr>
-            <td class="d-flex justify-content-end">Дата:</td>
-            <td>
-                <input type="date" name="date" th:value="${payment.date}">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <div class="d-flex justify-content-around">
-                    <button type="submit">Сохранить</button>
-                    <input type="button" value=" Отменить ">
-                </div>
-            </td>
-        </tr>
-    </table>
+    <form th:method="POST" action="../payments">
+        <input type="hidden" name="id" th:value="${payment.id}">
+        <table class="table-primary table-bordered">
+            <tr>
+                <td colspan="2" class="text-center">
+                    <input th:if="${payment.id}" type="button" value="Удалить запись"
+                           th:onclick="|window.location.href = 'delete?id=${payment.id}'|"
+                           th:method="delete">
+                </td>
+            </tr>
+            <tr>
+                <td class="d-flex justify-content-end">Тип:</td>
+                <td>
+                    <select name="payment_type">
+                        <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
+                                th:value="${paymentType}" th:text="${paymentType.title}">Type
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="d-flex justify-content-end">Сумма:</td>
+                <td>
+                    <input type="text" name="price" th:value="${payment.price}">
+                </td>
+            </tr>
+            <tr>
+                <td class="d-flex justify-content-end">Описание:</td>
+                <td>
+                    <input type="text" name="description" th:value="${payment.description}">
+                </td>
+            </tr>
+            <tr>
+                <td class="d-flex justify-content-end">Дата:</td>
+                <td>
+                    <input type="date" name="date" th:value="${payment.date}">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="d-flex justify-content-around">
+                        <button type="submit">Сохранить</button>
+                        <input type="button" value=" Отменить " onclick="window.location.href='../payments'">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
 </div>
 </body>
 </html>

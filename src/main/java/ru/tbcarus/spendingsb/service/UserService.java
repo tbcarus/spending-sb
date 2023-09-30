@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.User;
-import ru.tbcarus.spendingsb.repository.UserRepository;
+import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +12,9 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserService {
-    public final UserRepository userRepository;
+    public final JpaUserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(JpaUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

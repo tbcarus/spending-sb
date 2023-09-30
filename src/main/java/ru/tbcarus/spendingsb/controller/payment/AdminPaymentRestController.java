@@ -41,7 +41,7 @@ public class AdminPaymentRestController extends AbstractPaymentController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Payment update(@RequestBody Payment payment, @PathVariable int id) {
-        return super.update(id, payment);
+        return super.update(payment, id);
     }
 
     @DeleteMapping("/{id}")
