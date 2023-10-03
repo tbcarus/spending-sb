@@ -55,6 +55,11 @@ public abstract class AbstractPaymentController {
         ValidationUtil.checkNew(p);
         return paymentService.create(p, userId);
     }
+    public List<Payment> createAll(List<Payment> list) {
+        int userId = SecurityUtil.authUserId();
+        log.info("save all payments {} by user {}", list, userId);
+        return paymentService.createAll(list, userId);
+    }
 
     public Payment update(Payment p, int id) {
         int userId = SecurityUtil.authUserId();

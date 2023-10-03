@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
+import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.DataJpaPaymentRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
@@ -48,6 +49,13 @@ public class PaymentService {
         payment.setUserID(userId);
         payment.setUser(userRepository.getByEmail("l2@og.in"));
         return paymentRepository.save(payment, userId);
+    }
+
+    public List<Payment> createAll(List<Payment> list, int userId) {
+        User user = userRepository.getByEmail("l2@og.in");
+        list.forEach(p -> p.setUserID(userId));
+        list.forEach(p -> p.setUser(user));
+        return paymentRepository.saveAll(list, userId);
     }
 
     public Payment update(Payment payment, int userId) {

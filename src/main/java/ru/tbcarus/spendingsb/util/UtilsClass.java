@@ -1,5 +1,6 @@
 package ru.tbcarus.spendingsb.util;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 
@@ -8,10 +9,24 @@ import java.util.List;
 import java.util.Map;
 
 // Утильный класс
+@Slf4j
 public class UtilsClass {
 
     public static int toInt (String s) {
-        return (int) Double.parseDouble(s.replace(',', '.'));
+        int result = Integer.MIN_VALUE;
+        try {
+            result = (int) Double.parseDouble(s.replace(',', '.'));
+        } catch (Exception exc) {
+            log.warn("Ошибка парсинга цены {}", s);
+            exc.printStackTrace();
+        }
+        return result;
+    }
+
+    // Проверка строки на недопустимые символы
+    public static String checkDescription(String s) {
+
+        return s;
     }
 
     // Максимальный размер листа в мапе с листами

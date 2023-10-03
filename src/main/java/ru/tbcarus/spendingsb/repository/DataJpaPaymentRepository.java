@@ -38,6 +38,10 @@ public class DataJpaPaymentRepository {
         return paymentRepository.save(p);
     }
 
+    public List<Payment> saveAll(List<Payment> list, int userId) {
+        return paymentRepository.saveAll(list);
+    }
+
     public boolean delete(int id, int userId) {
         return paymentRepository.delete(id, userId) != 0;
     }
