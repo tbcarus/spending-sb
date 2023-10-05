@@ -4,14 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link th:fragment="headTag" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    <link th:fragment="headTag" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
 <nav th:fragment="bodyHeader" class="navbar navbar-expand-md navbar-dark bg-dark py-0">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Fixed navbar</a>
-        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="navbarCollapse" style="">
@@ -35,6 +38,17 @@
 </nav>
 <div th:fragment="test">
     This is a fragment
+</div>
+
+<div th:fragment="copy">
+    <div class="row">
+        <div class="col-md-12 d-flex justify-content-center">
+            <span th:text="'=' + ${T(ru.tbcarus.spendingsb.util.DateUtil)
+                .getLocalDateTimeNow()
+                .format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_RU)} + '= by tbcarus'">
+            </span>
+        </div>
+    </div>
 </div>
 
 </body>

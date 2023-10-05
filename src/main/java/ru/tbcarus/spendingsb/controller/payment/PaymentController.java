@@ -38,6 +38,18 @@ public class PaymentController extends AbstractPaymentController {
         return "list";
     }
 
+    @GetMapping("/byType")
+    public String getByType(Model model, @RequestParam("type") PaymentType type) {
+        User user = userService.getByEmail("l2@og.in");
+        int userId = SecurityUtil.authUserId();
+        List<Payment> list = super.getPaymentsByTypeUserIdBetween(type, userId, user.getStartPeriodDate(), user.getEndPeriodDate());
+        model.addAttribute("user", user);
+        model.addAttribute("list", list);
+        model.addAttribute("paymentType", type);
+        model.addAttribute("sum", PaymentsUtil.getSumByType(list));
+        return "typedList";
+    }
+
     // Записи от выбранной даты до текущего момента
     @GetMapping("/toCurrentDate")
     public String getAllToCurrentDate(Model model) {
@@ -139,8 +151,11 @@ public class PaymentController extends AbstractPaymentController {
     }
 
     @GetMapping("/delete")
-    public String deleteStr(@RequestParam String id) {
+    public String deleteStr(@RequestParam String id, HttpServletRequest request) {
         super.delete(getId(id));
+        if (request.getHeader("referer").contains("byType")) {
+            return "redirect:" + request.getHeader("referer");
+        }
         return "redirect:/payments";
     }
 

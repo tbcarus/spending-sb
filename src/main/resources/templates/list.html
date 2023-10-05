@@ -83,7 +83,13 @@
                         <!--        <th th:each="pt:${paymentTypes}" th:utext="${pt.descriptionOutput} ? ${pt.title}+'<th>Описание</th>' : ${pt.title}">-->
                         <!--        </th>-->
                         <div th:each="pt : ${paymentTypes}">
-                            <td th:text="${pt.title}">ТИП</td>
+                            <td>
+                                <a th:href="'payments/byType?type=' + ${pt.name}">
+                                    <span th:text="${pt.title}">
+                                        ТИП
+                                    </span>
+                                </a>
+                            </td>
                             <td th:if="${pt.descriptionOutput}" th:text="Описание">ОП</td>
                         </div>
                     </tr>
@@ -201,14 +207,7 @@
     </form>
 
     <!--    copyright-->
-    <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-            <span th:text="'=' + ${T(ru.tbcarus.spendingsb.util.DateUtil)
-                .getLocalDateTimeNow()
-                .format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_RU)} + '= by tbcarus'">
-            </span>
-        </div>
-    </div>
+    <div th:replace="fragments/fragments :: copy"></div>
 
 </div>
 </body>
