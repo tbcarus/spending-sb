@@ -5,14 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
+import ru.tbcarus.spendingsb.util.DateUtil;
+import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
 
 @Controller
-@RequestMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/payments/profile", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class ProfileController extends AbstractUserController {
 
@@ -20,8 +23,31 @@ public class ProfileController extends AbstractUserController {
     UserService userService;
 
     @GetMapping
-    public void get() {
-        log.debug("In GET method");
+    public String get(Model model) {
+        User user = super.get(SecurityUtil.authUserId());
+        model.addAttribute("user", user);
+        return "settings";
+    }
+
+    @PostMapping
+    public String update(@RequestParam("name") String name,
+                         @RequestParam("start_day") int startDay,
+                         @RequestParam("old_pass") String passOld,
+                         @RequestParam("new_pass") String passNew,
+                         @RequestParam("new_pass_reply") String passNewReply) {
+        int id = SecurityUtil.authUserId();
+        User user = super.get(id);
+        if (!name.isEmpty()) {
+            user.setName(name);
+        }
+        LocalDate ld = DateUtil.setDay(startDay, user.getStartPeriodDate());
+        user.setStartPeriodDate(ld);
+        if(user.getPassword().equals(passOld) && passNew.equals(passNewReply)) {
+            user.setPassword(passNew);
+        }
+        super.update(user, user.id());
+        int x = 5;
+        return "redirect:/payments";
     }
 
     @PostMapping("/changeStartDate")
@@ -30,7 +56,8 @@ public class ProfileController extends AbstractUserController {
                                   @RequestParam("start_year") int year,
                                   HttpServletRequest request) {
         log.info("change start date");
-        User user = userService.getByEmail("l2@og.in");
+        int id = SecurityUtil.authUserId();
+        User user = super.get(id);
         LocalDate newLD = LocalDate.of(year, month, day);
         user.setStartPeriodDate(newLD);
         super.update(user, user.id());

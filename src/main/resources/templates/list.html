@@ -30,7 +30,7 @@
                     </span>
         </div>
         <div class="col-md-2 d-flex justify-content-end">
-            <a th:href="'spending/settings?uuid=' + ${user.id}" th:text="${user.name}"
+            <a th:href="'payments/profile'" th:text="${user.name}"
                class="text-white">User</a>
         </div>
     </div>
@@ -167,7 +167,7 @@
     <hr>
 
     <!--    Изменение начальной даты-->
-    <form th:method="POST" th:action="@{/profile/changeStartDate}">
+    <form th:method="POST" th:action="@{/payments/profile/changeStartDate}">
         <div class="row">
             <div class="col-md-12 d-flex justify-content-center">
                 <select name="start_day">

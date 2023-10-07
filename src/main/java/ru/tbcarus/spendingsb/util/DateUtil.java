@@ -32,6 +32,15 @@ public class DateUtil {
         }
     }
 
+    public static LocalDate setDay(int day, LocalDate date) {
+        date.withDayOfMonth(day);
+        if (day <= date.getDayOfMonth()) {
+            return date;
+        } else {
+            return date.minusMonths(1);
+        }
+    }
+
     public static LocalDate getLocalDateNow() {
         return LocalDate.now();
     }

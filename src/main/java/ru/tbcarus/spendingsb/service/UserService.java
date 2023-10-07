@@ -1,6 +1,7 @@
 package ru.tbcarus.spendingsb.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.User;
@@ -12,6 +13,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserService {
+    private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
     public final JpaUserRepository userRepository;
 
     public UserService(JpaUserRepository userRepository) {
