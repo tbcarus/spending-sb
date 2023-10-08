@@ -15,7 +15,7 @@
 <nav th:replace="fragments/fragments :: bodyHeader"></nav>
 
 <div style="width: 400px" class="text-center mx-auto">
-    <form th:method="POST" action="/payments/profile">
+    <form th:method="POST" action="../payments/profile">
         <input type="hidden" name="uuid" th:value="${user.id}">
         <table class="table table-striped shadow">
             <tr>

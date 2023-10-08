@@ -29,7 +29,7 @@ spring:
 
 server:
   servlet:
-    context-path:
+    context-path: /spending
 
 lombok:
   anyConstructor:

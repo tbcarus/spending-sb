@@ -39,7 +39,7 @@
         <!--    Вторая строка - кнопки-->
         <div class="row">
             <div class="col-md-2">
-                <input type="button" onclick="window.location.href = '/payments'"
+                <input type="button" onclick="window.location.href = '../payments'"
                        value="Обновить"
                        class="btn btn-secondary"
                 />
@@ -127,7 +127,7 @@
                                         <!--                        <span th:if="${i < PaymentsMap.get(pt).size()}"-->
                                         <!--                              th:text="${PaymentsMap.get(pt)[i].price}">V</span>-->
                                         <input type="button" th:if="${i < PaymentsMap.get(pt).size()}"
-                                               th:onclick="|window.location.href = '/payments/${PaymentsMap.get(pt)[i].id}'|"
+                                               th:onclick="|window.location.href = '../payments/${PaymentsMap.get(pt)[i].id}'|"
                                                th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-secondary"/>
                                     </td>
                                     <td th:if="${pt.descriptionOutput}">
@@ -147,18 +147,18 @@
     <!--    Нижние кнопки-->
     <div class="row">
         <div class="col-md-4">
-            <input type="button" onclick="window.location.href = '/payments/toCurrentDate';"
+            <input type="button" onclick="window.location.href = '../payments/toCurrentDate';"
                    value="Показать записи до сегодняшней даты"
                    class="btn btn-secondary"/>
         </div>
         <div class="col-md-4 d-flex justify-content-center">
-            <input type="button" onclick="window.location.href = '/payments/allTime';"
+            <input type="button" onclick="window.location.href = '../payments/allTime';"
                    value="Показать записи за всё время"
                    class="btn btn-secondary"/>
 
         </div>
         <div class="col-md-4 d-flex justify-content-end">
-            <input type="button" onclick="window.location.href = '/payments/allUsersPayments';"
+            <input type="button" onclick="window.location.href = '../payments/allUsersPayments';"
                    value="Показать записи всех пользователей"
                    class="btn btn-secondary"/>
         </div>
@@ -167,7 +167,7 @@
     <hr>
 
     <!--    Изменение начальной даты-->
-    <form th:method="POST" th:action="@{/payments/profile/changeStartDate}">
+    <form th:method="POST" th:action="@{../payments/profile/changeStartDate}">
         <div class="row">
             <div class="col-md-12 d-flex justify-content-center">
                 <select name="start_day">
