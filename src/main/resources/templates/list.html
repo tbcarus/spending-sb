@@ -51,7 +51,7 @@
                 </button>
             </div>
             <div class="col-md-2">
-                <input type="button" onclick="window.location.href = 'payments/create'"
+                <input type="button" th:onclick="|window.location.href = '@{/payments/create}'|"
                        value="Добавить новую запись"
                        class="btn btn-secondary"/>
             </div>
@@ -127,7 +127,7 @@
                                         <!--                        <span th:if="${i < PaymentsMap.get(pt).size()}"-->
                                         <!--                              th:text="${PaymentsMap.get(pt)[i].price}">V</span>-->
                                         <input type="button" th:if="${i < PaymentsMap.get(pt).size()}"
-                                               th:onclick="|window.location.href = '../payments/${PaymentsMap.get(pt)[i].id}'|"
+                                               th:onclick="|window.location.href = '@{/payments/{id}(id=${PaymentsMap.get(pt)[i].id})}'|"
                                                th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-secondary"/>
                                     </td>
                                     <td th:if="${pt.descriptionOutput}">

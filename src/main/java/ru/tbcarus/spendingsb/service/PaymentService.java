@@ -15,6 +15,7 @@ import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.DataJpaPaymentRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
+import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +27,8 @@ public class PaymentService {
     DataJpaPaymentRepository paymentRepository;
     @Autowired
     JpaUserRepository userRepository;
+    @Autowired
+    UserService userService;
 
     Sort sort = Sort.by(Sort.Direction.DESC, "date", "userID", "price");
 
@@ -47,12 +50,12 @@ public class PaymentService {
 
     public Payment create(Payment payment, int userId) {
         payment.setUserID(userId);
-        payment.setUser(userRepository.getByEmail("l2@og.in"));
+        payment.setUser(userService.getById(SecurityUtil.authUserId()));
         return paymentRepository.save(payment, userId);
     }
 
     public List<Payment> createAll(List<Payment> list, int userId) {
-        User user = userRepository.getByEmail("l2@og.in");
+        User user = userService.getById(SecurityUtil.authUserId());
         list.forEach(p -> p.setUserID(userId));
         list.forEach(p -> p.setUser(user));
         return paymentRepository.saveAll(list, userId);
@@ -60,7 +63,7 @@ public class PaymentService {
 
     public Payment update(Payment payment, int userId) {
         payment.setUserID(userId);
-        payment.setUser(userRepository.getByEmail("l2@og.in"));
+        payment.setUser(userService.getById(SecurityUtil.authUserId()));
         return paymentRepository.save(payment, userId);
     }
 

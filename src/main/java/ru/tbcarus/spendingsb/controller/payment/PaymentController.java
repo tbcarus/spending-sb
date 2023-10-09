@@ -31,7 +31,7 @@ public class PaymentController extends AbstractPaymentController {
     // Записи за выбранный период (месяц от начальной даты)
     @GetMapping("")
     public String getAll(Model model) {
-        User user = userService.getByEmail("l2@og.in");
+        User user = userService.getById(SecurityUtil.authUserId());
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
         addStandardAttr(model, user, paymentsMap);
@@ -40,7 +40,7 @@ public class PaymentController extends AbstractPaymentController {
 
     @GetMapping("/byType")
     public String getByType(Model model, @RequestParam("type") PaymentType type) {
-        User user = userService.getByEmail("l2@og.in");
+        User user = userService.getById(SecurityUtil.authUserId());
         int userId = SecurityUtil.authUserId();
         List<Payment> list = super.getPaymentsByTypeUserIdBetween(type, userId, user.getStartPeriodDate(), user.getEndPeriodDate());
         model.addAttribute("user", user);
@@ -53,7 +53,7 @@ public class PaymentController extends AbstractPaymentController {
     // Записи от выбранной даты до текущего момента
     @GetMapping("/toCurrentDate")
     public String getAllToCurrentDate(Model model) {
-        User user = userService.getByEmail("l2@og.in");
+        User user = userService.getById(SecurityUtil.authUserId());
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), DateUtil.getLocalDateTimeNow().toLocalDate()));
         addStandardAttr(model, user, paymentsMap);
@@ -63,7 +63,7 @@ public class PaymentController extends AbstractPaymentController {
     // Все записи за всё время
     @GetMapping("/allTime")
     public String getAllSelectedPeriod(Model model) {
-        User user = userService.getByEmail("l2@og.in");
+        User user = userService.getById(SecurityUtil.authUserId());
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserId(user.id()));
         addStandardAttr(model, user, paymentsMap);
@@ -73,7 +73,7 @@ public class PaymentController extends AbstractPaymentController {
     // Записи всех пользователей за всё время
     @GetMapping("/allUsersPayments")
     public String getAllPayments(Model model) {
-        User user = userService.getByEmail("l2@og.in");
+        User user = userService.getById(SecurityUtil.authUserId());
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAll());
         addStandardAttr(model, user, paymentsMap);

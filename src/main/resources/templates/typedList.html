@@ -39,12 +39,12 @@
             <td class="col-md-2" th:text="${p.user.name}"></td>
             <td class="col-md-3">
                 <input type="button" value="Удалить запись"
-                       th:onclick="|window.location.href = '../payments/delete?id=${p.id}'|">
+                       th:onclick="|window.location.href = '@{/payments/delete?id={id}(id=${p.id})}'|">
             </td>
         </tr>
         <tr class="d-flex">
             <td class="text-center col-md-12">
-                <input type="button" value="Назад" onclick="window.location.href = '../payments'">
+                <input type="button" value="Назад" th:onclick="|window.location.href = '@{/payments}'|">
             </td>
         </tr>
     </table>
