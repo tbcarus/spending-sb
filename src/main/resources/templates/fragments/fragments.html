@@ -29,8 +29,14 @@
                     <a class="nav-link disabled">Disabled</a>
                 </li>
             </ul>
-            <a class="btn btn-info mr-1" href="admin/users">Пользователи</a>
-            <button class="btn btn-outline-success" type="submit" th:onclick="|window.location.href = '@{/}'|">Выход</button>
+            <div class="me-2">
+                <a class="btn btn-info" href="admin/users">Пользователи</a>
+            </div>
+            <div class="ms-2">
+                <button class="btn btn-outline-success" type="submit" th:onclick="|window.location.href = '@{/}'|">
+                    Выход
+                </button>
+            </div>
         </div>
     </div>
 </nav>
