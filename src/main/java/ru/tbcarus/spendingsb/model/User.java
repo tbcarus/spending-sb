@@ -6,8 +6,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Data
 @Entity
@@ -29,6 +27,10 @@ public class User extends AbstractBaseEntity {
 
     public User(String name, String email, String password, LocalDate startPeriodDate) {
         this(name, email, password, true, startPeriodDate, new HashSet<Role>());
+    }
+
+    public User(String name, String email, String password, boolean enabled, LocalDate startPeriodDate) {
+        this(name, email, password, enabled, startPeriodDate, new HashSet<Role>());
     }
 
     public User(String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Set<Role> roles) {
@@ -65,6 +67,7 @@ public class User extends AbstractBaseEntity {
     public User() {
         this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
         this.roles = new HashSet<Role>(Collections.singletonList(Role.USER));
+        this.enabled = true;
     }
 
     public void setRoles(Collection<Role> roles) {
@@ -90,7 +93,15 @@ public class User extends AbstractBaseEntity {
         return roles.contains(Role.ADMIN);
     }
 
-//    @OneToMany
+    public void setEnabled() {
+        this.enabled = true;
+    }
+    public void setDisabled() {
+        this.enabled = false;
+        this.enabled = false;
+    }
+
+    //    @OneToMany
 //    private List<Payment> payments;
 //
 //    private String family;

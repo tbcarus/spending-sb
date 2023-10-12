@@ -45,6 +45,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td class="d-flex justify-content-end p-2">Активный:</td>
+                        <td class="p-2">
+                            <input type="checkbox" name="enbld" th:checked="${user.isEnabled()}">
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="d-flex justify-content-end p-2">Роли:</td>
                         <td class="p-2">
                             <input type="checkbox" name="userCheckB" th:checked="${user.isUser()}">

@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.Role;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
-import ru.tbcarus.spendingsb.util.DateUtil;
 import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
@@ -53,6 +51,7 @@ public class AdminUIController extends AbstractUserController {
                                  @RequestParam("email") String email,
                                  @RequestParam("password") String password,
                                  @RequestParam("start_day") String startDay,
+                                 @RequestParam(value = "enbld", required = false) String enabled,
                                  @RequestParam(value = "userCheckB", required = false) String userCH,
                                  @RequestParam(value = "superUserCheckB", required = false) String superUserCH,
                                  @RequestParam(value = "adminCheckB", required = false) String adminCH) {
@@ -63,6 +62,11 @@ public class AdminUIController extends AbstractUserController {
             log.warn("startDay is not integer and = {}", startDay);
         }
         User user = new User(name, email, password, LocalDate.now().withDayOfMonth(day));
+        if ("on".equals(enabled)) {
+            user.setEnabled();
+        } else {
+            user.setDisabled();
+        }
         if ("on".equals(userCH)) {
             user.addRole(Role.USER);
         }
@@ -81,31 +85,10 @@ public class AdminUIController extends AbstractUserController {
         return "redirect:/admin/users";
     }
 
-//    @PostMapping
-//    public String update(@RequestParam("name") String name,
-//                         @RequestParam("start_day") int startDay,
-//                         @RequestParam("old_pass") String passOld,
-//                         @RequestParam("new_pass") String passNew,
-//                         @RequestParam("new_pass_reply") String passNewReply) {
-//        int id = SecurityUtil.authUserId();
-//        User user = super.get(id);
-//        if (!name.isEmpty()) {
-//            user.setName(name);
-//        }
-//        LocalDate ld = DateUtil.setDay(startDay, user.getStartPeriodDate());
-//        user.setStartPeriodDate(ld);
-//        if(user.getPassword().equals(passOld) && passNew.equals(passNewReply)) {
-//            user.setPassword(passNew);
-//        }
-//        super.update(user, user.id());
-//        int x = 5;
-//        return "redirect:/payments";
-//    }
-
     @GetMapping("/delete")
     public String deleteStr(@RequestParam String id, HttpServletRequest request) {
         super.delete(getId(id));
-        return "users";
+        return "redirect:/admin/users";
     }
 
     private int getId(String id) {
