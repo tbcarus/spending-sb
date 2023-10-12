@@ -25,7 +25,11 @@ public class User extends AbstractBaseEntity {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "role")
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
+
+    public User(String name, String email, String password, LocalDate startPeriodDate) {
+        this(name, email, password, true, startPeriodDate, new HashSet<Role>());
+    }
 
     public User(String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Set<Role> roles) {
         this.name = name;
@@ -59,15 +63,31 @@ public class User extends AbstractBaseEntity {
     }
 
     public User() {
+        this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
+        this.roles = new HashSet<Role>(Collections.singletonList(Role.USER));
     }
 
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
 
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
     // Дата окончания периода учёта трат. Период в программе принят равным 1 месяц с начала периода
     public LocalDate getEndPeriodDate() {
         return startPeriodDate.plusMonths(1).minusDays(1);
+    }
+
+    public boolean isUser() {
+        return roles.contains(Role.USER);
+    }
+    public boolean isSuperUser() {
+        return roles.contains(Role.SUPERUSER);
+    }
+    public boolean isAdmin() {
+        return roles.contains(Role.ADMIN);
     }
 
 //    @OneToMany

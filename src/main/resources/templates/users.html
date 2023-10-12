@@ -14,8 +14,12 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
 <nav th:replace="fragments/fragments :: bodyHeader"></nav>
-<div class="jumbotron pt-4">
+<div class="jumbotron pt-4 p-5 bg-light">
     <div class="container">
+        <h3 class="text-center">Пользователи</h3>
+        <button class="btn btn-primary" th:onclick="|window.location.href = '@{users/create}'|">
+            Добавить
+        </button>
         <table class="table table-striped" id="datatable">
             <thead>
             <tr>

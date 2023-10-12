@@ -1,0 +1,76 @@
+<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
+<!--@thymesVar id="role" type="ru.tbcarus.spendingsb.model.Role"-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Пользователи</title>
+    <div th:replace="fragments/fragments :: headTag"></div>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<nav th:replace="fragments/fragments :: bodyHeader"></nav>
+<div class="jumbotron pt-4 p-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <form method="post" th:action="@{/admin/users}">
+                <input type="hidden" name="id" th:value="${user.id}">
+                <table class="table-primary table-bordered shadow">
+                    <tr>
+                        <td class="d-flex justify-content-end p-2">Имя:</td>
+                        <td class="p-2"><input type="text" name="name" th:value="${user.name}" style="width: 150px"></td>
+                    </tr>
+                    <tr>
+                        <td class="d-flex justify-content-end p-2">E-mail:</td>
+                        <td class="p-2"><input type="text" name="email" th:value="${user.email}" style="width: 150px"></td>
+                    </tr>
+                    <tr>
+                        <td class="d-flex justify-content-end p-2">Пароль:</td>
+                        <td class="p-2"><input type="password" name="password" style="width: 150px"></td>
+                    </tr>
+                    <tr>
+                        <td class="d-flex justify-content-end p-2">Начальный день месяца:</td>
+                        <td class="p-2">
+                            <select name="start_day">
+                                <option th:value="${user.startPeriodDate.dayOfMonth}"
+                                        th:text="${user.startPeriodDate.dayOfMonth}" selected hidden>TEXT
+                                </option>
+                                <option th:each="i : ${#numbers.sequence(1, 28, 1)}" th:value="${i}"
+                                        th:text="${i}"></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="d-flex justify-content-end p-2">Роли:</td>
+                        <td class="p-2">
+                            <input type="checkbox" name="userCheckB" th:checked="${user.isUser()}">
+                            User<br>
+                            <input type="checkbox" name="superUserCheckB" th:checked="${user.isSuperUser()}">
+                            Super user<br>
+                            <input type="checkbox" name="adminCheckB" th:checked="${user.isAdmin()}">
+                            Admin
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="p-2">
+                            <div class="d-flex justify-content-around">
+                                <button type="submit">Сохранить</button>
+                                <input type="button" value=" Отменить " th:onclick="|window.location.href='@{/admin/users}'|">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--    copyright-->
+<br>
+<div th:replace="fragments/fragments :: copy"></div>
+</body>
+</html>
