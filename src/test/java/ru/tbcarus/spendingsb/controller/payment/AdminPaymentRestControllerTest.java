@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,19 +39,15 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
     @Autowired
     PaymentService paymentService;
 
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void get() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + PaymentTestData.PID11))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + PaymentTestData.PID5))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andReturn();
         String stringContent = result.getResponse().getContentAsString();
         Payment actual = objectMapper.readValue(stringContent, Payment.class);
-        Assertions.assertThat(actual).isEqualTo(PaymentTestData.P11);
+        Assertions.assertThat(actual).isEqualTo(PaymentTestData.P5);
     }
 
     @Test
@@ -76,6 +71,7 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
         List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
         Assertions.assertThat(actual).isEqualTo(PaymentTestData.getAllPaymentsSorted());
     }
+
     @Test
     void getAllFilteredByType() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?type=GAS"))
@@ -86,6 +82,7 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
         List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
         Assertions.assertThat(actual).isEqualTo(PaymentTestData.getByType(PaymentType.GAS));
     }
+
     @Test
     void getAllFilteredByUser() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?userId=100002"))
@@ -96,6 +93,7 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
         List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
         Assertions.assertThat(actual).isEqualTo(PaymentTestData.getByUserId(UserTestData.SUPER_USER_ID));
     }
+
     @Test
     void getAllFilteredByDate() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?after=2023-01-30&before=2023-02-11"))
@@ -106,6 +104,7 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
         List<Payment> actual = objectMapper.readValue(contentContent, typeReference);
         Assertions.assertThat(actual).isEqualTo(PaymentTestData.getByDateBetween(LocalDate.parse("2023-01-30"), LocalDate.parse("2023-02-11")));
     }
+
     @Test
     void getAllFiltered() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "/by?type=DINNER&userId=100002&after=2023-01-30&before=2023-02-11"))
@@ -135,8 +134,12 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
                 .andReturn();
         String stringContent = result.getResponse().getContentAsString();
         Payment resultPayment = objectMapper.readValue(stringContent, Payment.class);
-        Payment avtual = paymentService.get(resultPayment.getId(), resultPayment.getUserID());
-        Assertions.assertThat(avtual).isEqualTo(newP);
+        Payment actual = paymentService.get(resultPayment.getId(), resultPayment.getUserID());
+        newP.setId(actual.getId());
+        Assertions.assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFields("user")
+                .isEqualTo(newP);
     }
 
     @Test
@@ -148,7 +151,10 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent())
                 .andReturn();
         Payment actual = paymentService.get(updated.getId(), updated.getUserID());
-        Assertions.assertThat(actual).isEqualTo(updated);
+        Assertions.assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFields("user")
+                .isEqualTo(updated);
     }
 
     @Test

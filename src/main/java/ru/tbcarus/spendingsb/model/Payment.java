@@ -66,7 +66,7 @@ public class Payment extends AbstractBaseEntity implements Comparable<Payment> {
 
     @Override
     public int compareTo(Payment o) {
-        int result = this.date.compareTo(o.getDate());;
+        int result = -1*this.date.compareTo(o.getDate());
         if (result != 0) {
             return result;
         } else {

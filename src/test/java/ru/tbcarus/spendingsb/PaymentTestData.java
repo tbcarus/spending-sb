@@ -88,11 +88,11 @@ public class PaymentTestData {
     }
 
     public static Payment getNew() {
-        return new Payment(null, PaymentType.CLOTH, 5500, "Брюки", LocalDate.parse("2023-04-08"), 100001);
+        return new Payment(null, PaymentType.CLOTH, 5500, "Брюки", LocalDate.parse("2023-04-08"), UserTestData.USER_ID);
     }
 
     public static Payment getUpdated() {
-        Payment updated = new Payment(P9);
+        Payment updated = new Payment(P4);
         updated.setType(PaymentType.ENTERTAINMENT);
         updated.setDescription("Хоккей");
         updated.setPrice(1500);

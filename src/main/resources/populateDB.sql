@@ -1,12 +1,13 @@
-DELETE
-FROM users;
+DELETE FROM users;
+DELETE FROM costs;
+DELETE FROM user_roles;
+ALTER SEQUENCE global_seq RESTART WITH 100000;
+
 INSERT INTO users(id, name, email, password, start_period_date)
 VALUES (100000, 'User', 'l2@og.in', 'password2', '2022-04-03'), --100000
        (100001, 'Admin', 'l@og.in', 'password', '2022-04-10'),  --100001
        (100002, 'SuperUser', 'l1@og.in', 'password3', '2023-04-10'); --100002
 
-DELETE
-FROM costs;
 INSERT INTO costs(type, price, description, date, user_id)
 VALUES ('DINNER', 250, '', '2023-02-01', 100000),         --100003
        ('CAR', 1800, 'Антикор', '2023-01-25', 100000),    --100004
@@ -20,6 +21,7 @@ VALUES ('DINNER', 250, '', '2023-02-01', 100000),         --100003
        ('FOOD', 1564, '', '2023-02-11', 100002),          --100012
        ('DINNER', 320, '', '2023-02-01', 100002),         --100013
        ('TRANSIT', 1500, 'Метро', '2023-02-11', 100002); --100014
+
 INSERT INTO costs(type, price, description, date, user_id, date_of_creation)
 VALUES ('FOOD', 1300, '', '2023-07-13', '100000', '2023-07-13 05:17:06.645789'),
        ('DINNER', 192, '', '2023-07-13', '100000', '2023-07-13 16:28:38.235227'),
@@ -1525,8 +1527,6 @@ VALUES ('FOOD', 1300, '', '2023-07-13', '100000', '2023-07-13 05:17:06.645789'),
        ('CHILDREN', 747, '', '2023-09-19', '100000', '2023-09-19 17:12:15.818732'),
        ('OTHER', 1626, '', '2023-09-19', '100000', '2023-09-19 17:12:40.225876');
 
-DELETE
-FROM user_roles;
 INSERT INTO user_roles(user_id, role)
 VALUES (100000, 'USER'),
        (100001, 'USER'),

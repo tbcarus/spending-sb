@@ -18,6 +18,7 @@ import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -33,7 +34,7 @@ public class PaymentService {
     Sort sort = Sort.by(Sort.Direction.DESC, "date", "userID", "price");
 
     public List<Payment> getPayments(Specification<Payment> specification) {
-        return paymentRepository.getPayments(specification, sort);
+        return sortList(paymentRepository.getPayments(specification, sort));
     }
 
     public Payment get(int id, int userId) {
@@ -45,7 +46,7 @@ public class PaymentService {
     }
 
     public List<Payment> getAll() {
-        return paymentRepository.getAll();
+        return sortList(paymentRepository.getAll());
     }
 
     public Payment create(Payment payment, int userId) {
@@ -106,6 +107,11 @@ public class PaymentService {
                 return criteriaBuilder.between(root.get("date"), tempAfter, tempBefore);
             }
         };
+    }
+
+    private List<Payment> sortList(List<Payment> list) {
+        Collections.sort(list);
+        return list;
     }
 
 //
