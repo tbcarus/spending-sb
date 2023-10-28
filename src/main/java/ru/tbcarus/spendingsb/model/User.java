@@ -2,15 +2,19 @@ package ru.tbcarus.spendingsb.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
 @Table(name = "users")
-public class User extends AbstractBaseEntity {
+public class User extends AbstractBaseEntity implements UserDetails {
     public static final int START_SEQ = 100000;
 
     private String name;
@@ -24,6 +28,10 @@ public class User extends AbstractBaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
+
+    public User(String email, String password, Collection<Role> roles) {
+        this("new_" + email, email, password, true, LocalDate.now().withDayOfMonth(1), new HashSet<>(roles));
+    }
 
     public User(String name, String email, String password, LocalDate startPeriodDate) {
         this(name, email, password, true, startPeriodDate, new HashSet<Role>());
@@ -47,11 +55,11 @@ public class User extends AbstractBaseEntity {
     }
 
     public User(Integer id, String name, String email, String password, Role... roles) {
-        this(id, name, email,password,true, LocalDate.now(), Arrays.asList(roles));
+        this(id, name, email, password, true, LocalDate.now(), Arrays.asList(roles));
     }
 
     public User(Integer id, String name, String email, String password, LocalDate startPeriodDate, Role... roles) {
-        this(id, name, email,password,true, startPeriodDate, Arrays.asList(roles));
+        this(id, name, email, password, true, startPeriodDate, Arrays.asList(roles));
     }
 
     public User(Integer id, String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Collection<Role> roles) {
@@ -86,9 +94,11 @@ public class User extends AbstractBaseEntity {
     public boolean isUser() {
         return roles.contains(Role.USER);
     }
+
     public boolean isSuperUser() {
         return roles.contains(Role.SUPERUSER);
     }
+
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }
@@ -96,10 +106,39 @@ public class User extends AbstractBaseEntity {
     public void setEnabled() {
         this.enabled = true;
     }
+
     public void setDisabled() {
         this.enabled = false;
-        this.enabled = false;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
 
     //    @OneToMany
 //    private List<Payment> payments;
