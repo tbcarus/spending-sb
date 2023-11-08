@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:fragment="loginBodyHeader" class="navbar navbar-dark bg-dark py-0">
+    <div class="container">
+        <div class="navbar-brand"><img th:src="@{/images/icon-logo.png}" width="32"> TITLE</div>
+        <form class="row p-2" id="login_form" th:action="@{/login}" method="post">
+            <div></div>
+            <input class="col-4 me-2" type="text" placeholder="Email" name="username" id="username" style="border-radius:5px">
+            <input class="col-4 me-2" type="password" placeholder="Password" name="password" id = "password" style="border-radius:5px">
+            <button class="btn btn-success col-1" type="submit" id = "btnLogin">
+                <img th:src="@{/images/icon-entrance.gif}" width="32">
+            </button>
+        </form>
+    </div>
+</nav>
+
+</body>
+</html>
