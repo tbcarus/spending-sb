@@ -1,11 +1,13 @@
 package ru.tbcarus.spendingsb.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
@@ -42,7 +44,7 @@ public class ProfileController extends AbstractUserController {
         }
         LocalDate ld = DateUtil.setDay(startDay, user.getStartPeriodDate());
         user.setStartPeriodDate(ld);
-        if(user.getPassword().equals(passOld) && passNew.equals(passNewReply)) {
+        if (user.getPassword().equals(passOld) && passNew.equals(passNewReply)) {
             user.setPassword(passNew);
         }
         super.update(user, user.id());
@@ -65,4 +67,30 @@ public class ProfileController extends AbstractUserController {
         return uri.length == 1 ? "redirect:/payments" : "redirect:/payments" + uri[1];
 
     }
+
+    @GetMapping("/register")
+    public String register(Model model) {
+        model.addAttribute("user", new User());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String saveRegister(@Valid User user, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            return "redirect:register?error";
+        }
+
+        super.create(user);
+        return "redirect:/login?registered&username=" + user.getEmail();
+    }
+
+//    @PostMapping("/register")
+//    public String saveRegister(@RequestParam(value = "name", required = false) String name,
+//                               @RequestParam(value = "email", required = false) String email,
+//                               @RequestParam(value = "pass", required = false) String pass,
+//                               @RequestParam(value = "start_day", required = false) int startDay) {
+//        User user = new User(name, email, pass, LocalDate.now().withDayOfMonth(startDay));
+//        super.create(user);
+//        return "redirect:/login?registered&username=" + user.getEmail();
+//    }
 }

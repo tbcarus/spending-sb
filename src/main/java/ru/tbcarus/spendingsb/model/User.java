@@ -1,6 +1,7 @@
 package ru.tbcarus.spendingsb.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,10 +18,23 @@ import java.util.stream.Collectors;
 public class User extends AbstractBaseEntity implements UserDetails {
     public static final int START_SEQ = 100000;
 
+    @NotBlank(message = "User's name cannot be blank.")
+    @NotEmpty(message = "User's name cannot be empty.")
+    @Size(min = 2, max = 128)
     private String name;
+
+    @Email
+    @NotBlank(message = "User's e-mail cannot be blank.")
+    @Size(max = 128)
     private String email;
+
+    @NotBlank(message = "User's password cannot be blank.")
+    @Size(min = 4, max = 128)
     private String password;
+
     private boolean enabled;
+
+    @NotNull(message = "Start date cannot be blank.")
     private LocalDate startPeriodDate; // Дата начала периода учёта трат
 
     @Enumerated(EnumType.STRING)
