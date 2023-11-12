@@ -27,6 +27,9 @@
         <div th:if="${param.logout}" class="alert alert-success">
             You have been logged out.
         </div>
+        <div th:if="${param.registered}" class="alert alert-success">
+            <span th:text="'Registered ' + ${param.username}"></span>
+        </div>
         <br>
         <p>
             <a class="btn btn-lg btn-secondary" href="payments/profile/register">Регистрация &raquo;</a>

@@ -80,8 +80,8 @@ public class ProfileController extends AbstractUserController {
             return "redirect:register?error";
         }
 
-        super.create(user);
-        return "redirect:/login?registered&username=" + user.getEmail();
+        User created = super.create(user);
+        return "redirect:/login?registered&username=" + user.getName();
     }
 
 //    @PostMapping("/register")
