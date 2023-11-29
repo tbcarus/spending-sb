@@ -20,46 +20,46 @@
             Invalid some fields.
         </div>
         <div class="d-flex justify-content-center">
-            <form method="post" th:action="@{/payments/profile/register}">
-                <table class="table-primary table-bordered shadow">
-                    <tr>
-                        <td class="d-flex justify-content-end p-2">Имя:</td>
-                        <td class="p-2"><input type="text" name="name" th:value="${user.name}" style="width: 150px"></td>
-                    </tr>
-                    <tr>
-                        <td class="d-flex justify-content-end p-2">E-mail:</td>
-                        <td class="p-2"><input type="text" name="email" th:value="${user.email}" style="width: 150px"></td>
-                    </tr>
-                    <tr>
-                        <td class="d-flex justify-content-end p-2">Пароль:</td>
-                        <td class="p-2"><input type="password" name="password" style="width: 150px"></td>
-                    </tr>
-                    <tr>
-                        <td class="d-flex justify-content-end p-2">Начальный день месяца:</td>
-                        <td class="p-2">
-                            <select name="start_day">
-                                <option th:value="${user.startPeriodDate.dayOfMonth}"
-                                        th:text="${user.startPeriodDate.dayOfMonth}" selected hidden>TEXT
-                                </option>
-                                <option th:each="i : ${#numbers.sequence(1, 28, 1)}" th:value="${i}"
-                                        th:text="${i}"></option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="p-2">
-                            <div class="d-flex justify-content-around">
-                                <button type="submit">Сохранить</button>
-                                <input type="button" value=" Отменить " th:onclick="|window.location.href='@{/admin/users}'|">
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+            <!--/*@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"*/-->
+            <form method="post" th:action="@{/payments/profile/register}" th:object="${user}" class="form" id="userForm">
+                <div class="form-group mb-4">
+                    <label for="name">Имя:</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" th:value="*{name}">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="email">E-mail:</label>
+                    <input type="text" class="form-control" id="email" th:field="*{email}" th:value="*{email}">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="password">Пароль:</label>
+                    <input type="password" class="form-control" id="password" th:field="*{password}" th:value="*{password}">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="start_day">Начальный день месяца:</label>
+                    <select id="start_day" class="form-control">
+                        <option th:value="${user.startPeriodDate.dayOfMonth}"
+                                th:text="${user.startPeriodDate.dayOfMonth}" selected hidden>TEXT
+                        </option>
+                        <option th:each="i : ${#numbers.sequence(1, 28, 1)}" th:value="${i}"
+                                th:text="${i}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group justify-content-around form-control">
+                            <button type="submit">Сохранить</button>
+                            <input type="button" value=" Отменить "
+                                   th:onclick="|window.location.href='@{/admin/users}'|">
+                </div>
             </form>
         </div>
     </div>
 </div>
-<input type="text" th:label="kkkkk">
 
 <!--    copyright-->
 <br>

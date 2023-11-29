@@ -18,18 +18,17 @@ import java.util.stream.Collectors;
 public class User extends AbstractBaseEntity implements UserDetails {
     public static final int START_SEQ = 100000;
 
-    @NotBlank(message = "User's name cannot be blank.")
-    @NotEmpty(message = "User's name cannot be empty.")
-    @Size(min = 2, max = 128)
+    @NotBlank(message = "Имя не может быть пустым")
+    @Size(min = 2, max = 128, message = "Длина имени от 2 до 128")
     private String name;
 
-    @Email
-    @NotBlank(message = "User's e-mail cannot be blank.")
-    @Size(max = 128)
+    @Email(message = "Неверный формат почты")
+    @NotBlank(message = "Не может быть пустым")
+    @Size(max = 128, message = "Максимальный размер 128")
     private String email;
 
-    @NotBlank(message = "User's password cannot be blank.")
-    @Size(min = 4, max = 128)
+    @NotBlank(message = "Пароль не может быть пустым")
+    @Size(min = 4, max = 128, message = "Длина от 4 до 128")
     private String password;
 
     private boolean enabled;
