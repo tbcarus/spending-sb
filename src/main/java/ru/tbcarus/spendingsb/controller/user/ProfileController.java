@@ -77,7 +77,7 @@ public class ProfileController extends AbstractUserController {
     @PostMapping("/register")
     public String saveRegister(@Valid User user, BindingResult result, Model model) {
         if(result.hasErrors()) {
-            return "redirect:register?error";
+            return "register";
         }
 
         User created = super.create(user);
