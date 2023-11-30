@@ -21,7 +21,8 @@
         </div>
         <div class="d-flex justify-content-center">
             <!--/*@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"*/-->
-            <form method="post" th:action="@{/payments/profile/register}" th:object="${user}" class="form" id="userForm">
+            <form method="post" th:action="@{/payments/profile/register}" th:object="${user}" class="form"
+                  id="userForm">
                 <div class="form-group mb-4">
                     <label for="name">Имя:</label>
                     <input type="text" class="form-control" id="name" th:field="*{name}" th:value="*{name}">
@@ -31,12 +32,15 @@
                 <div class="form-group mb-4">
                     <label for="email">E-mail:</label>
                     <input type="text" class="form-control" id="email" th:field="*{email}" th:value="*{email}">
-                    <p class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                    <div th:if="${#fields.hasErrors('global')}">
+                        <p class="alert alert-danger" th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
+                    </div>
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="password">Пароль:</label>
-                    <input type="password" class="form-control" id="password" th:field="*{password}" th:value="*{password}">
+                    <input type="password" class="form-control" id="password" th:field="*{password}"
+                           th:value="*{password}">
                     <p class="alert alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
                 </div>
 
@@ -52,9 +56,9 @@
                 </div>
 
                 <div class="form-group justify-content-around form-control">
-                            <button type="submit">Сохранить</button>
-                            <input type="button" value=" Отменить "
-                                   th:onclick="|window.location.href='@{/admin/users}'|">
+                    <button type="submit">Сохранить</button>
+                    <input type="button" value=" Отменить "
+                           th:onclick="|window.location.href='@{/admin/users}'|">
                 </div>
             </form>
         </div>

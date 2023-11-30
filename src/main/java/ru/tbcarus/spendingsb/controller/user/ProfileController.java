@@ -1,6 +1,7 @@
 package ru.tbcarus.spendingsb.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
@@ -80,7 +82,13 @@ public class ProfileController extends AbstractUserController {
             return "register";
         }
 
-        User created = super.create(user);
+        try {
+            User created = super.create(user);
+        } catch (ConstraintViolationException exc) {
+            ObjectError error = new ObjectError("globalError", "Повторяющийся e-mail");
+            result.addError(error);
+            return "register";
+        }
         return "redirect:/login?registered&username=" + user.getName();
     }
 
