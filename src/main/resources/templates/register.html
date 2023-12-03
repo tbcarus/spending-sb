@@ -22,7 +22,7 @@
         <div class="d-flex justify-content-center">
             <!--/*@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"*/-->
             <form method="post" th:action="@{/payments/profile/register}" th:object="${user}" class="form"
-                  id="userForm">
+                  id="userForm" style="width: 300px">
                 <div class="form-group mb-4">
                     <label for="name">Имя:</label>
                     <input type="text" class="form-control" id="name" th:field="*{name}" th:value="*{name}">

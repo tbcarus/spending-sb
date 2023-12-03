@@ -1,16 +1,19 @@
 package ru.tbcarus.spendingsb.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.DateUtil;
@@ -84,21 +87,11 @@ public class ProfileController extends AbstractUserController {
 
         try {
             User created = super.create(user);
-        } catch (ConstraintViolationException exc) {
+        } catch (DataIntegrityViolationException exc) {
             ObjectError error = new ObjectError("globalError", "Повторяющийся e-mail");
             result.addError(error);
             return "register";
         }
         return "redirect:/login?registered&username=" + user.getName();
     }
-
-//    @PostMapping("/register")
-//    public String saveRegister(@RequestParam(value = "name", required = false) String name,
-//                               @RequestParam(value = "email", required = false) String email,
-//                               @RequestParam(value = "pass", required = false) String pass,
-//                               @RequestParam(value = "start_day", required = false) int startDay) {
-//        User user = new User(name, email, pass, LocalDate.now().withDayOfMonth(startDay));
-//        super.create(user);
-//        return "redirect:/login?registered&username=" + user.getEmail();
-//    }
 }
