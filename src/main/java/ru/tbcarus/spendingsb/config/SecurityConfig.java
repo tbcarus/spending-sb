@@ -33,7 +33,7 @@ public class SecurityConfig {
                                 "/users").permitAll()
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
-                        .loginPage("/login")
+                        .loginPage("/login").defaultSuccessUrl("/payments")
                         .permitAll())
 //                .formLogin(form -> form.permitAll())
                 .logout((logout) -> logout.permitAll())
