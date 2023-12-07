@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,14 +25,13 @@ import java.time.LocalDate;
 @Controller
 @RequestMapping(value = "/payments/profile", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class ProfileController extends AbstractUserController {
+public class ProfileUIController extends AbstractUserController {
 
     @Autowired
     UserService userService;
 
     @GetMapping
-    public String get(Model model) {
-        User user = super.get(SecurityUtil.authUserId());
+    public String get(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("user", user);
         return "settings";
     }
@@ -41,9 +41,8 @@ public class ProfileController extends AbstractUserController {
                          @RequestParam("start_day") int startDay,
                          @RequestParam("old_pass") String passOld,
                          @RequestParam("new_pass") String passNew,
-                         @RequestParam("new_pass_reply") String passNewReply) {
-        int id = SecurityUtil.authUserId();
-        User user = super.get(id);
+                         @RequestParam("new_pass_reply") String passNewReply,
+                         @AuthenticationPrincipal User user) {
         if (!name.isEmpty()) {
             user.setName(name);
         }
@@ -61,10 +60,9 @@ public class ProfileController extends AbstractUserController {
     public String changeStartDate(@RequestParam("start_day") int day,
                                   @RequestParam("start_month") int month,
                                   @RequestParam("start_year") int year,
-                                  HttpServletRequest request) {
+                                  HttpServletRequest request,
+                                  @AuthenticationPrincipal User user) {
         log.info("change start date");
-        int id = SecurityUtil.authUserId();
-        User user = super.get(id);
         LocalDate newLD = LocalDate.of(year, month, day);
         user.setStartPeriodDate(newLD);
         super.update(user, user.id());
@@ -81,7 +79,7 @@ public class ProfileController extends AbstractUserController {
 
     @PostMapping("/register")
     public String saveRegister(@Valid User user, BindingResult result, Model model) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return "register";
         }
 

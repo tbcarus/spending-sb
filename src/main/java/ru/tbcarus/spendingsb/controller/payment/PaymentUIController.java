@@ -2,6 +2,7 @@ package ru.tbcarus.spendingsb.controller.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,6 @@ import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.DateUtil;
 import ru.tbcarus.spendingsb.util.PaymentsUtil;
-import ru.tbcarus.spendingsb.util.SecurityUtil;
 import ru.tbcarus.spendingsb.util.UtilsClass;
 
 import java.time.LocalDate;
@@ -23,15 +23,14 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/payments")
-public class PaymentController extends AbstractPaymentController {
+public class PaymentUIController extends AbstractPaymentController {
 
     @Autowired
     UserService userService;
 
     // Записи за выбранный период (месяц от начальной даты)
     @GetMapping("")
-    public String getAll(Model model) {
-        User user = userService.getById(SecurityUtil.authUserId());
+    public String getAll(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
         addStandardAttr(model, user, paymentsMap);
@@ -39,10 +38,8 @@ public class PaymentController extends AbstractPaymentController {
     }
 
     @GetMapping("/byType")
-    public String getByType(Model model, @RequestParam("type") PaymentType type) {
-        User user = userService.getById(SecurityUtil.authUserId());
-        int userId = SecurityUtil.authUserId();
-        List<Payment> list = super.getPaymentsByTypeUserIdBetween(type, userId, user.getStartPeriodDate(), user.getEndPeriodDate());
+    public String getByType(Model model, @RequestParam("type") PaymentType type, @AuthenticationPrincipal User user) {
+        List<Payment> list = super.getPaymentsByTypeUserIdBetween(type, user.getId(), user.getStartPeriodDate(), user.getEndPeriodDate());
         model.addAttribute("user", user);
         model.addAttribute("list", list);
         model.addAttribute("paymentType", type);
@@ -52,8 +49,7 @@ public class PaymentController extends AbstractPaymentController {
 
     // Записи от выбранной даты до текущего момента
     @GetMapping("/toCurrentDate")
-    public String getAllToCurrentDate(Model model) {
-        User user = userService.getById(SecurityUtil.authUserId());
+    public String getAllToCurrentDate(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), DateUtil.getLocalDateTimeNow().toLocalDate()));
         addStandardAttr(model, user, paymentsMap);
@@ -62,8 +58,7 @@ public class PaymentController extends AbstractPaymentController {
 
     // Все записи за всё время
     @GetMapping("/allTime")
-    public String getAllSelectedPeriod(Model model) {
-        User user = userService.getById(SecurityUtil.authUserId());
+    public String getAllSelectedPeriod(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserId(user.id()));
         addStandardAttr(model, user, paymentsMap);
@@ -72,8 +67,7 @@ public class PaymentController extends AbstractPaymentController {
 
     // Записи всех пользователей за всё время
     @GetMapping("/allUsersPayments")
-    public String getAllPayments(Model model) {
-        User user = userService.getById(SecurityUtil.authUserId());
+    public String getAllPayments(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAll());
         addStandardAttr(model, user, paymentsMap);
@@ -81,14 +75,14 @@ public class PaymentController extends AbstractPaymentController {
     }
 
     @GetMapping("/{id}")
-    public String get(Model model, @PathVariable int id) {
+    public String get(Model model, @PathVariable int id, @AuthenticationPrincipal User user) {
         Payment payment = super.get(id);
         model.addAttribute("payment", payment);
         return "edit";
     }
 
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(Model model, @AuthenticationPrincipal User user) {
         Payment payment = new Payment(LocalDate.now());
         model.addAttribute("payment", payment);
         return "edit";
@@ -100,7 +94,8 @@ public class PaymentController extends AbstractPaymentController {
                                  @RequestParam("payment_type") PaymentType type,
                                  @RequestParam("price") int price,
                                  @RequestParam("description") String description,
-                                 @RequestParam("date") LocalDate date) {
+                                 @RequestParam("date") LocalDate date,
+                                 @AuthenticationPrincipal User user) {
         try {
             if (price == 0) {
                 // Если трата нулевая, то это считается ошибкой
@@ -125,7 +120,7 @@ public class PaymentController extends AbstractPaymentController {
     }
 
     @PostMapping("/addSeveral")
-    public String addSeveralPayments(HttpServletRequest request) {
+    public String addSeveralPayments(HttpServletRequest request, @AuthenticationPrincipal User user) {
         LocalDate date = LocalDate.parse(request.getParameter("chosen_date"));
         List<Payment> payments = new ArrayList<>();
         for (PaymentType pt : PaymentType.values()) {
@@ -151,7 +146,7 @@ public class PaymentController extends AbstractPaymentController {
     }
 
     @GetMapping("/delete")
-    public String deleteStr(@RequestParam String id, HttpServletRequest request) {
+    public String deleteStr(@RequestParam String id, HttpServletRequest request, @AuthenticationPrincipal User user) {
         super.delete(getId(id));
         if (request.getHeader("referer").contains("byType")) {
             return "redirect:" + request.getHeader("referer");
