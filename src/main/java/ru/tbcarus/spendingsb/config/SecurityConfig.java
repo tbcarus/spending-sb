@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,6 +29,7 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/test",
                                 "/users").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/login").defaultSuccessUrl("/payments")
@@ -41,18 +40,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-//    @Bean
-//    public WebSecurityCustomizer ignoringCustomizer() {
-//        return (web) -> web.ignoring().requestMatchers("/images/**");
-//    }
-
-//    // IN MEMORY AUTHENTICATION EXAMPLE
-//    @Bean
-//    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-//        List<UserDetails> usersList = new ArrayList<>();
-//        usersList.add(new User("buzz", encoder.encode("password"), Arrays.asList(Role.USER)));
-//        usersList.add(new User("woody", encoder.encode("password"), Arrays.asList(Role.ADMIN)));
-//        return new InMemoryUserDetailsManager(usersList);
-//    }
 }

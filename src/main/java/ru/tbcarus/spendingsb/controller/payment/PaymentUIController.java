@@ -78,6 +78,7 @@ public class PaymentUIController extends AbstractPaymentController {
     public String get(Model model, @PathVariable int id, @AuthenticationPrincipal User user) {
         Payment payment = super.get(id);
         model.addAttribute("payment", payment);
+        model.addAttribute("user", user);
         return "edit";
     }
 
@@ -85,6 +86,7 @@ public class PaymentUIController extends AbstractPaymentController {
     public String create(Model model, @AuthenticationPrincipal User user) {
         Payment payment = new Payment(LocalDate.now());
         model.addAttribute("payment", payment);
+        model.addAttribute("user", user);
         return "edit";
     }
 
