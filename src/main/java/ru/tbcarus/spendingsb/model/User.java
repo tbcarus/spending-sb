@@ -42,6 +42,8 @@ public class User extends AbstractBaseEntity implements UserDetails {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
+    private String friends = "";
+
     public User(String email, String password, Collection<Role> roles) {
         this("new_" + email, email, password, true, LocalDate.now().withDayOfMonth(1), new HashSet<>(roles));
     }
@@ -89,6 +91,36 @@ public class User extends AbstractBaseEntity implements UserDetails {
         this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
         this.roles = new HashSet<Role>(Collections.singletonList(Role.USER));
         this.enabled = true;
+    }
+
+    public List<Integer> getFriendsList() {
+        return Arrays.stream(friends.split(" ")).map(Integer::parseInt).collect(Collectors.toList());
+    }
+
+    public void addFriends(Integer... friendsArray) {
+        addFriendsList(Arrays.asList(friendsArray));
+    }
+
+    public void addFriendsList(List<Integer> friendsList) {
+        StringBuilder sb = new StringBuilder();
+        for (Integer id : friendsList) {
+            sb.append(id);
+            sb.append(" ");
+        }
+        if (!friends.isEmpty()) {
+            this.friends = friends + " " + sb.toString().trim();
+        } else {
+            this.friends = sb.toString().trim();
+        }
+    }
+
+    public void setFriends(List<Integer> friendsList) {
+        StringBuilder sb = new StringBuilder();
+        for (Integer id : friendsList) {
+            sb.append(id);
+            sb.append(" ");
+        }
+        this.friends = sb.toString().trim();
     }
 
     public void setRoles(Collection<Role> roles) {
