@@ -97,20 +97,21 @@ public class User extends AbstractBaseEntity implements UserDetails {
         return Arrays.stream(friends.split(" ")).map(Integer::parseInt).collect(Collectors.toList());
     }
 
+    public void addFriend(Integer friend) {
+        List<Integer> friendsList = getFriendsList();
+        if (friendsList.contains(friend)) {
+            return;
+        }
+        friends = friends.isEmpty() ? friend.toString() : friends + " " + friend;
+    }
+
     public void addFriends(Integer... friendsArray) {
         addFriendsList(Arrays.asList(friendsArray));
     }
 
     public void addFriendsList(List<Integer> friendsList) {
-        StringBuilder sb = new StringBuilder();
-        for (Integer id : friendsList) {
-            sb.append(id);
-            sb.append(" ");
-        }
-        if (!friends.isEmpty()) {
-            this.friends = friends + " " + sb.toString().trim();
-        } else {
-            this.friends = sb.toString().trim();
+        for(Integer friend : friendsList) {
+            addFriend(friend);
         }
     }
 
