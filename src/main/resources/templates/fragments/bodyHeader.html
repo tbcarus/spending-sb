@@ -22,15 +22,36 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/payments}">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true" href="#">Link
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <form id="add_friend" th:action="@{/payments/profile/addfriend}" method="post">
+
+                            <li>
+                                    <input class="col-4 me-2" type="text" placeholder="Email" name="email" id="email"
+                                           style="border-radius:5px; width: 150px">
+                            </li>
+                            <li>
+                                <button class="btn btn-success col-1" type="submit" id="btnAddFriend" style="width: 150px">
+                                    Добавить
+                                </button>
+                            </li>
+                        </form>
+                    </ul>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link disabled">Disabled</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/payments/profile/addfriend}">Добавить</a>
                 </li>
             </ul>
             <div class="me-2">
                 <a class="btn btn-info" th:if="${user.isAdmin()}" th:href="@{/admin/users}">Пользователи</a>
+            </div>
+            <div class="ms-2">
+                <img th:src="@{images/bell.png}" width="32">
             </div>
             <div class="ms-2">
                 <form th:action="@{/logout}" method="post">

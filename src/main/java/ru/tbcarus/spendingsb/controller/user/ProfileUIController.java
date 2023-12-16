@@ -92,4 +92,16 @@ public class ProfileUIController extends AbstractUserController {
         }
         return "redirect:/login?registered&username=" + user.getName();
     }
+
+    @GetMapping("/addfriend")
+    public String addFriend(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", user);
+        return "addfriend";
+    }
+
+    @PostMapping("/addfriend")
+    public String addFriend(Model model, @AuthenticationPrincipal User user, String email) {
+
+        return "redirect:/payments";
+    }
 }
