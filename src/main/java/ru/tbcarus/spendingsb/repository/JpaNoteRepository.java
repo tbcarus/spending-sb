@@ -1,0 +1,19 @@
+package ru.tbcarus.spendingsb.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+import ru.tbcarus.spendingsb.model.Note;
+
+@Transactional
+public interface JpaNoteRepository extends JpaRepository<Note, Integer>, JpaSpecificationExecutor<Note> {
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Note n WHERE n.id=:id AND n.email=:email")
+    int delete(@Param("id") int id, @Param("email") String email);
+
+}
