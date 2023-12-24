@@ -15,8 +15,23 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "users")
-public class User extends AbstractBaseEntity implements UserDetails {
+public class User implements UserDetails, HasId {
     public static final int START_SEQ = 100000;
+
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
+    protected Integer id;
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @NotBlank(message = "Имя не может быть пустым")
     @Size(min = 2, max = 128, message = "Длина имени от 2 до 128")
@@ -78,7 +93,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
     }
 
     public User(Integer id, String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Collection<Role> roles) {
-        super(id);
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
