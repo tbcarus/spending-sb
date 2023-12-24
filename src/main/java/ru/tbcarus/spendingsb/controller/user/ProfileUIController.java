@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.User;
+import ru.tbcarus.spendingsb.service.NoteService;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.DateUtil;
 import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping(value = "/payments/profile", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -29,6 +32,9 @@ public class ProfileUIController extends AbstractUserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    NoteService noteService;
 
     @GetMapping
     public String get(Model model, @AuthenticationPrincipal User user) {
@@ -101,7 +107,12 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping("/addfriend")
     public String addFriend(Model model, @AuthenticationPrincipal User user, String email) {
-
+        Note note = new Note(false, LocalDateTime.now(), "Объединение досок",
+                            "Пользователь " + user.getEmail() + " объединение досок", email, user);
+        noteService.create(note);
+        User userDest = userService.getByEmail(email);
+        userDest.setNewNotify(true);
+        User updated = userService.update(userDest, userDest.getId());
         return "redirect:/payments";
     }
 }

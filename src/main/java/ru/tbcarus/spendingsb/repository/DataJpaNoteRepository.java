@@ -1,13 +1,17 @@
 package ru.tbcarus.spendingsb.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
 import ru.tbcarus.spendingsb.model.Note;
 
 import java.util.List;
 
+@Repository
 public class DataJpaNoteRepository {
 
+    @Autowired
     JpaNoteRepository noteRepository;
 
     public List<Note> getAll(Sort sort) {

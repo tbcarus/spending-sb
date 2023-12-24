@@ -69,6 +69,7 @@ public class UserService implements UserDetailsService {
         if (update.getRoles() != null) {
             user.setRoles(update.getRoles());
         }
+        user.setNewNotify(update.isNewNotify());
 
         return userRepository.save(user);
     }

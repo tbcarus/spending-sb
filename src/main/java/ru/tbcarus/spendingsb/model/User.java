@@ -59,6 +59,8 @@ public class User implements UserDetails, HasId {
 
     private String friends = "";
 
+    private boolean newNotify;
+
     public User(String email, String password, Collection<Role> roles) {
         this("new_" + email, email, password, true, LocalDate.now().withDayOfMonth(1), new HashSet<>(roles));
     }

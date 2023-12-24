@@ -13,7 +13,8 @@ CREATE TABLE users
     PASSWORD          TEXT                              NOT NULL,
     enabled           bool                DEFAULT TRUE  NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
-    friends           TEXT                DEFAULT ''    NOT NULL
+    friends           TEXT                DEFAULT ''    NOT NULL,
+    new_notify        bool               default false not null
 );
 
 CREATE UNIQUE INDEX users_email_uindex ON users (email);
