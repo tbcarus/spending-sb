@@ -22,7 +22,7 @@ public class RootController {
     public String root(Model model) {
         log.info("Get root");
         model.addAttribute("users", userService.getAll());
-        return "index";
+        return "redirect:/payments";
     }
 
     @PostMapping("/users")

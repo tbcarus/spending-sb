@@ -57,7 +57,7 @@ public class User implements UserDetails, HasId {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
-    private String friends = "";
+    private String friends = ""; // строка с email-ами через пробел. 5 друзей МАКС
 
     private boolean newNotify;
 
@@ -114,12 +114,12 @@ public class User implements UserDetails, HasId {
         return Arrays.asList(friends.split(" "));
     }
 
-    public void addFriend(String friend) {
+    public void addFriend(String email) {
         List<String> friendsList = getFriendsList();
-        if (friendsList.contains(friend)) {
+        if (friendsList.contains(email)) {
             return;
         }
-        friends = friends.isEmpty() ? friend.toString() : friends + " " + friend;
+        friends = friends.isEmpty() ? email : friends + " " + email;
     }
 
     public void addFriends(String... friendsArray) {
@@ -132,10 +132,10 @@ public class User implements UserDetails, HasId {
         }
     }
 
-    public void setFriends(List<Integer> friendsList) {
+    public void setFriends(List<String> friendsList) {
         StringBuilder sb = new StringBuilder();
-        for (Integer id : friendsList) {
-            sb.append(id);
+        for (String email : friendsList) {
+            sb.append(email);
             sb.append(" ");
         }
         this.friends = sb.toString().trim();

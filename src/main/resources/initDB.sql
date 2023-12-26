@@ -14,7 +14,7 @@ CREATE TABLE users
     enabled           bool                DEFAULT TRUE  NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
     friends           TEXT                DEFAULT ''    NOT NULL,
-    new_notify        bool               default false not null
+    new_notify        bool                DEFAULT FALSE NOT NULL
 );
 
 CREATE UNIQUE INDEX users_email_uindex ON users (email);
@@ -43,3 +43,22 @@ CREATE TABLE user_roles
     CONSTRAINT user_roles_idx UNIQUE (user_id, role),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+CREATE TABLE note
+(
+    id        INTEGER NOT NULL
+        CONSTRAINT note_pkey
+            PRIMARY KEY,
+    date_time TIMESTAMP(6) DEFAULT now() NOT NULL ,
+    email     VARCHAR(255) NOT NULL,
+    read      BOOLEAN DEFAULT FALSE NOT NULL,
+    text      VARCHAR(255),
+    title     VARCHAR(255),
+    user_id   INTEGER
+        CONSTRAINT note_user_id_fk
+            REFERENCES users
+);
+
+
+
+
