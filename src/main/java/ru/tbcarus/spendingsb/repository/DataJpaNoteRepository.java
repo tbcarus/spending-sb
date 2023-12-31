@@ -14,16 +14,21 @@ public class DataJpaNoteRepository {
     @Autowired
     JpaNoteRepository noteRepository;
 
-    public List<Note> getAll(Sort sort) {
-        return noteRepository.findAll(sort);
+    public List<Note> getAllByEmail(String email) {
+        return noteRepository.findAllByEmailOrderByDateTime(email);
     }
 
     public List<Note> getAllSorted(Specification<Note> spec, Sort sort) {
         return noteRepository.findAll(spec, sort);
     }
 
-    public Note getNote(int id, String email) {
-        return noteRepository.findById(id).filter(note -> note.getEmail().equals(email)).orElse(null);
+    public Note getNote(int id, String email, int userId) { // id записи, email кому адресовано, usrtId кто отправил
+        // поиск уведомления или получателю, или отправителю
+        Note note = noteRepository.findById(id).filter(n -> n.getEmail().equals(email)).orElse(null);
+        if (note == null) {
+            note = noteRepository.findById(id).filter(n -> n.getUser().getId().equals(userId)).orElse(null);
+        }
+        return note;
     }
 
     public Note save(Note note) {

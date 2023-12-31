@@ -31,11 +31,12 @@
                         <form id="add_friend" th:action="@{/payments/profile/addfriend}" method="post">
 
                             <li>
-                                    <input class="col-4 me-2" type="text" placeholder="Email" name="email" id="email"
-                                           style="border-radius:5px; width: 150px">
+                                <input class="col-4 me-2" type="text" placeholder="Email" name="email" id="email"
+                                       style="border-radius:5px; width: 150px">
                             </li>
                             <li>
-                                <button class="btn btn-success col-1" type="submit" id="btnAddFriend" style="width: 150px">
+                                <button class="btn btn-success col-1" type="submit" id="btnAddFriend"
+                                        style="width: 150px">
                                     Отправить
                                 </button>
                             </li>
@@ -48,8 +49,10 @@
                 <a class="btn btn-info" th:if="${user.isAdmin()}" th:href="@{/admin/users}">Пользователи</a>
             </div>
             <div class="ms-2">
-                <img th:if="${user.isNewNotify()}" th:src="@{images/bell-active.png}" width="32">
-                <img th:unless="${user.isNewNotify()}" th:src="@{images/bell.png}" width="32">
+                <a th:href="@{profile/notes}">
+                    <img th:if="${user.isNewNotify()}" th:src="@{images/bell-active.png}" width="32">
+                    <img th:unless="${user.isNewNotify()}" th:src="@{images/bell.png}" width="32">
+                </a>
             </div>
             <div class="ms-2">
                 <form th:action="@{/logout}" method="post">

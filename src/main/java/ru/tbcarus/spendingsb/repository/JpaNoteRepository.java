@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.model.Note;
 
+import java.util.List;
+
 @Transactional
 public interface JpaNoteRepository extends JpaRepository<Note, Integer>, JpaSpecificationExecutor<Note> {
 
@@ -15,5 +17,7 @@ public interface JpaNoteRepository extends JpaRepository<Note, Integer>, JpaSpec
     @Transactional
     @Query("DELETE FROM Note n WHERE n.id=:id AND n.email=:email")
     int delete(@Param("id") int id, @Param("email") String email);
+
+    List<Note> findAllByEmailOrderByDateTime(String email);
 
 }
