@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS costs;
+DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS users;
 DROP SEQUENCE IF EXISTS global_seq;
 
@@ -44,7 +45,7 @@ CREATE TABLE user_roles
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE note
+CREATE TABLE notes
 (
     id        INTEGER NOT NULL
         CONSTRAINT note_pkey

@@ -20,4 +20,7 @@ public interface JpaNoteRepository extends JpaRepository<Note, Integer>, JpaSpec
 
     List<Note> findAllByEmailOrderByDateTime(String email);
 
+    @Query("SELECT n FROM Note n JOIN FETCH n.user u WHERE n.email=:email")
+    List<Note> getAllByEmail(@Param("email") String email);
+
 }
