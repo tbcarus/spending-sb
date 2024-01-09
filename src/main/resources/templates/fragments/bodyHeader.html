@@ -30,17 +30,25 @@
                     <ul class="dropdown-menu">
                         <form id="add_friend" th:action="@{/payments/profile/addfriend}" method="post">
 
-                            <li>
+                            <li class="m-1">
                                 <input class="col-4 me-2" type="text" placeholder="Email" name="email" id="email"
                                        style="border-radius:5px; width: 150px">
                             </li>
-                            <li>
+                            <li class="m-1">
                                 <button class="btn btn-success col-1" type="submit" id="btnAddFriend"
                                         style="width: 150px">
                                     Отправить
                                 </button>
                             </li>
                         </form>
+                        <li class="m-1">
+                            <input class="btn btn-danger" type="button" value=" Invites " style="width: 150px"
+                                   th:onclick="|window.location.href='@{/profile/invites}'|">
+                        </li>
+                        <li class="m-1">
+                            <input class="btn btn-info" type="button" value=" My group " style="width: 150px"
+                                   th:onclick="|window.location.href='@{/profile/group}'|">
+                        </li>
                     </ul>
                 </li>
             </ul>
