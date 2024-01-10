@@ -16,11 +16,13 @@ public interface JpaNoteRepository extends JpaRepository<Note, Integer>, JpaSpec
     @Modifying
     @Transactional
     @Query("DELETE FROM Note n WHERE n.id=:id AND n.email=:email")
-    int delete(@Param("id") int id, @Param("email") String email);
+    int deleteNote(@Param("id") int id, @Param("email") String email);
 
     List<Note> findAllByEmailOrderByDateTime(String email);
 
     @Query("SELECT n FROM Note n JOIN FETCH n.user u WHERE n.email=:email")
     List<Note> getAllByEmail(@Param("email") String email);
+
+    List<Note> getAllByUserId(int userId);
 
 }

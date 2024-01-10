@@ -27,7 +27,11 @@ public class NoteService {
         return noteRepository.getAllByEmail(email);
     }
 
-    public Note getNote (int id, String email, int userId) {
+    public List<Note> getInvites(int userId) {
+        return noteRepository.getAllByUserId(userId);
+    }
+
+    public Note getNote(int id, String email, int userId) {
         // сделать полученное сообщение прочитанным
         Note note = noteRepository.getNote(id, email, userId);
         if (note == null) {
@@ -35,6 +39,14 @@ public class NoteService {
             throw new NotFoundException("Уведомление не найдено");
         }
         return note;
+    }
+
+    public void deleteNote(int noteId, String email) {
+
+    }
+
+    public void deleteOwnInvite(int noteId, int userId) {
+
     }
 
 }

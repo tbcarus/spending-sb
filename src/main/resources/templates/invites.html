@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Уведомления</title>
+    <title>Отправленные приглашения</title>
     <div th:replace="~{fragments/headTag :: headTag}"></div>
 </head>
 <body>
@@ -18,22 +18,16 @@
 <div class="container shadow">
     <table class="table table-striped">
         <thead>
-        <th>Уведомление</th>
+        <th>Кому</th>
+        <th>Прочитано</th>
         <th>Удалить</th>
         </thead>
         <tbody>
         <tr th:each="n : ${notes}">
+            <td th:text="${n.email}"></td>
+            <td th:text="${n.read}"></td>
             <td>
-                <b th:unless="${n.read}">
-                    <a th:href="'notes/' + ${n.id}">
-                        <span th:text="${n.title}"></span>
-                    </a>
-                </b>
-                <br>
-                <span th:text="${n.text.length <= 50 ? n.text : n.text.substring(0, 50)}"></span>
-            </td>
-            <td>
-                <a th:href="'delete?id='+${n.id}">Удалить</a>
+                <a th:href="@{invites/{id}/delete(id=${n.id})}">Удалить</a>
             </td>
         </tr>
         </tbody>

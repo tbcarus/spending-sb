@@ -3,8 +3,6 @@ package ru.tbcarus.spendingsb.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.tbcarus.spendingsb.model.Note;
 
@@ -18,6 +16,10 @@ public class DataJpaNoteRepository {
 
     public List<Note> getAllByEmail(String email) {
         return noteRepository.getAllByEmail(email);
+    }
+
+    public List<Note> getAllByUserId(int userId) {
+        return noteRepository.getAllByUserId(userId);
     }
 
     public List<Note> getAllSorted(Specification<Note> spec, Sort sort) {
@@ -37,8 +39,12 @@ public class DataJpaNoteRepository {
         return noteRepository.save(note);
     }
 
-    public void delete(int id, String email) {
-        noteRepository.delete(id, email);
+    public void deleteNote(int id, String email) {
+        noteRepository.deleteNote(id, email);
+    }
+
+    public void deleteOwnInvite(int id, int userId) {
+
     }
 
 }
