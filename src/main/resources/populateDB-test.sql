@@ -29,4 +29,6 @@ VALUES (100000, 'USER'),
        (100001, 'USER'),
        (100002, 'USER'),
        (100001, 'ADMIN'),
+       (100000, 'SUPERUSER'),
+       (100001, 'SUPERUSER'),
        (100002, 'SUPERUSER')

@@ -106,7 +106,7 @@ public class User implements UserDetails, HasId {
 
     public User() {
         this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
-        this.roles = new HashSet<Role>(Collections.singletonList(Role.USER));
+        this.roles = new HashSet<Role>(Arrays.asList(Role.USER, Role.SUPERUSER));
         this.enabled = true;
     }
 
