@@ -39,12 +39,12 @@ public class DataJpaNoteRepository {
         return noteRepository.save(note);
     }
 
-    public void deleteNote(int id, String email) {
-        noteRepository.deleteNote(id, email);
+    public boolean deleteNote(int id, String email) {
+        return noteRepository.deleteNote(id, email) != 0;
     }
 
-    public void deleteOwnInvite(int id, int userId) {
-
+    public boolean deleteOwnInvite(int id, int userId) {
+        return noteRepository.deleteOwnInvite(id, userId) != 0;
     }
 
 }

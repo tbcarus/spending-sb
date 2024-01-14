@@ -45,13 +45,13 @@ public class NoteUIController extends AbstractNoteController{
 
     @RequestMapping("/notes/{id}/delete")
     public String deleteNote(@PathVariable int id, @AuthenticationPrincipal User user) {
-
+        super.deleteNote(id, user.getEmail());
         return "redirect:/profile/notes";
     }
 
     @RequestMapping("/invites/{id}/delete")
-    public String deleteInvite(@PathVariable int id, @AuthenticationPrincipal User user) {
-
+    public String deleteOwnInvite(@PathVariable int id, @AuthenticationPrincipal User user) {
+        super.deleteOwnInvite(id, user.id());
         return "redirect:/profile/invites";
     }
 

@@ -41,12 +41,16 @@ public class NoteService {
         return note;
     }
 
-    public void deleteNote(int noteId, String email) {
-
+    public void deleteNote(int id, String email) {
+        if (!noteRepository.deleteNote(id, email)) {
+            throw new NotFoundException();
+        }
     }
 
-    public void deleteOwnInvite(int noteId, int userId) {
-
+    public void deleteOwnInvite(int id, int userId) {
+        if (!noteRepository.deleteOwnInvite(id, userId)) {
+            throw new NotFoundException();
+        }
     }
 
 }

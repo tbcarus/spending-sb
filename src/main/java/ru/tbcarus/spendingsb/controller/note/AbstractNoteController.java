@@ -28,4 +28,14 @@ public class AbstractNoteController {
         log.info("get note {} for {} or from {}", id, email, user.getId());
         return noteService.getNote(id, email, user.getId());
     }
+
+    public void deleteNote(int id, String email) {
+        log.info("delete note {} for user {}", id, email);
+        noteService.deleteNote(id, email);
+    }
+
+    public void deleteOwnInvite(int id, int userId) {
+        log.info("delete own invite {} by user {}", id, userId);
+        noteService.deleteOwnInvite(id, userId);
+    }
 }

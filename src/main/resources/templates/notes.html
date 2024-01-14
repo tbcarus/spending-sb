@@ -33,7 +33,7 @@
                 <span th:text="${n.text.length <= 50 ? n.text : n.text.substring(0, 50)}"></span>
             </td>
             <td>
-                <a th:href="'delete?id='+${n.id}">Удалить</a>
+                <a th:href="@{notes/{id}/delete(id=${n.id})}">Удалить</a>
             </td>
         </tr>
         </tbody>

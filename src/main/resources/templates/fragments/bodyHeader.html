@@ -58,8 +58,8 @@
             </div>
             <div class="ms-2">
                 <a th:href="@{profile/notes}">
-                    <img th:if="${user.isNewNotify()}" th:src="@{images/bell-active.png}" width="32">
-                    <img th:unless="${user.isNewNotify()}" th:src="@{images/bell.png}" width="32">
+                    <img th:if="${user.isNewNotify()}" th:src="@{/images/bell-active.png}" width="32">
+                    <img th:unless="${user.isNewNotify()}" th:src="@{/images/bell.png}" width="32">
                 </a>
             </div>
             <div class="ms-2">
