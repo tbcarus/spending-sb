@@ -111,7 +111,7 @@ public class User implements UserDetails, HasId {
     }
 
     public List<String> getFriendsList() {
-        return Arrays.asList(friends.split(" "));
+        return friends.isEmpty() ? new ArrayList<>() : Arrays.asList(friends.split(" "));
     }
 
     public void addFriend(String email) {
@@ -132,7 +132,7 @@ public class User implements UserDetails, HasId {
         }
     }
 
-    public void setFriends(List<String> friendsList) {
+    public void setFriendsList(List<String> friendsList) {
         StringBuilder sb = new StringBuilder();
         for (String email : friendsList) {
             sb.append(email);
@@ -147,6 +147,10 @@ public class User implements UserDetails, HasId {
 
     public void addRole(Role role) {
         this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        roles.remove(role);
     }
 
     // Дата окончания периода учёта трат. Период в программе принят равным 1 месяц с начала периода

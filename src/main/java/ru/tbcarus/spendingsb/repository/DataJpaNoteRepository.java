@@ -35,6 +35,10 @@ public class DataJpaNoteRepository {
         return note;
     }
 
+    public Note getNoteWithUser(int noteId, String email) {
+        return noteRepository.getNoteWithUser(noteId, email);
+    }
+
     public Note save(Note note) {
         return noteRepository.save(note);
     }

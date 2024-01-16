@@ -56,9 +56,15 @@ public class NoteUIController extends AbstractNoteController{
     }
 
     @RequestMapping("/notes/{id}/accept")
-    public String intiteAccept(@PathVariable int id, @AuthenticationPrincipal User user, Model model) {
+    public String inviteAccept(@PathVariable int id, @AuthenticationPrincipal User user, Model model) {
+        super.inviteAccept(id, user);
+        return "redirect:/profile/friends";
+    }
 
-        return "friendsList";
+    @RequestMapping("/friends")
+    public String getFriends(@AuthenticationPrincipal User user, Model model) {
+
+        return "friends";
     }
 
 }

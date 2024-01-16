@@ -20,6 +20,9 @@ public interface JpaNoteRepository extends JpaRepository<Note, Integer>, JpaSpec
 
     List<Note> getAllByUserId(int userId);
 
+    @Query("SELECT n FROM Note n JOIN FETCH n.user u WHERE n.id=:noteId AND n.email=:email")
+    Note getNoteWithUser(@Param("noteId") int noteId, @Param("email") String email);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Note n WHERE n.id=:id AND n.email=:email")

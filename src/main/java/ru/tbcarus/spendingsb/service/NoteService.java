@@ -6,7 +6,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.Note;
+import ru.tbcarus.spendingsb.model.Role;
+import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.DataJpaNoteRepository;
+import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
 import java.util.List;
 
@@ -17,6 +20,9 @@ public class NoteService {
 
     @Autowired
     DataJpaNoteRepository noteRepository;
+
+    @Autowired
+    JpaUserRepository userRepository;
 
     public Note create(Note note) {
         return noteRepository.save(note);
@@ -41,6 +47,10 @@ public class NoteService {
         return note;
     }
 
+    public Note getNoteWithUser(int noteId, String email) {
+        return noteRepository.getNoteWithUser(noteId, email);
+    }
+
     public void deleteNote(int id, String email) {
         if (!noteRepository.deleteNote(id, email)) {
             throw new NotFoundException();
@@ -51,6 +61,27 @@ public class NoteService {
         if (!noteRepository.deleteOwnInvite(id, userId)) {
             throw new NotFoundException();
         }
+    }
+
+    public void inviteAccept(int noteId, User recipient) {
+        Note note = getNoteWithUser(noteId, recipient.getEmail());
+        User sender = note.getUser();
+
+        recipient.setFriends(sender.getFriends()); // скопировать список друзей пользователю от приглашающего + сам приглашающий
+        recipient.addFriend(sender.getEmail());
+        recipient.removeRole(Role.SUPERUSER); // убрать суперюзера
+        userRepository.save(recipient); // сохранить пользователя
+
+        for (String email : sender.getFriendsList()) {
+            // пройтись по списку друзей приглашающего и всем добавить нового пользователя
+            User user = userRepository.getByEmail(email);
+            user.addFriend(recipient.getEmail());
+            userRepository.save(user);
+        }
+        sender.addFriend(recipient.getEmail());
+        userRepository.save(sender);
+
+        noteRepository.deleteNote(noteId, recipient.getEmail()); // удалить уведомление
     }
 
 }

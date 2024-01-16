@@ -107,6 +107,7 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping("/addfriend")
     public String addFriend(Model model, @AuthenticationPrincipal User user, String email) {
+        //перенести всё это в сервис и первоначально сделать проверку, что пользователь уже не в группе
         Note note = new Note(false, LocalDateTime.now(), "Объединение досок",
                             "Пользователь " + user.getEmail() + " объединение досок", email, user);
         noteService.create(note);

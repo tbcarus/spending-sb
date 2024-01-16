@@ -38,4 +38,9 @@ public class AbstractNoteController {
         log.info("delete own invite {} by user {}", id, userId);
         noteService.deleteOwnInvite(id, userId);
     }
+
+    public void inviteAccept(int noteId, User user) {
+        log.info("accept invite {} by user {}", noteId, user.getEmail());
+        noteService.inviteAccept(noteId, user);
+    }
 }
