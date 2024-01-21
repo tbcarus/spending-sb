@@ -52,6 +52,11 @@
                     </ul>
                 </li>
             </ul>
+            <div class="me-2">
+                <span class="text-success" th:if="${user.isUser()}" th:text="U"></span>
+                <span class="text-success" th:if="${user.isSuperUser()}" th:text="SU"></span>
+                <span class="text-success" th:if="${user.isAdmin()}" th:text="A"></span>
+            </div>
 
             <div class="me-2">
                 <a class="btn btn-info" th:if="${user.isAdmin()}" th:href="@{/admin/users}">Пользователи</a>
