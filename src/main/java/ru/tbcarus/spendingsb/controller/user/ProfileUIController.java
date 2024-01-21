@@ -24,6 +24,7 @@ import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/payments/profile", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -115,5 +116,13 @@ public class ProfileUIController extends AbstractUserController {
         userDest.setNewNotify(true);
         User updated = userService.update(userDest, userDest.getId());
         return "redirect:/payments";
+    }
+
+    @RequestMapping("/group")
+    public String getFriends(@AuthenticationPrincipal User user, Model model) {
+        List<User> friends = super.getFriends(user);
+        model.addAttribute("user", user);
+        model.addAttribute("friends", friends);
+        return "group";
     }
 }

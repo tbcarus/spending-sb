@@ -43,4 +43,9 @@ public abstract class AbstractUserController {
     public void delete(int id) {
         userService.delete(id);
     }
+
+    protected List<User> getFriends(User user) {
+        log.info("get friends list by user {}", user.getId());
+        return userService.getFriends(user.getFriendsList());
+    }
 }

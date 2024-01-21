@@ -1,7 +1,12 @@
 package ru.tbcarus.spendingsb.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +15,7 @@ import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,5 +95,32 @@ public class UserService implements UserDetailsService {
             return user.get();
         }
         throw new UsernameNotFoundException("User ‘" + username + "’ not found");
+    }
+
+    public List<User> getFriends(List<String> friendsList) {
+        if (friendsList.isEmpty()) {
+            return new ArrayList<User>();
+        }
+        Specification<User> sp= filterByEmail(friendsList.get(0));
+        friendsList.remove(0);
+        int x = 5;
+        for (String email : friendsList) {
+            sp = sp.or(filterByEmail(email));
+        }
+        List<User> list = userRepository.findAll(sp);
+        x = 6;
+        return list;
+    }
+
+    public Specification<User> filterByEmail(String email) {
+        return new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                if (email == null) {
+                    return null;
+                }
+                return criteriaBuilder.equal(root.get("email"), email);
+            }
+        };
     }
 }

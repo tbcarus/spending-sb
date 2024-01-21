@@ -111,7 +111,7 @@ public class User implements UserDetails, HasId {
     }
 
     public List<String> getFriendsList() {
-        return friends.isEmpty() ? new ArrayList<>() : Arrays.asList(friends.split(" "));
+        return friends.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(friends.split(" ")));
     }
 
     public void addFriend(String email) {
