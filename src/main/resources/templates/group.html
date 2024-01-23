@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Моя группа</title>
+    <div th:replace="~{fragments/headTag :: headTag}"></div>
+</head>
+<body>
+<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
+<!--@thymesVar id="u" type="ru.tbcarus.spendingsb.model.User"-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
+<div class="jumbotron pt-4 p-5 bg-light">
+    <div class="container">
+        <h3 class="text-center">Пользователи</h3>
+        <button class="btn btn-primary" th:onclick="|window.location.href = '@{users/create}'|">
+            Добавить
+        </button>
+        <table class="table table-striped" id="datatable">
+            <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Почта</th>
+                <th>Главный</th>
+                <th th:if="${user.isSuperUser()}">Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${friends}">
+                <td th:text="${u.name}"></td>
+                <td th:text="${u.email}"></td>
+                <td th:text="${u.isSuperUser()}"></td>
+                <td th:if="${user.isSuperUser()}"><a th:href="@{group/{id}/delete(id=${u.id()})}">Удалить</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--    copyright-->
+<br>
+<div th:replace="~{fragments/footer :: copy}"></div>
+</body>
+</html>

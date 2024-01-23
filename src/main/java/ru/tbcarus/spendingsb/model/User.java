@@ -141,6 +141,14 @@ public class User implements UserDetails, HasId {
         this.friends = sb.toString().trim();
     }
 
+    public void removeAllFriends() {
+        friends = "";
+    }
+
+    public void removeFriend(String email) {
+        friends = friends.replace(email, "").replaceAll("\\s+", " ");
+    }
+
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }

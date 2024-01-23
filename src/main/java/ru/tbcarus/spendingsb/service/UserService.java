@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
+import ru.tbcarus.spendingsb.model.Role;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
@@ -110,6 +111,27 @@ public class UserService implements UserDetailsService {
         List<User> list = userRepository.findAll(sp);
         x = 6;
         return list;
+    }
+
+    public void deleteUserFromGroup(User user, int id) {
+        User userExcluded = getById(id);
+
+        // Проверить, что пользователь в этой группе
+        if (!user.getFriendsList().contains(userExcluded.getEmail())) {
+            throw new NotFoundException("user " + userExcluded.getEmail() + " is not friend for " + user.getEmail());
+        }
+
+        // Удалить пользователя у всех в группе
+        for(String email : userExcluded.getFriendsList()) {
+            User u = getByEmail(email);
+            u.removeFriend(userExcluded.getEmail());
+            userRepository.save(u);
+        }
+
+        // Очистить список друзей у пользователя, восстановить суперюзера
+        userExcluded.removeAllFriends();
+        userExcluded.addRole(Role.SUPERUSER);
+        userRepository.save(userExcluded);
     }
 
     public Specification<User> filterByEmail(String email) {

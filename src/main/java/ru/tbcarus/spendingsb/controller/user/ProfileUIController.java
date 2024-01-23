@@ -11,10 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.NoteService;
@@ -124,5 +121,24 @@ public class ProfileUIController extends AbstractUserController {
         model.addAttribute("user", user);
         model.addAttribute("friends", friends);
         return "group";
+    }
+
+    @RequestMapping("/group/{id}/delete")
+    // Удалить пользователя из группы. Может только суперпользователь
+    public String deleteUserFromGroup(@AuthenticationPrincipal User user, @PathVariable int id, Model model) {
+        super.deleteUserFromGroup(user, id);
+        return "redirect:/payments/profile/group";
+    }
+
+    @RequestMapping("/group/delete")
+    // Удалиться из группы
+    public String deleteFromGroup(@AuthenticationPrincipal User user, Model model) {
+        // Удалить себя из списков юзеров группы
+        // Если удаляется суперюзер, то суперюзер даётся первому в списке
+        // Очистить у себя список группы
+        // Восстановить суперюзера
+
+
+        return "redirect:/payments/profile/group";
     }
 }

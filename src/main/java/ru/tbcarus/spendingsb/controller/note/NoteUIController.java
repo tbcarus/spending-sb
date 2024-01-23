@@ -58,7 +58,7 @@ public class NoteUIController extends AbstractNoteController{
     @RequestMapping("/notes/{id}/accept")
     public String inviteAccept(@PathVariable int id, @AuthenticationPrincipal User user, Model model) {
         super.inviteAccept(id, user);
-        return "redirect:/profile/group";
+        return "redirect:/payments/profile/group";
     }
 
 
