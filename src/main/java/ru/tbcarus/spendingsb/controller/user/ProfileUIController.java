@@ -131,14 +131,9 @@ public class ProfileUIController extends AbstractUserController {
     }
 
     @RequestMapping("/group/delete")
-    // Удалиться из группы
-    public String deleteFromGroup(@AuthenticationPrincipal User user, Model model) {
-        // Удалить себя из списков юзеров группы
-        // Если удаляется суперюзер, то суперюзер даётся первому в списке
-        // Очистить у себя список группы
-        // Восстановить суперюзера
-
-
+    // Удалиться из группы самому
+    public String deleteFromGroupSelf(@AuthenticationPrincipal User user, Model model) {
+        super.deleteFromGroupSelf(user);
         return "redirect:/payments/profile/group";
     }
 }

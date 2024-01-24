@@ -49,6 +49,11 @@ public abstract class AbstractUserController {
         userService.deleteUserFromGroup(user, id);
     }
 
+    public void deleteFromGroupSelf(User user) {
+        log.info("user {} deleting from the group by self", user.getId());
+        userService.deleteGroupGroupSelf(user);
+    }
+
     protected List<User> getFriends(User user) {
         log.info("get friends list by user {}", user.getId());
         return userService.getFriends(user.getFriendsList());

@@ -134,6 +134,24 @@ public class UserService implements UserDetailsService {
         userRepository.save(userExcluded);
     }
 
+    public void deleteGroupGroupSelf(User user) {
+        boolean isFirst = true;
+        // Удалить себя из списков юзеров группы
+        for (String email : user.getFriendsList()) {
+            User u = getByEmail(email);
+            if (user.isSuperUser() && isFirst) { // Если удаляется суперюзер, то суперюзер даётся первому в списке
+                u.addRole(Role.SUPERUSER);
+                isFirst = false;
+            }
+            u.removeFriend(user.getEmail());
+            userRepository.save(u);
+        }
+
+        user.removeAllFriends();        // Очистить у себя список группы
+        user.addRole(Role.SUPERUSER);   // Восстановить суперюзера
+        userRepository.save(user);
+    }
+
     public Specification<User> filterByEmail(String email) {
         return new Specification<User>() {
             @Override

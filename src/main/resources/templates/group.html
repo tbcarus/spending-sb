@@ -16,16 +16,16 @@
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
 <div class="jumbotron pt-4 p-5 bg-light">
     <div class="container">
-        <h3 class="text-center">Пользователи</h3>
-        <button class="btn btn-primary" th:onclick="|window.location.href = '@{users/create}'|">
-            Добавить
+        <h3 class="text-center">Моя группа</h3>
+        <button class="btn btn-primary" th:onclick="|window.location.href = '@{/payments/profile/group/delete}'|">
+            Удалиться из группы
         </button>
         <table class="table table-striped" id="datatable">
             <thead>
             <tr>
                 <th>Имя</th>
                 <th>Почта</th>
-                <th>Главный</th>
+                <th>Role</th>
                 <th th:if="${user.isSuperUser()}">Удалить</th>
             </tr>
             </thead>
@@ -33,7 +33,9 @@
             <tr th:each="u : ${friends}">
                 <td th:text="${u.name}"></td>
                 <td th:text="${u.email}"></td>
-                <td th:text="${u.isSuperUser()}"></td>
+                <td>
+                    <span th:if="${u.isSuperUser()}">Super User</span>
+                </td>
                 <td th:if="${user.isSuperUser()}"><a th:href="@{group/{id}/delete(id=${u.id()})}">Удалить</a></td>
             </tr>
             </tbody>

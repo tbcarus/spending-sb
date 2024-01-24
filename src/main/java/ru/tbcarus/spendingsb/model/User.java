@@ -120,6 +120,7 @@ public class User implements UserDetails, HasId {
             return;
         }
         friends = friends.isEmpty() ? email : friends + " " + email;
+        int x = 5;
     }
 
     public void addFriends(String... friendsArray) {
@@ -127,7 +128,7 @@ public class User implements UserDetails, HasId {
     }
 
     public void addFriendsList(List<String> friendsList) {
-        for(String friend : friendsList) {
+        for (String friend : friendsList) {
             addFriend(friend);
         }
     }
@@ -146,7 +147,7 @@ public class User implements UserDetails, HasId {
     }
 
     public void removeFriend(String email) {
-        friends = friends.replace(email, "").replaceAll("\\s+", " ");
+        friends = friends.replace(email, "").replaceAll("\\s+", " ").trim();
     }
 
     public void setRoles(Collection<Role> roles) {
@@ -154,11 +155,15 @@ public class User implements UserDetails, HasId {
     }
 
     public void addRole(Role role) {
-        this.roles.add(role);
+        if (!roles.contains(role)) {
+            this.roles.add(role);
+        }
     }
 
     public void removeRole(Role role) {
-        roles.remove(role);
+        if (roles.contains(role)) {
+            roles.remove(role);
+        }
     }
 
     // Дата окончания периода учёта трат. Период в программе принят равным 1 месяц с начала периода
