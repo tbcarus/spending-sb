@@ -15,6 +15,7 @@ CREATE TABLE users
     enabled           bool                DEFAULT TRUE  NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
     friends           TEXT                DEFAULT ''    NOT NULL,
+    friends_id         TEXT                DEFAULT ''    NOT NULL,
     new_notify        bool                DEFAULT FALSE NOT NULL
 );
 
@@ -47,12 +48,12 @@ CREATE TABLE user_roles
 
 CREATE TABLE notes
 (
-    id        INTEGER NOT NULL
+    id        INTEGER                    NOT NULL
         CONSTRAINT note_pkey
             PRIMARY KEY,
-    date_time TIMESTAMP(6) DEFAULT now() NOT NULL ,
-    email     VARCHAR(255) NOT NULL,
-    read      BOOLEAN DEFAULT FALSE NOT NULL,
+    date_time TIMESTAMP(6) DEFAULT NOW() NOT NULL,
+    email     VARCHAR(255)               NOT NULL,
+    read      BOOLEAN      DEFAULT FALSE NOT NULL,
     text      VARCHAR(255),
     title     VARCHAR(255),
     user_id   INTEGER

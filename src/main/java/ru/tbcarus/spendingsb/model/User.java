@@ -59,6 +59,8 @@ public class User implements UserDetails, HasId {
 
     private String friends = ""; // строка с email-ами через пробел. 5 друзей МАКС
 
+    private String friendsId = ""; // строка с id через пробел. Костыль, так как в тратах id пользователя. Может, потом стоит убрать список email-ов
+
     private boolean newNotify;
 
     public User(String email, String password, Collection<Role> roles) {
@@ -114,23 +116,46 @@ public class User implements UserDetails, HasId {
         return friends.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(friends.split(" ")));
     }
 
+    public List<Integer> getFriendsIdList() {
+        return friendsId.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.stream(friendsId.split(" "))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList()));
+    }
+
     public void addFriend(String email) {
         List<String> friendsList = getFriendsList();
         if (friendsList.contains(email)) {
             return;
         }
         friends = friends.isEmpty() ? email : friends + " " + email;
-        int x = 5;
     }
 
-    public void addFriends(String... friendsArray) {
-        addFriendsList(Arrays.asList(friendsArray));
+    public void addFriendId(int id) {
+        List<Integer> friendsList = getFriendsIdList();
+        if (friendsList.contains(id)) {
+            return;
+        }
+        friendsId = friendsId.isEmpty() ? String.valueOf(id) : friendsId + " " + id;
     }
 
     public void addFriendsList(List<String> friendsList) {
         for (String friend : friendsList) {
             addFriend(friend);
         }
+    }
+
+    public void addFriendsIdList(List<Integer> friendsIdList) {
+        for (int friendId : friendsIdList) {
+            addFriendId(friendId);
+        }
+    }
+
+    public void addFriends(String... friendsArray) {
+        addFriendsList(Arrays.asList(friendsArray));
+    }
+
+    public void addFriendsId(Integer... friendsIdArray) {
+        addFriendsIdList(Arrays.asList(friendsIdArray));
     }
 
     public void setFriendsList(List<String> friendsList) {
@@ -142,12 +167,30 @@ public class User implements UserDetails, HasId {
         this.friends = sb.toString().trim();
     }
 
+    public void setFriendsIdList(List<Integer> friendsIdList) {
+        StringBuilder sb = new StringBuilder();
+        for (int id : friendsIdList) {
+            sb.append(id);
+            sb.append(" ");
+        }
+        this.friendsId = sb.toString().trim();
+    }
+
     public void removeAllFriends() {
         friends = "";
     }
 
+    public void removeAllFriendsId() {
+        friendsId = "";
+    }
+
     public void removeFriend(String email) {
         friends = friends.replace(email, "").replaceAll("\\s+", " ").trim();
+    }
+
+    public void removeFriendId(int id) {
+        String idStr = String.valueOf(id);
+        friendsId = friendsId.replace(idStr, "").replaceAll("\\s+", " ").trim();
     }
 
     public void setRoles(Collection<Role> roles) {
