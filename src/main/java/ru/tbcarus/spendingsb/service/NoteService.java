@@ -68,7 +68,9 @@ public class NoteService {
         User sender = note.getUser();
 
         recipient.setFriends(sender.getFriends()); // скопировать список друзей пользователю от приглашающего + сам приглашающий
+        recipient.setFriendsId(sender.getFriendsId());
         recipient.addFriend(sender.getEmail());
+        recipient.addFriendId(sender.getId());
         recipient.removeRole(Role.SUPERUSER); // убрать суперюзера
         userRepository.save(recipient); // сохранить пользователя
 
@@ -76,9 +78,11 @@ public class NoteService {
             // пройтись по списку друзей приглашающего и всем добавить нового пользователя
             User user = userRepository.getByEmail(email);
             user.addFriend(recipient.getEmail());
+            user.addFriendId(recipient.getId());
             userRepository.save(user);
         }
         sender.addFriend(recipient.getEmail());
+        sender.addFriendId(recipient.getId());
         userRepository.save(sender);
 
         noteRepository.deleteNote(noteId, recipient.getEmail()); // удалить уведомление

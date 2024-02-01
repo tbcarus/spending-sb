@@ -28,7 +28,7 @@
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true" href="#">Добавить
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <form id="add_friend" th:action="@{/payments/profile/addfriend}" method="post">
+                        <form th:if="${user.isSuperUser()}" id="add_friend" th:action="@{/payments/profile/addfriend}" method="post">
 
                             <li class="m-1">
                                 <input class="col-4 me-2" type="text" placeholder="Email" name="email" id="email"

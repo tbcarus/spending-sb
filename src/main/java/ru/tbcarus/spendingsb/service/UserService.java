@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.Role;
 import ru.tbcarus.spendingsb.model.User;
@@ -125,11 +126,13 @@ public class UserService implements UserDetailsService {
         for(String email : userExcluded.getFriendsList()) {
             User u = getByEmail(email);
             u.removeFriend(userExcluded.getEmail());
+            u.removeFriendId(userExcluded.getId());
             userRepository.save(u);
         }
 
         // Очистить список друзей у пользователя, восстановить суперюзера
         userExcluded.removeAllFriends();
+        userExcluded.removeAllFriendsId();
         userExcluded.addRole(Role.SUPERUSER);
         userRepository.save(userExcluded);
     }
@@ -144,10 +147,12 @@ public class UserService implements UserDetailsService {
                 isFirst = false;
             }
             u.removeFriend(user.getEmail());
+            u.removeFriendId(user.getId());
             userRepository.save(u);
         }
 
         user.removeAllFriends();        // Очистить у себя список группы
+        user.removeAllFriendsId();
         user.addRole(Role.SUPERUSER);   // Восстановить суперюзера
         userRepository.save(user);
     }
@@ -162,5 +167,23 @@ public class UserService implements UserDetailsService {
                 return criteriaBuilder.equal(root.get("email"), email);
             }
         };
+    }
+
+    public void addSU(User user, int id) {
+        if(!user.isSuperUser()) {
+            throw new IllegalRequestDataException("User is not superuser!");
+        }
+        User u = getById(id);
+        u.addRole(Role.SUPERUSER);
+        userRepository.save(u);
+    }
+
+    public void removeSU(User user, int id) {
+        if(!user.isSuperUser()) {
+            throw new IllegalRequestDataException("User is not superuser!");
+        }
+        User u = getById(id);
+        u.removeRole(Role.SUPERUSER);
+        userRepository.save(u);
     }
 }

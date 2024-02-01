@@ -26,6 +26,7 @@
                 <th>Имя</th>
                 <th>Почта</th>
                 <th>Role</th>
+                <th th:if="${user.isSuperUser()}">Права</th>
                 <th th:if="${user.isSuperUser()}">Удалить</th>
             </tr>
             </thead>
@@ -35,6 +36,10 @@
                 <td th:text="${u.email}"></td>
                 <td>
                     <span th:if="${u.isSuperUser()}">Super User</span>
+                </td>
+                <td th:if="${user.isSuperUser()}">
+                    <a th:unless="${u.isSuperUser()}" th:href="@{group/{id}/addSU(id=${u.id()})}">Сделать SU</a>
+                    <a th:if="${u.isSuperUser()}" th:href="@{group/{id}/removeSU(id=${u.id()})}">Убрать SU</a>
                 </td>
                 <td th:if="${user.isSuperUser()}"><a th:href="@{group/{id}/delete(id=${u.id()})}">Удалить</a></td>
             </tr>

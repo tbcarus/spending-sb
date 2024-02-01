@@ -58,4 +58,14 @@ public abstract class AbstractUserController {
         log.info("get friends list by user {}", user.getId());
         return userService.getFriends(user.getFriendsList());
     }
+
+    protected void addSU(User user, int id) {
+        log.info("superuser {} add SU role for user {}", user.getId(), id);
+        userService.addSU(user, id);
+    }
+
+    protected void removeSU(User user, int id) {
+        log.info("superuser {} remove SU role for user {}", user.getId(), id);
+        userService.removeSU(user, id);
+    }
 }
