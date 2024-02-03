@@ -105,13 +105,10 @@ public class UserService implements UserDetailsService {
         }
         Specification<User> sp= filterByEmail(friendsList.get(0));
         friendsList.remove(0);
-        int x = 5;
         for (String email : friendsList) {
             sp = sp.or(filterByEmail(email));
         }
-        List<User> list = userRepository.findAll(sp);
-        x = 6;
-        return list;
+        return userRepository.findAll(sp);
     }
 
     public void deleteUserFromGroup(User user, int id) {
@@ -170,8 +167,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void addSU(User user, int id) {
-        if(!user.isSuperUser()) {
-            throw new IllegalRequestDataException("User is not superuser!");
+        if(!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
+            throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
         }
         User u = getById(id);
         u.addRole(Role.SUPERUSER);
@@ -179,8 +176,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void removeSU(User user, int id) {
-        if(!user.isSuperUser()) {
-            throw new IllegalRequestDataException("User is not superuser!");
+        if(!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
+            throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
         }
         User u = getById(id);
         u.removeRole(Role.SUPERUSER);

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
+import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.PaymentService;
 import ru.tbcarus.spendingsb.util.SecurityUtil;
 import ru.tbcarus.spendingsb.util.ValidationUtil;
@@ -17,10 +18,10 @@ public abstract class AbstractPaymentController {
     @Autowired
     protected PaymentService paymentService;
 
-    public Payment get(int id) {
-        log.info("get payment {}", id);
+    public Payment get(User user, int payId) {
+        log.info("get payment {}", payId);
         int userId = SecurityUtil.authUserId();
-        return paymentService.get(id, userId);
+        return paymentService.get(user, payId);
     }
 
     public List<Payment> getAll() {
@@ -28,25 +29,23 @@ public abstract class AbstractPaymentController {
         return paymentService.getAll();
     };
 
-    public List<Payment> getAllByUserId(int userId) {
-        log.info("get all by user {}", userId);
-        Specification<Payment> specification = Specification.where(paymentService.filterByUserId(userId));
-        return paymentService.getPayments(specification);
+    public List<Payment> getAllByUserId(User user) {
+        log.info("get all by user {}", user.getId());
+        Specification<Payment> specification = Specification.where(paymentService.filterByUserId(user.getId()));
+        return paymentService.getPayments(user, LocalDate.of(2000, 1, 1), LocalDate.now());
     }
 
-    public List<Payment> getAllByUserIdAndDateBetween(int userId, LocalDate after, LocalDate before) {
+    public List<Payment> getAllByUserIdAndDateBetween(User user, int userId, LocalDate after, LocalDate before) {
         log.info("get all by user {} and date {}-{}", userId, after, before);
-        Specification<Payment> specification = Specification.where(paymentService.filterByUserId(userId)
-        .and(paymentService.filterByDate(after, before)));
-        return paymentService.getPayments(specification);
+        return paymentService.getPayments(user, after, before);
     }
 
-    public List<Payment> getPaymentsByTypeUserIdBetween(PaymentType type, Integer userId, LocalDate after, LocalDate before) {
+    public List<Payment> getPaymentsByTypeUserIdBetween(User user, PaymentType type, Integer userId, LocalDate after, LocalDate before) {
         log.info("get filtered payments by type {}, userID {} and between {} - {}", type, userId, after, before);
         Specification<Payment> specification = Specification.where(paymentService.filterByType(type)
                 .and(paymentService.filterByUserId(userId))
                 .and(paymentService.filterByDate(after, before)));
-        return paymentService.getPayments(specification);
+        return paymentService.getPayments(user, after, before);
     }
 
     public Payment create(Payment p) {

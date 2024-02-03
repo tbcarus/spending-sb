@@ -33,12 +33,27 @@ public class PaymentService {
 
     Sort sort = Sort.by(Sort.Direction.DESC, "date", "userID", "price");
 
-    public List<Payment> getPayments(Specification<Payment> specification) {
-        return sortList(paymentRepository.getPayments(specification, sort));
+    public List<Payment> getPayments(User user, LocalDate after, LocalDate before) {
+        Specification<Payment> sp = filterByUserId(user.getId());
+        if (!user.getFriendsIdList().isEmpty()) {
+            for (int friendId :user.getFriendsIdList()) {
+                sp = sp.or(filterByUserId(friendId));
+            }
+        }
+        sp = sp.and(filterByDate(after, before));
+
+        return sortList(paymentRepository.getPayments(sp, sort));
     }
 
-    public Payment get(int id, int userId) {
-        Payment payment = paymentRepository.get(id, userId);
+    public Payment get(User user, int payId) {
+        Specification<Payment> sp = filterByUserId(user.getId());
+        if (!user.getFriendsIdList().isEmpty()) {
+            for (int friendId :user.getFriendsIdList()) {
+                sp = sp.or(filterByUserId(friendId));
+            }
+        }
+        sp = sp.and(filterById(payId));
+        Payment payment = paymentRepository.get(sp);
         if (payment == null) {
             throw new NotFoundException();
         }
@@ -94,6 +109,18 @@ public class PaymentService {
                     return null;
                 }
                 return criteriaBuilder.equal(root.get("userID"), userId);
+            }
+        };
+    }
+
+    public Specification<Payment> filterById(Integer id) {
+        return new Specification<Payment>() {
+            @Override
+            public Predicate toPredicate(Root<Payment> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                if (id == null) {
+                    return null;
+                }
+                return criteriaBuilder.equal(root.get("id"), id);
             }
         };
     }

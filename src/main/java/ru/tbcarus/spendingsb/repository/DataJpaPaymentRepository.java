@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.tbcarus.spendingsb.model.Payment;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class DataJpaPaymentRepository {
@@ -27,12 +28,16 @@ public class DataJpaPaymentRepository {
         return paymentRepository.getAll();
     }
 
-    public Payment get(int id, int userId) {
-        return paymentRepository.findById(id).filter(payment -> payment.getUserID() == userId).orElse(null);
+    public Payment get(Specification<Payment> specification) {
+//        return paymentRepository.findById(id).filter(payment -> payment.getUserID() == userId).orElse(null);
+//        Optional<Payment> p = paymentRepository.findById(id);
+
+        return paymentRepository.findOne(specification).orElse(null);
     }
 
     public Payment save(Payment p, int userId) {
-        if (!p.isNew() && get(p.getId(), p.getUserID()) == null) {
+//        if (!p.isNew() && get(p.getId(), p.getUserID()) == null) {
+        if (!p.isNew()) {
             return null;
         }
         return paymentRepository.save(p);

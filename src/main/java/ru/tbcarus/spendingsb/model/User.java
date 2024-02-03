@@ -228,6 +228,14 @@ public class User implements UserDetails, HasId {
 
     public boolean isInGroup() { return !friendsId.isEmpty(); }
 
+    public boolean hasFriend(String email) {
+        return getFriendsList().contains(email);
+    }
+
+    public boolean hasFriendId(int id) {
+        return getFriendsIdList().contains(id);
+    }
+
     public void setEnabled() {
         this.enabled = true;
     }

@@ -134,7 +134,7 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
                 .andReturn();
         String stringContent = result.getResponse().getContentAsString();
         Payment resultPayment = objectMapper.readValue(stringContent, Payment.class);
-        Payment actual = paymentService.get(resultPayment.getId(), resultPayment.getUserID());
+        Payment actual = paymentService.get(UserTestData.user, resultPayment.getId());
         newP.setId(actual.getId());
         Assertions.assertThat(actual)
                 .usingRecursiveComparison()
@@ -150,7 +150,7 @@ class AdminPaymentRestControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(updated)))
                 .andExpect(status().isNoContent())
                 .andReturn();
-        Payment actual = paymentService.get(updated.getId(), updated.getUserID());
+        Payment actual = paymentService.get(UserTestData.user, updated.getId());
         Assertions.assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("user")

@@ -32,14 +32,14 @@ public class PaymentUIController extends AbstractPaymentController {
     @GetMapping("")
     public String getAll(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
-                super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
+                super.getAllByUserIdAndDateBetween(user, user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
     @GetMapping("/byType")
     public String getByType(Model model, @RequestParam("type") PaymentType type, @AuthenticationPrincipal User user) {
-        List<Payment> list = super.getPaymentsByTypeUserIdBetween(type, user.getId(), user.getStartPeriodDate(), user.getEndPeriodDate());
+        List<Payment> list = super.getPaymentsByTypeUserIdBetween(user, type, user.getId(), user.getStartPeriodDate(), user.getEndPeriodDate());
         model.addAttribute("user", user);
         model.addAttribute("list", list);
         model.addAttribute("paymentType", type);
@@ -51,7 +51,7 @@ public class PaymentUIController extends AbstractPaymentController {
     @GetMapping("/toCurrentDate")
     public String getAllToCurrentDate(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
-                super.getAllByUserIdAndDateBetween(user.id(), user.getStartPeriodDate(), DateUtil.getLocalDateTimeNow().toLocalDate()));
+                super.getAllByUserIdAndDateBetween(user, user.id(), user.getStartPeriodDate(), DateUtil.getLocalDateTimeNow().toLocalDate()));
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
@@ -60,7 +60,7 @@ public class PaymentUIController extends AbstractPaymentController {
     @GetMapping("/allTime")
     public String getAllSelectedPeriod(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
-                super.getAllByUserId(user.id()));
+                super.getAllByUserId(user));
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
@@ -76,7 +76,7 @@ public class PaymentUIController extends AbstractPaymentController {
 
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable int id, @AuthenticationPrincipal User user) {
-        Payment payment = super.get(id);
+        Payment payment = super.get(user, id);
         model.addAttribute("payment", payment);
         model.addAttribute("user", user);
         return "edit";

@@ -2,9 +2,11 @@ package ru.tbcarus.spendingsb.controller.payment;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
+import ru.tbcarus.spendingsb.model.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,8 +17,8 @@ public class AdminPaymentRestController extends AbstractPaymentController {
     static final String REST_URL = "/rest/admin/payments";
 
     @GetMapping("/{id}")
-    public Payment get(@PathVariable int id) {
-        return super.get(id);
+    public Payment get(@AuthenticationPrincipal User user, @PathVariable int id) {
+        return super.get(user, id);
     }
 
     @GetMapping
@@ -25,11 +27,13 @@ public class AdminPaymentRestController extends AbstractPaymentController {
     }
 
     @GetMapping("/by")
-    public List<Payment> getPaymentsByTypeUserIdBetween(@RequestParam(required = false) PaymentType type,
-                                                        @RequestParam(required = false) Integer userId,
-                                                        @RequestParam(required = false) LocalDate after,
-                                                        @RequestParam(required = false) LocalDate before) {
-        return super.getPaymentsByTypeUserIdBetween(type, userId, after, before);
+    public List<Payment> getPaymentsByTypeUserIdBetween(
+            @AuthenticationPrincipal User user,
+            @RequestParam(required = false) PaymentType type,
+            @RequestParam(required = false) Integer userId,
+            @RequestParam(required = false) LocalDate after,
+            @RequestParam(required = false) LocalDate before) {
+        return super.getPaymentsByTypeUserIdBetween(user, type, userId, after, before);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
