@@ -13,6 +13,7 @@
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
 <!--@thymesVar id="payment" type="ru.tbcarus.spendingsb.model.Payment"-->
 <!--@thymesVar id="paymentType" type="ru.tbcarus.spendingsb.model.PaymentType"-->
+<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
 <div class="position-absolute top-50 start-50 translate-middle">
     <form th:method="POST" action="../payments">
         <input type="hidden" name="id" th:value="${payment.id}">
@@ -22,6 +23,11 @@
                     <input th:if="${payment.id}" type="button" value="Удалить запись"
                            th:onclick="|window.location.href = 'delete?id=${payment.id}'|"
                            th:method="delete">
+                </td>
+            </tr>
+            <tr th:if="${user.isInGroup()}">
+                <td colspan="2" class="text-center" th:text="${user.getName()} + ' (' + ${user.getEmail()} + ')'">
+                    Пользователь
                 </td>
             </tr>
             <tr>

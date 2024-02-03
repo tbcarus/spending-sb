@@ -226,6 +226,8 @@ public class User implements UserDetails, HasId {
         return roles.contains(Role.ADMIN);
     }
 
+    public boolean isInGroup() { return !friendsId.isEmpty(); }
+
     public void setEnabled() {
         this.enabled = true;
     }
