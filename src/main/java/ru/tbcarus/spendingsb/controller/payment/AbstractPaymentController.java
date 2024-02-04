@@ -42,10 +42,7 @@ public abstract class AbstractPaymentController {
 
     public List<Payment> getPaymentsByTypeUserIdBetween(User user, PaymentType type, Integer userId, LocalDate after, LocalDate before) {
         log.info("get filtered payments by type {}, userID {} and between {} - {}", type, userId, after, before);
-        Specification<Payment> specification = Specification.where(paymentService.filterByType(type)
-                .and(paymentService.filterByUserId(userId))
-                .and(paymentService.filterByDate(after, before)));
-        return paymentService.getPayments(user, after, before);
+        return paymentService.getPaymentsByType(user, type, after, before);
     }
 
     public Payment create(Payment p) {

@@ -34,24 +34,22 @@ public class PaymentService {
     Sort sort = Sort.by(Sort.Direction.DESC, "date", "userID", "price");
 
     public List<Payment> getPayments(User user, LocalDate after, LocalDate before) {
-        Specification<Payment> sp = filterByUserId(user.getId());
-        if (!user.getFriendsIdList().isEmpty()) {
-            for (int friendId :user.getFriendsIdList()) {
-                sp = sp.or(filterByUserId(friendId));
-            }
-        }
+        Specification<Payment> sp = filterByGroup(user);
+        sp = sp.and(filterByDate(after, before));
+
+        return sortList(paymentRepository.getPayments(sp, sort));
+    }
+
+    public List<Payment> getPaymentsByType(User user, PaymentType type, LocalDate after, LocalDate before) {
+        Specification<Payment> sp = filterByGroup(user);
+        sp = sp.and(filterByType(type));
         sp = sp.and(filterByDate(after, before));
 
         return sortList(paymentRepository.getPayments(sp, sort));
     }
 
     public Payment get(User user, int payId) {
-        Specification<Payment> sp = filterByUserId(user.getId());
-        if (!user.getFriendsIdList().isEmpty()) {
-            for (int friendId :user.getFriendsIdList()) {
-                sp = sp.or(filterByUserId(friendId));
-            }
-        }
+        Specification<Payment> sp = filterByGroup(user);
         sp = sp.and(filterById(payId));
         Payment payment = paymentRepository.get(sp);
         if (payment == null) {
@@ -111,6 +109,16 @@ public class PaymentService {
                 return criteriaBuilder.equal(root.get("userID"), userId);
             }
         };
+    }
+
+    public Specification<Payment> filterByGroup(User user) {
+        Specification<Payment> sp = filterByUserId(user.getId());
+        if (user.isInGroup()) {
+            for (int friendId : user.getFriendsIdList()) {
+                sp = sp.or(filterByUserId(friendId));
+            }
+        }
+        return sp;
     }
 
     public Specification<Payment> filterById(Integer id) {

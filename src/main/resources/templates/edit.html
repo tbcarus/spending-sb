@@ -26,7 +26,7 @@
                 </td>
             </tr>
             <tr th:if="${user.isInGroup()}">
-                <td colspan="2" class="text-center" th:text="${user.getName()} + ' (' + ${user.getEmail()} + ')'">
+                <td colspan="2" class="text-center" th:text="${payment.user.getName()} + ' (' + ${payment.user.getEmail()} + ')'">
                     Пользователь
                 </td>
             </tr>
