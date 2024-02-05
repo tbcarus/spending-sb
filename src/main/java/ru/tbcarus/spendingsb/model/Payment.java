@@ -63,6 +63,12 @@ public class Payment extends AbstractBaseEntity implements Comparable<Payment> {
         this.userID = userID;
     }
 
+    public void paymentUpdate(Payment p) {
+        this.type = p.getType();
+        this.price = p.getPrice();
+        this.description = p.getDescription();
+        this.date = p.getDate();
+    }
 
     @Override
     public int compareTo(Payment o) {

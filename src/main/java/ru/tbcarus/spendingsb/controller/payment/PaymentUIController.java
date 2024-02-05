@@ -114,9 +114,8 @@ public class PaymentUIController extends AbstractPaymentController {
         if (id.isEmpty()) {
             super.create(payment);
         } else {
-            int paymentId = Integer.parseInt(id);
-            payment.setId(paymentId);
-            super.update(payment, paymentId);
+            payment.setId(Integer.parseInt(id));
+            super.update(user, payment);
         }
         return "redirect:/payments";
     }

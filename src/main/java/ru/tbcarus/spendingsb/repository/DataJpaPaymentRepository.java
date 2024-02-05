@@ -37,9 +37,9 @@ public class DataJpaPaymentRepository {
 
     public Payment save(Payment p, int userId) {
 //        if (!p.isNew() && get(p.getId(), p.getUserID()) == null) {
-        if (!p.isNew()) {
-            return null;
-        }
+//        if (!p.isNew()) {
+//            return null;
+//        }
         return paymentRepository.save(p);
     }
 

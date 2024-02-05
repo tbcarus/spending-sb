@@ -75,10 +75,16 @@ public class PaymentService {
         return paymentRepository.saveAll(list, userId);
     }
 
-    public Payment update(Payment payment, int userId) {
-        payment.setUserID(userId);
-        payment.setUser(userService.getById(SecurityUtil.authUserId()));
-        return paymentRepository.save(payment, userId);
+    public Payment update(User user, Payment payment) {
+        Payment p = get(user, payment.getId());
+        if (p != null) {
+            p.paymentUpdate(payment);
+        } else {
+            throw new NotFoundException("Payment not found");
+        }
+//        payment.setUserID(user.getId());
+//        payment.setUser(user);
+        return paymentRepository.save(p, user.getId());
     }
 
     public void delete(int id, int userId) {

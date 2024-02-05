@@ -26,7 +26,7 @@
                 </td>
             </tr>
             <tr th:if="${user.isInGroup()}">
-                <td colspan="2" class="text-center" th:text="${payment.user.getName()} + ' (' + ${payment.user.getEmail()} + ')'">
+                <td th:unless="${payment.isNew()}" colspan="2" class="text-center" th:text="${payment.user.getName()} + ' (' + ${payment.user.getEmail()} + ')'">
                     Пользователь
                 </td>
             </tr>
@@ -34,6 +34,7 @@
                 <td class="d-flex justify-content-end">Тип:</td>
                 <td>
                     <select name="payment_type">
+                        <option th:unless="${payment.isNew()}" th:value="${payment.type}" th:text="${payment.type.title}">DEFAULT</option>
                         <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
                                 th:value="${paymentType}" th:text="${paymentType.title}">Type
                         </option>

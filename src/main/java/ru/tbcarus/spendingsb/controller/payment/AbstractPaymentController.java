@@ -57,10 +57,9 @@ public abstract class AbstractPaymentController {
         return paymentService.createAll(list, userId);
     }
 
-    public Payment update(Payment p, int id) {
-        int userId = SecurityUtil.authUserId();
-        log.info("update payment {} by user {}", p, userId);
-        return paymentService.update(p, userId);
+    public Payment update(User user, Payment p) {
+        log.info("update payment {} by user {}", p, user.getId());
+        return paymentService.update(user, p);
     }
 
     public void delete(int id) {
