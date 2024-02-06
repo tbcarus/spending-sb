@@ -87,8 +87,10 @@ public class PaymentService {
         return paymentRepository.save(p, user.getId());
     }
 
-    public void delete(int id, int userId) {
-        if (!paymentRepository.delete(id, userId)) {
+    public void delete(User user, int id) {
+        Specification<Payment> sp = filterByGroup(user);
+        sp = sp.and(filterById(id));
+        if (!paymentRepository.delete(sp)) {
             throw new NotFoundException();
         }
     }

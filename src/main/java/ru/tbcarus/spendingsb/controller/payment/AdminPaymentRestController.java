@@ -50,8 +50,8 @@ public class AdminPaymentRestController extends AbstractPaymentController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        super.delete(id);
+    public void delete(@AuthenticationPrincipal User user, @PathVariable int id) {
+        super.delete(user, id);
     }
 
 }

@@ -2,7 +2,9 @@ package ru.tbcarus.spendingsb.repository;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.model.Payment;
 
 import java.util.List;
@@ -47,7 +49,10 @@ public class DataJpaPaymentRepository {
         return paymentRepository.saveAll(list);
     }
 
-    public boolean delete(int id, int userId) {
-        return paymentRepository.delete(id, userId) != 0;
+    @Modifying
+    @Transactional
+    public boolean delete(Specification<Payment> sp) {
+        return paymentRepository.delete(sp) != 0;
+//        return paymentRepository.delete(id, userId) != 0;
     }
 }

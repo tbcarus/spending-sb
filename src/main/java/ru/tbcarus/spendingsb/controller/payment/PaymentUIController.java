@@ -148,7 +148,7 @@ public class PaymentUIController extends AbstractPaymentController {
 
     @GetMapping("/delete")
     public String deleteStr(@RequestParam String id, HttpServletRequest request, @AuthenticationPrincipal User user) {
-        super.delete(getId(id));
+        super.delete(user, getId(id));
         if (request.getHeader("referer").contains("byType")) {
             return "redirect:" + request.getHeader("referer");
         }
