@@ -72,6 +72,7 @@ public class NoteService {
         recipient.addFriend(sender.getEmail());
         recipient.addFriendId(sender.getId());
         recipient.removeRole(Role.SUPERUSER); // убрать суперюзера
+        recipient.setStartPeriodDate(sender.getStartPeriodDate()); // синхронизация начальной даты
         userRepository.save(recipient); // сохранить пользователя
 
         for (String email : sender.getFriendsList()) {

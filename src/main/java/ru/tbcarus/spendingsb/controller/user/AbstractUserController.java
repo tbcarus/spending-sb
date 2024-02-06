@@ -6,6 +6,7 @@ import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.ValidationUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -38,6 +39,11 @@ public abstract class AbstractUserController {
         log.info("update user {}", user);
         ValidationUtil.assureIdConsistent(user, id);
         return userService.update(user, id);
+    }
+
+    public void changeStartDate(User user, LocalDate startDate) {
+        log.info("change start date");
+        userService.changeStartDate(user, startDate);
     }
 
     public void delete(int id) {

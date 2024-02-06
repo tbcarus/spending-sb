@@ -11,12 +11,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.Role;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +82,19 @@ public class UserService implements UserDetailsService {
         user.setNewNotify(update.isNewNotify());
 
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public void changeStartDate(User user, LocalDate startDate) {
+        user.setStartPeriodDate(startDate);
+        userRepository.save(user);
+        if (!user.getFriendsIdList().isEmpty()) {
+            for (int id : user.getFriendsIdList()) {
+                User u = getById(id);
+                u.setStartPeriodDate(startDate);
+                userRepository.save(user);
+            }
+        }
     }
 
     public void delete(int id) {

@@ -66,13 +66,10 @@ public class ProfileUIController extends AbstractUserController {
                                   @RequestParam("start_year") int year,
                                   HttpServletRequest request,
                                   @AuthenticationPrincipal User user) {
-        log.info("change start date");
         LocalDate newLD = LocalDate.of(year, month, day);
-        user.setStartPeriodDate(newLD);
-        super.update(user, user.id());
+        super.changeStartDate(user, newLD);
         String[] uri = request.getHeader("referer").split("payments"); // Для перехода на страницу запроса при изменении начально даты
         return uri.length == 1 ? "redirect:/payments" : "redirect:/payments" + uri[1];
-
     }
 
     @GetMapping("/register")
