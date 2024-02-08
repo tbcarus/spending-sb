@@ -21,6 +21,7 @@ import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.Role;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
+import ru.tbcarus.spendingsb.util.UserUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -182,7 +183,7 @@ public class UserService implements UserDetailsService {
         if(user.getFriendsList().contains(email)) {
             throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
         }
-        if(user.getFriendsList().size() >= 5) {
+        if(user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
             throw new IncorrectAddition(ErrorType.TOO_MUCH);
         }
 

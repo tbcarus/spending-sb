@@ -109,13 +109,13 @@ public class ProfileUIController extends AbstractUserController {
             switch (exc.getErrorType()) {
                 case ALREADY_IN_GROUP:
                     model.addAttribute("err", ErrorType.ALREADY_IN_GROUP);
-                    return "redirect:/payments/profile/error?type=ALREADY_IN_GROUP";
+                    return "redirect:/payments/profile/error?type=" + ErrorType.ALREADY_IN_GROUP.name();
                 case HAS_GROUP:
                     model.addAttribute("err", ErrorType.HAS_GROUP);
-                    return "redirect:/payments/profile/error?type=HAS_GROUP";
+                    return "redirect:/payments/profile/error?type=" + ErrorType.HAS_GROUP.name();
                 case TOO_MUCH:
                     model.addAttribute("err", ErrorType.TOO_MUCH);
-                    return "redirect:/payments/profile/error?type=TOO_MUCH";
+                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH.name();
             }
         }
         return "redirect:/payments";
