@@ -42,11 +42,16 @@
             <button type="submit" class="btn btn-lg btn-primary" onclick="login('l2@og.in', 'password2')">
                 Зайти как User
             </button>
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('tbcarus@yandex.ru', 'pass')">
+                Зайти как new User
+            </button>
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('q1@gmail.com', 'qwerty')">
+                Зайти как q1
+            </button>
         </p>
     </div>
 </div>
 <!--    copyright-->
-<br>
 <div th:replace="~{fragments/footer :: copy}"></div>
 <script type="text/javascript">
     function login(username, password) {

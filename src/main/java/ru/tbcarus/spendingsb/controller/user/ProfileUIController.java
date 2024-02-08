@@ -12,15 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import ru.tbcarus.spendingsb.model.Note;
+import ru.tbcarus.spendingsb.exception.IncorrectAddition;
+import ru.tbcarus.spendingsb.model.ErrorType;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.NoteService;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.DateUtil;
-import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -96,20 +95,37 @@ public class ProfileUIController extends AbstractUserController {
 
     @GetMapping("/addfriend")
     public String addFriend(Model model, @AuthenticationPrincipal User user) {
+        // Что это за метод?
         model.addAttribute("user", user);
         return "addfriend";
     }
 
     @PostMapping("/addfriend")
-    public String addFriend(Model model, @AuthenticationPrincipal User user, String email) {
-        //перенести всё это в сервис и первоначально сделать проверку, что пользователь уже не в группе
-        Note note = new Note(false, LocalDateTime.now(), "Объединение досок",
-                            "Пользователь " + user.getEmail() + " объединение досок", email, user);
-        noteService.create(note);
-        User userDest = userService.getByEmail(email);
-        userDest.setNewNotify(true);
-        User updated = userService.update(userDest, userDest.getId());
+    public String sendFriendInvite(Model model, @AuthenticationPrincipal User user, String email) {
+        model.addAttribute("user", user);
+        try {
+            super.sendFriendInvite(user, email);
+        } catch (IncorrectAddition exc) {
+            switch (exc.getErrorType()) {
+                case ALREADY_IN_GROUP:
+                    model.addAttribute("err", ErrorType.ALREADY_IN_GROUP);
+                    return "redirect:/payments/profile/error?type=ALREADY_IN_GROUP";
+                case HAS_GROUP:
+                    model.addAttribute("err", ErrorType.HAS_GROUP);
+                    return "redirect:/payments/profile/error?type=HAS_GROUP";
+                case TOO_MUCH:
+                    model.addAttribute("err", ErrorType.TOO_MUCH);
+                    return "redirect:/payments/profile/error?type=TOO_MUCH";
+            }
+        }
         return "redirect:/payments";
+    }
+
+    @RequestMapping("/error")
+    public String IncorrectAddition(@AuthenticationPrincipal User user, Model model, @RequestParam String type) {
+        model.addAttribute("err", ErrorType.valueOf(type));
+        model.addAttribute("user", user);
+        return "error";
     }
 
     @RequestMapping("/group")

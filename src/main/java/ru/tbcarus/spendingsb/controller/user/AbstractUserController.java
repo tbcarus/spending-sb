@@ -2,11 +2,14 @@ package ru.tbcarus.spendingsb.controller.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.User;
+import ru.tbcarus.spendingsb.service.NoteService;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.ValidationUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -14,6 +17,9 @@ public abstract class AbstractUserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NoteService noteService;
 
     public List<User> getALL() {
         log.info("get all users");
@@ -58,6 +64,10 @@ public abstract class AbstractUserController {
     public void deleteFromGroupSelf(User user) {
         log.info("user {} deleting from the group by self", user.getId());
         userService.deleteGroupGroupSelf(user);
+    }
+
+    protected void sendFriendInvite(User user, String email) {
+        userService.sendFriendInvite(user, email);
     }
 
     protected List<User> getFriends(User user) {

@@ -1,0 +1,28 @@
+<!--@thymesVar id="n" type="ru.tbcarus.spendingsb.model.Note"-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Уведомления</title>
+    <div th:replace="~{fragments/headTag :: headTag}"></div>
+</head>
+<body>
+<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
+<!--@thymesVar id="err" type="ru.tbcarus.spendingsb.model.ErrorType"-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
+
+<div class="container shadow">
+    <div class="p-2">
+        <div class="alert alert-warning m-0" th:text="${err.title}">QWERTY</div>
+    </div>
+</div>
+<!--    copyright-->
+<div th:replace="~{fragments/footer :: copy}"></div>
+</body>
+</html>

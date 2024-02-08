@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,12 +14,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
+import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
+import ru.tbcarus.spendingsb.model.ErrorType;
+import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.Role;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +33,9 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
     public final JpaUserRepository userRepository;
+
+    @Autowired
+    private NoteService noteService;
 
     public UserService(JpaUserRepository userRepository) {
         this.userRepository = userRepository;
@@ -167,6 +175,27 @@ public class UserService implements UserDetailsService {
         user.removeAllFriendsId();
         user.addRole(Role.SUPERUSER);   // Восстановить суперюзера
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void sendFriendInvite(User user, String email) {
+        if(user.getFriendsList().contains(email)) {
+            throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
+        }
+        if(user.getFriendsList().size() >= 5) {
+            throw new IncorrectAddition(ErrorType.TOO_MUCH);
+        }
+
+        User userDest = getByEmail(email);
+        if (userDest.isInGroup()) {
+            throw new IncorrectAddition(ErrorType.HAS_GROUP);
+        }
+
+        Note note = new Note(false, LocalDateTime.now(), "Объединение досок",
+                "Пользователь " + user.getEmail() + " объединение досок", email, user);
+        noteService.create(note);
+        userDest.setNewNotify(true);
+        update(userDest, userDest.getId());
     }
 
     public Specification<User> filterByEmail(String email) {
