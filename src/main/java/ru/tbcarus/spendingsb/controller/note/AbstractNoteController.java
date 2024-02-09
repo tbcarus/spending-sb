@@ -21,7 +21,7 @@ public class AbstractNoteController {
 
     public List<Note> getInvites(User user) {
         log.info("get all invites from user {}", user.getId());
-        return noteService.getInvites(user.id());
+        return noteService.getInvitesBySenderId(user.id());
     }
 
     public Note getNote(int id, String email, User user) {

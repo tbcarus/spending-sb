@@ -184,7 +184,10 @@ public class UserService implements UserDetailsService {
             throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
         }
         if(user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
-            throw new IncorrectAddition(ErrorType.TOO_MUCH);
+            throw new IncorrectAddition(ErrorType.TOO_MUCH_FRIENDS);
+        }
+        if(user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
+            throw new IncorrectAddition(ErrorType.TOO_MUCH_INVITES);
         }
 
         User userDest = getByEmail(email);

@@ -23,7 +23,7 @@ public class Note extends AbstractBaseEntity {
     private String email; // Кому уведомление
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private User user; // отправитель
 
     public Note() {
 

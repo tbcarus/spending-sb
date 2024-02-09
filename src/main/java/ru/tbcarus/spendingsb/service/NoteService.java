@@ -33,7 +33,7 @@ public class NoteService {
         return noteRepository.getAllByEmail(email);
     }
 
-    public List<Note> getInvites(int userId) {
+    public List<Note> getInvitesBySenderId(int userId) {
         return noteRepository.getAllByUserId(userId);
     }
 
@@ -48,6 +48,7 @@ public class NoteService {
     }
 
     public Note getNoteWithUser(int noteId, String email) {
+        // Вытаскивает уведомление с юзером из базы
         return noteRepository.getNoteWithUser(noteId, email);
     }
 

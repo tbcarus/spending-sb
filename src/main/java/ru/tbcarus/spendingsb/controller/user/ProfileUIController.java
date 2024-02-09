@@ -113,9 +113,13 @@ public class ProfileUIController extends AbstractUserController {
                 case HAS_GROUP:
                     model.addAttribute("err", ErrorType.HAS_GROUP);
                     return "redirect:/payments/profile/error?type=" + ErrorType.HAS_GROUP.name();
-                case TOO_MUCH:
-                    model.addAttribute("err", ErrorType.TOO_MUCH);
-                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH.name();
+                case TOO_MUCH_FRIENDS:
+                    model.addAttribute("err", ErrorType.TOO_MUCH_FRIENDS);
+                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH_FRIENDS.name();
+                case TOO_MUCH_INVITES:
+                    model.addAttribute("err", ErrorType.TOO_MUCH_INVITES);
+                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH_INVITES.name();
+
             }
         }
         return "redirect:/payments";
