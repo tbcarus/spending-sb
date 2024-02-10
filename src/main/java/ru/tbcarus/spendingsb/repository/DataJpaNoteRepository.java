@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import ru.tbcarus.spendingsb.model.Note;
+import ru.tbcarus.spendingsb.model.NoteType;
 
 import java.util.List;
 
@@ -47,8 +48,24 @@ public class DataJpaNoteRepository {
         return noteRepository.deleteNote(id, email) != 0;
     }
 
+    public boolean deleteAllNotesByUserEmail(String email) {
+        return noteRepository.deleteAllNotesByUserEmail(email) != 0;
+    }
+
+    public boolean deleteAllNotesByUserEmailAndType(String email, NoteType type) {
+        return noteRepository.deleteAllNotesByUserEmailAndType(email, type) != 0;
+    }
+
     public boolean deleteOwnInvite(int id, int userId) {
         return noteRepository.deleteOwnInvite(id, userId) != 0;
+    }
+
+    public boolean deleteAllOwnNotes(int userId) {
+        return noteRepository.deleteAllOwnNotes(userId) != 0;
+    }
+
+    public boolean deleteAllOwnInvites(int userId, NoteType type) {
+        return noteRepository.deleteAllOwnInvites(userId, type) != 0;
     }
 
 }

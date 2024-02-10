@@ -16,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
-import ru.tbcarus.spendingsb.model.ErrorType;
-import ru.tbcarus.spendingsb.model.Note;
-import ru.tbcarus.spendingsb.model.Role;
-import ru.tbcarus.spendingsb.model.User;
+import ru.tbcarus.spendingsb.model.*;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 import ru.tbcarus.spendingsb.util.UserUtil;
 
@@ -127,7 +124,7 @@ public class UserService implements UserDetailsService {
         if (friendsList.isEmpty()) {
             return new ArrayList<User>();
         }
-        Specification<User> sp= filterByEmail(friendsList.get(0));
+        Specification<User> sp = filterByEmail(friendsList.get(0));
         friendsList.remove(0);
         for (String email : friendsList) {
             sp = sp.or(filterByEmail(email));
@@ -144,7 +141,7 @@ public class UserService implements UserDetailsService {
         }
 
         // Удалить пользователя у всех в группе
-        for(String email : userExcluded.getFriendsList()) {
+        for (String email : userExcluded.getFriendsList()) {
             User u = getByEmail(email);
             u.removeFriend(userExcluded.getEmail());
             u.removeFriendId(userExcluded.getId());
@@ -180,13 +177,13 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void sendFriendInvite(User user, String email) {
-        if(user.getFriendsList().contains(email)) {
+        if (user.getFriendsList().contains(email)) {
             throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
         }
-        if(user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
+        if (user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
             throw new IncorrectAddition(ErrorType.TOO_MUCH_FRIENDS);
         }
-        if(user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
+        if (user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
             throw new IncorrectAddition(ErrorType.TOO_MUCH_INVITES);
         }
 
@@ -195,7 +192,7 @@ public class UserService implements UserDetailsService {
             throw new IncorrectAddition(ErrorType.HAS_GROUP);
         }
 
-        Note note = new Note(false, LocalDateTime.now(), "Объединение досок",
+        Note note = new Note(NoteType.INVITE, false, LocalDateTime.now(), "Объединение досок",
                 "Пользователь " + user.getEmail() + " объединение досок", email, user);
         noteService.create(note);
         userDest.setNewNotify(true);
@@ -215,7 +212,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void addSU(User user, int id) {
-        if(!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
+        if (!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
             throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
         }
         User u = getById(id);
@@ -224,7 +221,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void removeSU(User user, int id) {
-        if(!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
+        if (!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
             throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
         }
         User u = getById(id);

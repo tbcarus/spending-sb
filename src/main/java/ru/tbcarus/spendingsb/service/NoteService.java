@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
-import ru.tbcarus.spendingsb.model.Note;
-import ru.tbcarus.spendingsb.model.Role;
-import ru.tbcarus.spendingsb.model.User;
+import ru.tbcarus.spendingsb.model.*;
 import ru.tbcarus.spendingsb.repository.DataJpaNoteRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
@@ -64,7 +64,11 @@ public class NoteService {
         }
     }
 
+    @Transactional
     public void inviteAccept(int noteId, User recipient) {
+        if(recipient.isInGroup()) {
+            throw new IncorrectAddition(ErrorType.HAS_GROUP);
+        }
         Note note = getNoteWithUser(noteId, recipient.getEmail());
         User sender = note.getUser();
 
@@ -87,7 +91,8 @@ public class NoteService {
         sender.addFriendId(recipient.getId());
         userRepository.save(sender);
 
-        noteRepository.deleteNote(noteId, recipient.getEmail()); // удалить уведомление
+        noteRepository.deleteAllNotesByUserEmailAndType(recipient.getEmail(), NoteType.INVITE); // удалить все полученные приглашения
+        noteRepository.deleteAllOwnInvites(recipient.getId(), NoteType.INVITE); // удалить все отправленные приглашения
     }
 
 }

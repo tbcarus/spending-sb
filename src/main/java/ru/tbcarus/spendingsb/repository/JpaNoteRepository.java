@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.model.Note;
+import ru.tbcarus.spendingsb.model.NoteType;
 
 import java.util.List;
 
@@ -30,8 +31,26 @@ public interface JpaNoteRepository extends JpaRepository<Note, Integer>, JpaSpec
 
     @Modifying
     @Transactional
+    @Query("DELETE FROM Note n WHERE n.email=:email")
+    int deleteAllNotesByUserEmail(@Param("email") String email);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Note n WHERE n.email=:email AND n.type=:type")
+    int deleteAllNotesByUserEmailAndType(@Param("email") String email, @Param("type") NoteType type);
+
+    @Modifying
+    @Transactional
     @Query("DELETE FROM Note n WHERE n.id=:noteId AND n.user.id=:userId")
     int deleteOwnInvite(@Param("noteId") int noteId, @Param("userId") int userId);
 
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Note n WHERE n.user.id=:userId")
+    int deleteAllOwnNotes(@Param("userId") int userId);
 
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Note n WHERE n.user.id=:userId AND n.type=:type")
+    int deleteAllOwnInvites(@Param("userId") int userId, @Param("type") NoteType type);
 }

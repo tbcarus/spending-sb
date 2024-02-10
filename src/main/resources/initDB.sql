@@ -51,6 +51,7 @@ CREATE TABLE notes
     id        INTEGER                    NOT NULL
         CONSTRAINT note_pkey
             PRIMARY KEY,
+    type             TEXT,
     date_time TIMESTAMP(6) DEFAULT NOW() NOT NULL,
     email     VARCHAR(255)               NOT NULL,
     read      BOOLEAN      DEFAULT FALSE NOT NULL,
