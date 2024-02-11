@@ -35,8 +35,8 @@ public class SecurityConfig {
                         .loginPage("/login").defaultSuccessUrl("/payments")
                         .permitAll())
 //                .formLogin(form -> form.permitAll())
-                .logout((logout) -> logout.permitAll())
-                .csrf(csrf -> csrf.disable());
+                .logout((logout) -> logout.permitAll());
+//                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

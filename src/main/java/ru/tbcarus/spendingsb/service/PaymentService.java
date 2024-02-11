@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.Payment;
@@ -58,6 +59,7 @@ public class PaymentService {
         return payment;
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public List<Payment> getAll() {
         return sortList(paymentRepository.getAll());
     }
