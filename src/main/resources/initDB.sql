@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS email_requests;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS costs;
 DROP TABLE IF EXISTS notes;
@@ -60,6 +61,19 @@ CREATE TABLE notes
     user_id   INTEGER
         CONSTRAINT note_user_id_fk
             REFERENCES users
+);
+
+create table email_requests
+(
+    id          INTEGER                     not null
+        constraint email_requests_pkey
+            primary key,
+    code                varchar(255),
+    date_time           timestamp(6) DEFAULT NOW() NOT NULL,
+    type                TEXT,
+    user_id integer
+        constraint email_requests_user_id_fk
+            references users
 );
 
 
