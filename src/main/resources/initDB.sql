@@ -13,10 +13,10 @@ CREATE TABLE users
     NAME              TEXT                DEFAULT 'Имя не задано'::TEXT,
     email             TEXT                              NOT NULL,
     PASSWORD          TEXT                              NOT NULL,
-    enabled           bool                DEFAULT TRUE  NOT NULL,
+    enabled           bool                DEFAULT FALSE  NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
     friends           TEXT                DEFAULT ''    NOT NULL,
-    friends_id         TEXT                DEFAULT ''    NOT NULL,
+    friends_id        TEXT                DEFAULT ''    NOT NULL,
     new_notify        bool                DEFAULT FALSE NOT NULL
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE notes
     id        INTEGER                    NOT NULL
         CONSTRAINT note_pkey
             PRIMARY KEY,
-    type             TEXT,
+    type      TEXT,
     date_time TIMESTAMP(6) DEFAULT NOW() NOT NULL,
     email     VARCHAR(255)               NOT NULL,
     read      BOOLEAN      DEFAULT FALSE NOT NULL,
@@ -60,20 +60,22 @@ CREATE TABLE notes
     title     VARCHAR(255),
     user_id   INTEGER
         CONSTRAINT note_user_id_fk
-            REFERENCES users
+            REFERENCES users on delete cascade
 );
 
-create table email_requests
+CREATE TABLE email_requests
 (
-    id          INTEGER                     not null
-        constraint email_requests_pkey
-            primary key,
-    code                varchar(255),
-    date_time           timestamp(6) DEFAULT NOW() NOT NULL,
-    type                TEXT,
-    user_id integer
-        constraint email_requests_user_id_fk
-            references users
+    id        INTEGER                    NOT NULL
+        CONSTRAINT email_requests_pkey
+            PRIMARY KEY,
+    code      VARCHAR(255)               NOT NULL,
+    date_time TIMESTAMP(6) DEFAULT NOW() NOT NULL,
+    type      TEXT                       NOT NULL,
+    user_id   INTEGER                    NOT NULL
+        CONSTRAINT email_requests_user_id_fk
+            REFERENCES users on delete cascade,
+    used      BOOLEAN      DEFAULT FALSE NOT NULL
+
 );
 
 
