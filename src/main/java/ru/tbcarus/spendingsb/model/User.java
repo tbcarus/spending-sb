@@ -63,12 +63,18 @@ public class User implements UserDetails, HasId {
 
     private boolean newNotify;
 
+    public User() {
+        this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
+        this.roles = new HashSet<Role>(Arrays.asList(Role.USER, Role.SUPERUSER));
+        this.enabled = false;
+    }
+
     public User(String email, String password, Collection<Role> roles) {
-        this("new_" + email, email, password, true, LocalDate.now().withDayOfMonth(1), new HashSet<>(roles));
+        this("new_" + email, email, password, false, LocalDate.now().withDayOfMonth(1), new HashSet<>(roles));
     }
 
     public User(String name, String email, String password, LocalDate startPeriodDate) {
-        this(name, email, password, true, startPeriodDate, new HashSet<Role>());
+        this(name, email, password, false, startPeriodDate, new HashSet<Role>());
     }
 
     public User(String name, String email, String password, boolean enabled, LocalDate startPeriodDate) {
@@ -89,11 +95,11 @@ public class User implements UserDetails, HasId {
     }
 
     public User(Integer id, String name, String email, String password, Role... roles) {
-        this(id, name, email, password, true, LocalDate.now(), Arrays.asList(roles));
+        this(id, name, email, password, false, LocalDate.now(), Arrays.asList(roles));
     }
 
     public User(Integer id, String name, String email, String password, LocalDate startPeriodDate, Role... roles) {
-        this(id, name, email, password, true, startPeriodDate, Arrays.asList(roles));
+        this(id, name, email, password, false, startPeriodDate, Arrays.asList(roles));
     }
 
     public User(Integer id, String name, String email, String password, boolean enabled, LocalDate startPeriodDate, Collection<Role> roles) {
@@ -104,12 +110,6 @@ public class User implements UserDetails, HasId {
         this.enabled = enabled;
         this.startPeriodDate = startPeriodDate;
         this.roles = new HashSet<>(roles);
-    }
-
-    public User() {
-        this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
-        this.roles = new HashSet<Role>(Arrays.asList(Role.USER, Role.SUPERUSER));
-        this.enabled = true;
     }
 
     public List<String> getFriendsList() {
@@ -226,7 +226,9 @@ public class User implements UserDetails, HasId {
         return roles.contains(Role.ADMIN);
     }
 
-    public boolean isInGroup() { return !friendsId.isEmpty(); }
+    public boolean isInGroup() {
+        return !friendsId.isEmpty();
+    }
 
     public boolean hasFriend(String email) {
         return getFriendsList().contains(email);

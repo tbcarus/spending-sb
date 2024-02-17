@@ -35,13 +35,20 @@ public class UserService implements UserDetailsService {
     @Autowired
     private NoteService noteService;
 
+    @Autowired
+    EmailActionService emailActionService;
+
     public UserService(JpaUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public User create(User user) {
         user.setEmail(user.getEmail().toLowerCase());
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        log.info("User {} request for activate profile", user.getEmail());
+        emailActionService.create(user, EmailRequestType.ACTIVATE);
+        return savedUser;
     }
 
     public List<User> getAll() {
@@ -109,6 +116,13 @@ public class UserService implements UserDetailsService {
             throw new NotFoundException();
         }
         userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void enable(int id, boolean enabled) {
+        User user = getById(id);
+        user.setEnabled(enabled);
+        userRepository.save(user);
     }
 
     @Override

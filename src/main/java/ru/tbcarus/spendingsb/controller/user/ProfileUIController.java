@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
+import ru.tbcarus.spendingsb.exception.NotFoundException;
+import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.ErrorType;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.NoteService;
@@ -91,6 +93,20 @@ public class ProfileUIController extends AbstractUserController {
             return "register";
         }
         return "redirect:/login?registered&username=" + user.getName();
+    }
+
+    @GetMapping("/register/confirm-email")
+    public String registerConfirm(Model model, @RequestParam String email, @RequestParam String code) {
+        try {
+            EmailAction emailAction = super.registerConfirm(email, code);
+            model.addAttribute("emailAction", emailAction);
+        } catch (NotFoundException exc) {
+            model.addAttribute("err", "Not found");
+            ObjectError error = new ObjectError("globalError", "Запрос на регистрацию не найден");
+//            result.addError(error);
+        }
+
+        return "registerConfirm";
     }
 
     @GetMapping("/addfriend")

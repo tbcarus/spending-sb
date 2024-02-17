@@ -28,7 +28,8 @@
             You have been logged out.
         </div>
         <div th:if="${param.registered}" class="alert alert-success">
-            <span th:text="'Registered ' + ${param.username}"></span>
+            <span th:text="'Пользователь ' + ${param.username} + ' зарегистрирован.'">SPAN1</span>
+            <span th:text="'На e-mail ' + ${param.username} + ' отправлено письмо для подтверждения регистрации.'">SPAN2</span>
         </div>
         <br>
         <p>

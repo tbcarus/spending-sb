@@ -59,7 +59,7 @@ public class PaymentService {
         return payment;
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Payment> getAll() {
         return sortList(paymentRepository.getAll());
     }
