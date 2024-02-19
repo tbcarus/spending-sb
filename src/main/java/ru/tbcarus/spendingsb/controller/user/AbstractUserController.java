@@ -2,14 +2,15 @@ package ru.tbcarus.spendingsb.controller.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.tbcarus.spendingsb.model.Note;
+import ru.tbcarus.spendingsb.model.EmailAction;
+import ru.tbcarus.spendingsb.model.EmailRequestType;
 import ru.tbcarus.spendingsb.model.User;
+import ru.tbcarus.spendingsb.service.EmailActionService;
 import ru.tbcarus.spendingsb.service.NoteService;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.ValidationUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +21,9 @@ public abstract class AbstractUserController {
 
     @Autowired
     private NoteService noteService;
+
+    @Autowired
+    private EmailActionService emailActionService;
 
     public List<User> getALL() {
         log.info("get all users");
@@ -83,5 +87,15 @@ public abstract class AbstractUserController {
     protected void removeSU(User user, int id) {
         log.info("superuser {} remove SU role for user {}", user.getId(), id);
         userService.removeSU(user, id);
+    }
+
+    protected EmailAction registerConfirm(String email, String code) {
+        log.info("Registration confirm request for {} with code {}", email, code);
+        return emailActionService.registerConfirm(email, code, EmailRequestType.ACTIVATE);
+    }
+
+    protected EmailAction resendRequest(String email, String code) {
+        log.info("update link for registration or password recovery for user {}", email);
+        return emailActionService.resendRequestServ(email, code);
     }
 }

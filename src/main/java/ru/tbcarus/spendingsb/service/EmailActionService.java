@@ -7,15 +7,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.config.MailConfig;
-import ru.tbcarus.spendingsb.exception.NotFoundException;
+import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
 import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.EmailRequestType;
+import ru.tbcarus.spendingsb.model.ErrorType;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.JpaEmailActionRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 import ru.tbcarus.spendingsb.util.UtilsClass;
-
-import java.util.Random;
 
 @Service
 @Slf4j
@@ -34,14 +33,36 @@ public class EmailActionService {
     }
 
     public EmailAction registerConfirm(String email, String code, EmailRequestType type) {
-        EmailAction emailAction = get(code);
-        if (emailAction == null || !email.equals(emailAction.getUser().getEmail()) || !type.equals(emailAction.getType())) {
-            throw new NotFoundException("Запрос на регистрацию не найден");
+        // Регистрация не подтверждается если:
+        // - в базе отсутствует запись по запрошенному коду
+        // - не совпадает почта
+        // - не совпадает тип запроса
+        // - запрос уже был used = true
+        // - истёк период действия кода
+        EmailAction emailAction = repository.getByCode(code);
+        if (emailAction == null
+                || !email.equals(emailAction.getUser().getEmail())
+                || !type.equals(emailAction.getType())
+                || emailAction.isUsed()) {
+            throw new BadRegistrationRequest(ErrorType.NOT_FOUND);
+        }
+        if (!emailAction.isActive()) {
+            throw new BadRegistrationRequest(ErrorType.PERIOD_EXPIRED);
         }
         User user = emailAction.getUser();
         user.setEnabled();
         userRepository.save(user);
+//        emailAction.setUsed(true);
+//        repository.save(emailAction);
         return emailAction;
+    }
+
+    public EmailAction resendRequestServ(String email, String code) {
+        EmailAction old = repository.getByCode(code);
+        if (old.isExpired()) {
+            return create(old.getUser(), old.getType());
+        }
+        return old;
     }
 
     @Transactional

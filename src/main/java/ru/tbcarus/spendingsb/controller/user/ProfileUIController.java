@@ -12,8 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
-import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.ErrorType;
 import ru.tbcarus.spendingsb.model.User;
@@ -100,13 +100,26 @@ public class ProfileUIController extends AbstractUserController {
         try {
             EmailAction emailAction = super.registerConfirm(email, code);
             model.addAttribute("emailAction", emailAction);
-        } catch (NotFoundException exc) {
-            model.addAttribute("err", "Not found");
-            ObjectError error = new ObjectError("globalError", "Запрос на регистрацию не найден");
+        } catch (BadRegistrationRequest exc) {
+            ErrorType type = exc.getErrorType();
+            model.addAttribute("err", type);
+            if (ErrorType.PERIOD_EXPIRED.equals(type)) {
+                model.addAttribute("resendRequest", true);
+            } else {
+                model.addAttribute("resendRequest", false);
+            }
+//            ObjectError error = new ObjectError("globalError", "Запрос на регистрацию не найден");
 //            result.addError(error);
+            return "registerConfirm";
         }
 
         return "registerConfirm";
+    }
+
+    @PostMapping("/register/resend-request")
+    public String resendRequest(Model model, @RequestParam String email, @RequestParam String code) {
+        super.resendRequest(email, code);
+        return "redirect:/login?registered&username=" + email;
     }
 
     @GetMapping("/addfriend")

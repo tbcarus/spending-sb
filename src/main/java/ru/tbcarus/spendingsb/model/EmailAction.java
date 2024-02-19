@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import ru.tbcarus.spendingsb.util.ConfigUtil;
 
 import java.time.LocalDateTime;
 
@@ -37,7 +38,11 @@ public class EmailAction extends AbstractBaseEntity {
     }
 
     public boolean isActive() {
-        return dateTime.plusDays(3).isBefore(LocalDateTime.now());
+        return dateTime.plusDays(ConfigUtil.DEFAULT_EXPIRED_DAYS).isAfter(LocalDateTime.now());
+    }
+
+    public boolean isExpired() {
+        return !isActive();
     }
 
 }
