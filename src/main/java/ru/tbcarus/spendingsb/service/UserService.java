@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
@@ -47,7 +48,8 @@ public class UserService implements UserDetailsService {
         user.setEmail(user.getEmail().toLowerCase());
         User savedUser = userRepository.save(user);
         log.info("User {} request for activate profile", user.getEmail());
-        emailActionService.create(user, EmailRequestType.ACTIVATE);
+        EmailAction emailAction = emailActionService.create(user, EmailRequestType.ACTIVATE);
+        emailActionService.sendEmail(emailAction);
         return savedUser;
     }
 
@@ -187,6 +189,22 @@ public class UserService implements UserDetailsService {
         user.removeAllFriendsId();
         user.addRole(Role.SUPERUSER);   // Восстановить суперюзера
         userRepository.save(user);
+    }
+
+    public User resetPassword(String email, String code, String password, String passwordReply) {
+        if(!password.equals(passwordReply)) {
+            throw new BadRegistrationRequest(ErrorType.DO_NOT_MATCH);
+        }
+        if(password.length() < 4 || password.length() > 128) {
+            throw new BadRegistrationRequest(ErrorType.WRONG_LENGTH);
+        }
+
+        User user = userRepository.getByEmail(email);
+        EmailAction emailAction = emailActionService.get(code);
+        user.setPassword(password);
+        userRepository.save(user);
+
+        return user;
     }
 
     @Transactional

@@ -9,7 +9,9 @@ public enum ErrorType {
     TOO_MUCH_FRIENDS("В группе уже " + UserUtil.DEFAULT_MAX_FRIENDS + " пользователей"),
     TOO_MUCH_INVITES("Общее количество друзей и отправленных приглашений не может быть более " + UserUtil.DEFAULT_MAX_FRIENDS),
     PERIOD_EXPIRED("Вышел срок (" + ConfigUtil.DEFAULT_EXPIRED_DAYS + " дня) действия запроса. Пожалуйста, сделайте новый запрос."),
-    NOT_FOUND("Запись не найдена");
+    NOT_FOUND("Запись не найдена"),
+    DO_NOT_MATCH("Не совпадают"),
+    WRONG_LENGTH("Неверная длина");
 
     private final String title;
 

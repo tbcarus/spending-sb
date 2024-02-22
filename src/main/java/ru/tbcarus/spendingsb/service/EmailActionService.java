@@ -33,6 +33,23 @@ public class EmailActionService {
     }
 
     public EmailAction registerConfirm(String email, String code, EmailRequestType type) {
+        EmailAction emailAction = emailActionCheck(email, code, type);
+        User user = emailAction.getUser();
+        user.setEnabled();
+        userRepository.save(user);
+//        emailAction.setUsed(true);
+//        repository.save(emailAction);
+        return emailAction;
+    }
+
+    public EmailAction passwordResetGet(String email, String code, EmailRequestType type) {
+        EmailAction emailAction = emailActionCheck(email, code, type);
+//        emailAction.setUsed(true);
+//        repository.save(emailAction);
+        return emailAction;
+    }
+
+    private EmailAction emailActionCheck(String email, String code, EmailRequestType type) {
         // Регистрация не подтверждается если:
         // - в базе отсутствует запись по запрошенному коду
         // - не совпадает почта
@@ -49,20 +66,24 @@ public class EmailActionService {
         if (!emailAction.isActive()) {
             throw new BadRegistrationRequest(ErrorType.PERIOD_EXPIRED);
         }
-        User user = emailAction.getUser();
-        user.setEnabled();
-        userRepository.save(user);
-//        emailAction.setUsed(true);
-//        repository.save(emailAction);
         return emailAction;
     }
 
-    public EmailAction resendRequestServ(String email, String code) {
+    public EmailAction resendRequest(String email, String code) {
         EmailAction old = repository.getByCode(code);
         if (old.isExpired()) {
-            return create(old.getUser(), old.getType());
+            EmailAction emailAction = create(old.getUser(), old.getType());
+            sendEmail(emailAction);
+            return emailAction;
         }
         return old;
+    }
+
+    public EmailAction passwordResetRequest(String email) {
+        User user = userRepository.getByEmail(email);
+        EmailAction emailAction = create(user, EmailRequestType.RESET_PASSWORD);
+        sendEmail(emailAction);
+        return emailAction;
     }
 
     @Transactional
@@ -74,9 +95,7 @@ public class EmailActionService {
         EmailAction emailAction = new EmailAction(type);
         emailAction.setUser(user);
         emailAction.setCode(code);
-        EmailAction ea = repository.save(emailAction);
-        sendEmail(ea);
-        return ea;
+        return repository.save(emailAction);
     }
 
     public void sendEmail(EmailAction emailAction) {
@@ -84,7 +103,12 @@ public class EmailActionService {
         smm.setFrom(MailConfig.MAIL_FROM);
         smm.setTo(emailAction.getUser().getEmail());
         smm.setSubject(emailAction.getType().getTitle());
-        smm.setText("http://localhost:8080/spending/payments/profile/register/confirm-email?email=" + emailAction.getUser().getEmail() + "&code=" + emailAction.getCode());
+        smm.setText("http://localhost:8080/spending/payments/profile/register/"
+                + emailAction.getType().name()
+                + "?email="
+                + emailAction.getUser().getEmail()
+                + "&code="
+                + emailAction.getCode());
         javaMailSender.send(smm);
     }
 }

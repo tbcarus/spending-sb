@@ -22,14 +22,29 @@
 <div class="jumbotron bg-light">
     <div class="container py-4">
         <div th:if="${param.error}" class="alert alert-danger">
-            Invalid username or password.
+            Invalid username or password. For password recovery type your e-mail and click the button.
+            <form th:method="post" th:action="@{/payments/profile/register/password-reset-request}">
+                <input type="text" name="email" placeholder="e-mail">
+                <button class="btn btn-lg btn-primary" type="submit">Отправить</button>
+            </form>
         </div>
         <div th:if="${param.logout}" class="alert alert-success">
             You have been logged out.
         </div>
-        <div th:if="${param.registered}" class="alert alert-success">
-            <span th:text="'Пользователь ' + ${param.username} + ' зарегистрирован.'">SPAN1</span>
-            <span th:text="'На e-mail ' + ${param.username} + ' отправлено письмо для подтверждения регистрации.'">SPAN2</span>
+        <div th:if="${param.request}">
+            <div th:if="${param.request[0] == 'registered'}" class="alert alert-success">
+                <span th:text="'Пользователь ' + ${param.username} + ' зарегистрирован.'">SPAN1</span>
+                <span th:text="'На e-mail ' + ${param.username} + ' отправлено письмо для подтверждения регистрации.'">SPAN2</span>
+            </div>
+            <div th:if="${param.request[0] == 'resend'}" class="alert alert-success">
+                <span th:text="'На e-mail ' + ${param.username} + ' повторно отправлено письмо для подтверждения регистрации.'">SPAN3</span>
+            </div>
+            <div th:if="${param.request[0] == 'reset'}" class="alert alert-success">
+                <span th:text="'На e-mail ' + ${param.username} + ' отправлено письмо для смены пароля.'">SPAN4</span>
+            </div>
+            <div th:if="${param.request[0] == 'reset-success'}" class="alert alert-success">
+                <span th:text="'Пароль пользователя ' + ${param.username} + ' изменён.'">SPAN4</span>
+            </div>
         </div>
         <br>
         <p>

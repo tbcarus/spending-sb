@@ -92,11 +92,12 @@ public class ProfileUIController extends AbstractUserController {
             result.addError(error);
             return "register";
         }
-        return "redirect:/login?registered&username=" + user.getName();
+        return "redirect:/login?request=registered&username=" + user.getEmail();
     }
 
-    @GetMapping("/register/confirm-email")
+    @GetMapping("/register/ACTIVATE")
     public String registerConfirm(Model model, @RequestParam String email, @RequestParam String code) {
+        // Активация нового пользователя при переходе по ссылке
         try {
             EmailAction emailAction = super.registerConfirm(email, code);
             model.addAttribute("emailAction", emailAction);
@@ -118,8 +119,65 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping("/register/resend-request")
     public String resendRequest(Model model, @RequestParam String email, @RequestParam String code) {
+        // Запрос новой ссылки, если период действия предыдущей истёк
         super.resendRequest(email, code);
-        return "redirect:/login?registered&username=" + email;
+        return "redirect:/login?request=resend&username=" + email;
+    }
+
+    @PostMapping("/register/password-reset-request")
+    public String passwordReset(Model model, @RequestParam String email) {
+        // Запрос ссылки на восстановление пароля по почте
+        super.passwordResetRequest(email);
+        return "redirect:/login?request=reset&username=" + email;
+    }
+
+    @GetMapping("/register/RESET_PASSWORD")
+    public String passwordResetGet(Model model, @RequestParam String email, @RequestParam String code) {
+        // Замена пароля при переходе по ссылке
+        try {
+            EmailAction emailAction = super.passwordResetGet(email, code);
+            model.addAttribute("emailAction", emailAction);
+        } catch (BadRegistrationRequest exc) {
+            ErrorType type = exc.getErrorType();
+            model.addAttribute("err", type);
+            if (ErrorType.PERIOD_EXPIRED.equals(type)) {
+                model.addAttribute("resendRequest", true);
+            } else {
+                model.addAttribute("resendRequest", false);
+            }
+        }
+        return "resetPassword";
+
+//        return "redirect:/login?request=reset&username=" + email;
+    }
+
+    @PostMapping("/register/reset-password")
+    public String resetPassword(Model model,
+                                String email,
+                                String code,
+                                String password,
+                                String passwordReply) {
+        // Смена пароля
+        User user;
+        try {
+            user = super.resetPassword(email, code, password, passwordReply);
+        } catch (BadRegistrationRequest exc) {
+            ErrorType type = exc.getErrorType();
+            model.addAttribute("err", type);
+            if (ErrorType.DO_NOT_MATCH.equals(type)) {
+                model.addAttribute("isDoNotMatch", true);
+            } else {
+                model.addAttribute("isDoNotMatch", false);
+            }
+            if (ErrorType.WRONG_LENGTH.equals(type)) {
+                model.addAttribute("isWrongLength", true);
+            } else {
+                model.addAttribute("isWrongLength", false);
+            }
+            return "resetPassword";
+        }
+        model.addAttribute("user", user);
+        return "redirect:/login?request=reset-success&username=" + user.getEmail();
     }
 
     @GetMapping("/addfriend")
