@@ -47,9 +47,7 @@ public class UserService implements UserDetailsService {
     public User create(User user) {
         user.setEmail(user.getEmail().toLowerCase());
         User savedUser = userRepository.save(user);
-        log.info("User {} request for activate profile", user.getEmail());
-        EmailAction emailAction = emailActionService.create(user, EmailRequestType.ACTIVATE);
-        emailActionService.sendEmail(emailAction);
+        emailActionService.activationRequest(user);
         return savedUser;
     }
 

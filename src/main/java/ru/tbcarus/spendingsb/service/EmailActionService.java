@@ -14,7 +14,11 @@ import ru.tbcarus.spendingsb.model.ErrorType;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.JpaEmailActionRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
+import ru.tbcarus.spendingsb.util.ConfigUtil;
 import ru.tbcarus.spendingsb.util.UtilsClass;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -72,6 +76,9 @@ public class EmailActionService {
     public EmailAction resendRequest(String email, String code) {
         EmailAction old = repository.getByCode(code);
         if (old.isExpired()) {
+            if (checkRepeatRequest(old)) {
+                throw new BadRegistrationRequest(ErrorType.TOO_MUCH_REPEAT_REQUESTS);
+            }
             EmailAction emailAction = create(old.getUser(), old.getType());
             sendEmail(emailAction);
             return emailAction;
@@ -79,11 +86,39 @@ public class EmailActionService {
         return old;
     }
 
+    private boolean checkRepeatRequest(EmailAction emailAction) {
+        // Проверка на многократные запросы. Исключение вызывается при:
+        // - запросы на смену пароля. Есть неиспользованный запрос на восстановление пароля.
+        // - переход по старой ссылке восстановления пароля, но есть новая
+        // - запросы на активацию. Новый запрос при переходе по старой ссылке с истекшим сроком (или по любой ссылке), но есть новая неиспользованная ссылка. Если пользователь уже активирован
+        List<EmailAction> list = repository.findAllByUserIdAndDateTimeBetweenAndTypeOrderByDateTimeDesc(emailAction.getUser().getId(),
+                LocalDateTime.now().minusDays(ConfigUtil.DEFAULT_EXPIRED_DAYS),
+                LocalDateTime.now(),
+                emailAction.getType());
+
+        return !list.isEmpty();
+    }
+
+    public EmailAction activationRequest(User user) {
+        log.info("User {} request for activate profile", user.getEmail());
+        EmailAction emailAction = create(user, EmailRequestType.ACTIVATE);
+        sendEmail(emailAction);
+        return emailAction;
+    }
+
     public EmailAction passwordResetRequest(String email) {
         User user = userRepository.getByEmail(email);
         EmailAction emailAction = create(user, EmailRequestType.RESET_PASSWORD);
         sendEmail(emailAction);
         return emailAction;
+    }
+
+    private void checkRepeatPasswordRequestRequest(User user) {
+        // Проверка на многократные запросы. Исключение вызывается при:
+        // - запросы на смену пароля. Есть неиспользованный запрос на восстановление пароля.
+        // - переход по старой ссылке восстановления пароля, но есть новая
+        // - запросы на активацию. Новый запрос при переходе по старой ссылке с истекшим сроком (или по любой ссылке), но есть новая неиспользованная ссылка. Если пользователь уже активирован
+
     }
 
     @Transactional

@@ -120,7 +120,16 @@ public class ProfileUIController extends AbstractUserController {
     @PostMapping("/register/resend-request")
     public String resendRequest(Model model, @RequestParam String email, @RequestParam String code) {
         // Запрос новой ссылки, если период действия предыдущей истёк
-        super.resendRequest(email, code);
+        try {
+            super.resendRequest(email, code);
+        } catch (BadRegistrationRequest exc) {
+            ErrorType type = exc.getErrorType();
+            model.addAttribute("err", type);
+            if (ErrorType.TOO_MUCH_REPEAT_REQUESTS.equals(type)) {
+                return "redirect:/login?request=repeat-requests&username=" + email;
+            }
+        }
+
         return "redirect:/login?request=resend&username=" + email;
     }
 
