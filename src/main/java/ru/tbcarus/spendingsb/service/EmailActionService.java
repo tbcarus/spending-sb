@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.config.MailConfig;
 import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
+import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.EmailRequestType;
 import ru.tbcarus.spendingsb.model.ErrorType;
@@ -19,6 +20,7 @@ import ru.tbcarus.spendingsb.util.UtilsClass;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -107,7 +109,8 @@ public class EmailActionService {
     }
 
     public EmailAction passwordResetRequest(String email) {
-        User user = userRepository.getByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow();
+
         EmailAction emailAction = create(user, EmailRequestType.RESET_PASSWORD);
         sendEmail(emailAction);
         return emailAction;

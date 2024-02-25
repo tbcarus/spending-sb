@@ -23,6 +23,7 @@ import ru.tbcarus.spendingsb.util.DateUtil;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping(value = "/payments/profile", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -136,7 +137,11 @@ public class ProfileUIController extends AbstractUserController {
     @PostMapping("/register/password-reset-request")
     public String passwordReset(Model model, @RequestParam String email) {
         // Запрос ссылки на восстановление пароля по почте
-        super.passwordResetRequest(email);
+        try {
+            super.passwordResetRequest(email);
+        } catch (NoSuchElementException exc) {
+            return "redirect:/login?error=no-user-found&username=" + email;
+        }
         return "redirect:/login?request=reset&username=" + email;
     }
 
