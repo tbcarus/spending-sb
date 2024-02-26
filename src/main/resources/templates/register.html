@@ -32,6 +32,7 @@
                 <div class="form-group mb-4">
                     <label for="email">E-mail:</label>
                     <input type="text" class="form-control" id="email" th:field="*{email}" th:value="*{email}">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
                     <div th:if="${#fields.hasErrors('global')}">
                         <p class="alert alert-danger" th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
                     </div>
@@ -46,7 +47,7 @@
 
                 <div class="form-group mb-4">
                     <label for="start_day">Начальный день месяца:</label>
-                    <select id="start_day" class="form-control">
+                    <select id="start_day" class="form-control" name="startDay">
                         <option th:value="${user.startPeriodDate.dayOfMonth}"
                                 th:text="${user.startPeriodDate.dayOfMonth}" selected hidden>TEXT
                         </option>

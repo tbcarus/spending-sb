@@ -81,13 +81,13 @@ public class ProfileUIController extends AbstractUserController {
     }
 
     @PostMapping("/register")
-    public String saveRegister(@Valid User user, BindingResult result, Model model) {
+    public String saveRegister(@Valid User user, BindingResult result, Model model, int startDay) {
         if (result.hasErrors()) {
             return "register";
         }
 
         try {
-            User created = super.create(user);
+            User created = super.create(user, startDay);
         } catch (DataIntegrityViolationException exc) {
             ObjectError error = new ObjectError("globalError", "Повторяющийся e-mail");
             result.addError(error);

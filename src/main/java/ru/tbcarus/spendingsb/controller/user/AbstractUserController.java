@@ -45,6 +45,12 @@ public abstract class AbstractUserController {
         return userService.create(user);
     }
 
+    public User create(User user, int startDay) {
+        log.info("create new user {}", user);
+        user.setStartPeriodDate(LocalDate.now().withDayOfMonth(startDay));
+        return userService.create(user);
+    }
+
     public User update(User user, int id) {
         log.info("update user {}", user);
         ValidationUtil.assureIdConsistent(user, id);
