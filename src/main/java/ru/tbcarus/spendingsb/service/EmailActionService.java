@@ -1,26 +1,26 @@
 package ru.tbcarus.spendingsb.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tbcarus.spendingsb.config.MailConfig;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
-import ru.tbcarus.spendingsb.exception.NotFoundException;
-import ru.tbcarus.spendingsb.model.EmailAction;
-import ru.tbcarus.spendingsb.model.EmailRequestType;
-import ru.tbcarus.spendingsb.model.ErrorType;
-import ru.tbcarus.spendingsb.model.User;
+import ru.tbcarus.spendingsb.model.*;
 import ru.tbcarus.spendingsb.repository.JpaEmailActionRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 import ru.tbcarus.spendingsb.util.ConfigUtil;
+import ru.tbcarus.spendingsb.util.EmailContextUtil;
 import ru.tbcarus.spendingsb.util.UtilsClass;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -32,7 +32,10 @@ public class EmailActionService {
     JpaUserRepository userRepository;
 
     @Autowired
-    JavaMailSender javaMailSender;
+    JavaMailSender emailSender;
+
+    @Autowired
+    SpringTemplateEngine templateEngine;
 
     public EmailAction get(String code) {
         return repository.getByCode(code);
@@ -44,15 +47,13 @@ public class EmailActionService {
         user.setEnabled();
         userRepository.save(user);
 //        emailAction.setUsed(true);
-//        repository.save(emailAction);
-        return emailAction;
+        return repository.save(emailAction);
     }
 
     public EmailAction passwordResetGet(String email, String code, EmailRequestType type) {
         EmailAction emailAction = emailActionCheck(email, code, type);
 //        emailAction.setUsed(true);
-//        repository.save(emailAction);
-        return emailAction;
+        return repository.save(emailAction);
     }
 
     private EmailAction emailActionCheck(String email, String code, EmailRequestType type) {
@@ -82,7 +83,11 @@ public class EmailActionService {
                 throw new BadRegistrationRequest(ErrorType.TOO_MUCH_REPEAT_REQUESTS);
             }
             EmailAction emailAction = create(old.getUser(), old.getType());
-            sendEmail(emailAction);
+            try {
+                sendEmail(emailAction);
+            } catch (MessagingException e) {
+                log.error("Nothing was sent {}", e.getCause().getMessage());
+            }
             return emailAction;
         }
         return old;
@@ -104,7 +109,11 @@ public class EmailActionService {
     public EmailAction activationRequest(User user) {
         log.info("User {} request for activate profile", user.getEmail());
         EmailAction emailAction = create(user, EmailRequestType.ACTIVATE);
-        sendEmail(emailAction);
+        try {
+            sendEmail(emailAction);
+        } catch (MessagingException e) {
+            log.error("Nothing was sent {}", e.getCause().getMessage());
+        }
         return emailAction;
     }
 
@@ -112,7 +121,11 @@ public class EmailActionService {
         User user = userRepository.findByEmail(email).orElseThrow();
 
         EmailAction emailAction = create(user, EmailRequestType.RESET_PASSWORD);
-        sendEmail(emailAction);
+        try {
+            sendEmail(emailAction);
+        } catch (MessagingException e) {
+            log.error("Nothing was sent {}", e.getCause().getMessage());
+        }
         return emailAction;
     }
 
@@ -136,17 +149,20 @@ public class EmailActionService {
         return repository.save(emailAction);
     }
 
-    public void sendEmail(EmailAction emailAction) {
-        SimpleMailMessage smm = new SimpleMailMessage();
-        smm.setFrom(MailConfig.MAIL_FROM);
-        smm.setTo(emailAction.getUser().getEmail());
-        smm.setSubject(emailAction.getType().getTitle());
-        smm.setText("http://localhost:8080/spending/payments/profile/register/"
-                + emailAction.getType().name()
-                + "?email="
-                + emailAction.getUser().getEmail()
-                + "&code="
-                + emailAction.getCode());
-        javaMailSender.send(smm);
+    public void sendEmail(EmailAction emailAction) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+        Context context = new Context();
+        EmailContext email = EmailContextUtil.getEmailContext(emailAction);
+
+        context.setVariables(email.getContext());
+        helper.setFrom(email.getFrom());
+        helper.setTo(email.getTo());
+        helper.setSubject(email.getSubject());
+        String html = templateEngine.process(email.getTemplate(), context);
+        helper.setText(html, true);
+
+        log.info("Sending email: {} with html body: {}", email, html);
+        emailSender.send(message);
     }
 }
