@@ -48,6 +48,8 @@ public class User implements UserDetails, HasId {
 
     private boolean enabled;
 
+    private boolean banned;
+
     @NotNull(message = "Start date cannot be blank.")
     private LocalDate startPeriodDate; // Дата начала периода учёта трат
 
@@ -67,6 +69,7 @@ public class User implements UserDetails, HasId {
         this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
         this.roles = new HashSet<Role>(Arrays.asList(Role.USER, Role.SUPERUSER));
         this.enabled = false;
+        this.banned = false;
     }
 
     public User(String email, String password, Collection<Role> roles) {
@@ -86,6 +89,7 @@ public class User implements UserDetails, HasId {
         this.email = email;
         this.password = password;
         this.enabled = enabled;
+        this.banned = false;
         this.startPeriodDate = startPeriodDate;
         this.roles = roles;
     }
@@ -108,6 +112,7 @@ public class User implements UserDetails, HasId {
         this.email = email;
         this.password = password;
         this.enabled = enabled;
+        this.banned = false;
         this.startPeriodDate = startPeriodDate;
         this.roles = new HashSet<>(roles);
     }
@@ -244,6 +249,14 @@ public class User implements UserDetails, HasId {
 
     public void setDisabled() {
         this.enabled = false;
+    }
+
+    public void ban() {
+        this.banned = true;
+    }
+
+    public void unban() {
+        this.banned = false;
     }
 
     @Override

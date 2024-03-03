@@ -1,8 +1,8 @@
-<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
-<!--@thymesVar id="u" type="ru.tbcarus.spendingsb.model.User"-->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
+<!--@thymesVar id="u" type="ru.tbcarus.spendingsb.model.User"-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,6 +27,7 @@
                 <th>Почта</th>
                 <th>Роли</th>
                 <th>Активный</th>
+                <th>Бан</th>
                 <th>Удалить</th>
             </tr>
             </thead>
@@ -38,6 +39,9 @@
                 <td>
                     <input type="checkbox" th:checked="${u.enabled}">
                 </td>
+                <td>
+                    <input type="checkbox" th:checked="${u.banned}">
+                </td>
                 <td><a th:href="'users/delete?id='+${u.id}">Удалить</a></td>
             </tr>
             </tbody>
@@ -46,7 +50,6 @@
 </div>
 
 <!--    copyright-->
-<br>
 <div th:replace="~{fragments/footer :: copy}"></div>
 </body>
 </html>

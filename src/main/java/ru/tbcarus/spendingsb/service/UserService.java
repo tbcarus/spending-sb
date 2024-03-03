@@ -82,10 +82,11 @@ public class UserService implements UserDetailsService {
         if (update.getEmail() != null) {
             user.setEmail(update.getEmail().toLowerCase());
         }
-        if (update.getPassword() != null) {
+        if (update.getPassword() != null && update.getPassword().length() >= 4 && update.getPassword().length() <= 128) {
             user.setPassword(update.getPassword());
         }
         user.setEnabled(update.isEnabled());
+        user.setBanned(update.isBanned());
         if (update.getStartPeriodDate() != null) {
             user.setStartPeriodDate(update.getStartPeriodDate());
         }
@@ -190,10 +191,10 @@ public class UserService implements UserDetailsService {
     }
 
     public User resetPassword(String email, String code, String password, String passwordReply) {
-        if(!password.equals(passwordReply)) {
+        if (!password.equals(passwordReply)) {
             throw new BadRegistrationRequest(ErrorType.DO_NOT_MATCH);
         }
-        if(password.length() < 4 || password.length() > 128) {
+        if (password.length() < 4 || password.length() > 128) {
             throw new BadRegistrationRequest(ErrorType.WRONG_LENGTH);
         }
 

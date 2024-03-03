@@ -49,9 +49,10 @@ public class AdminUIController extends AbstractUserController {
                                  @RequestParam("id") String idStr,
                                  @RequestParam("name") String name,
                                  @RequestParam("email") String email,
-                                 @RequestParam("password") String password,
+                                 @RequestParam(value = "password", required = false) String password,
                                  @RequestParam("start_day") String startDay,
-                                 @RequestParam(value = "enbld", required = false) String enabled,
+                                 @RequestParam(value = "enabled", required = false) String enabled,
+                                 @RequestParam(value = "banned", required = false) String banned,
                                  @RequestParam(value = "userCheckB", required = false) String userCH,
                                  @RequestParam(value = "superUserCheckB", required = false) String superUserCH,
                                  @RequestParam(value = "adminCheckB", required = false) String adminCH) {
@@ -66,6 +67,11 @@ public class AdminUIController extends AbstractUserController {
             user.setEnabled();
         } else {
             user.setDisabled();
+        }
+        if ("on".equals(banned)) {
+            user.ban();
+        } else {
+            user.unban();
         }
         if ("on".equals(userCH)) {
             user.addRole(Role.USER);

@@ -14,6 +14,7 @@ CREATE TABLE users
     email             TEXT                              NOT NULL,
     PASSWORD          TEXT                              NOT NULL,
     enabled           bool                DEFAULT FALSE  NOT NULL,
+    banned            bool                DEFAULT FALSE  NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
     friends           TEXT                DEFAULT ''    NOT NULL,
     friends_id        TEXT                DEFAULT ''    NOT NULL,
