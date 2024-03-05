@@ -141,6 +141,12 @@ public class ProfileUIController extends AbstractUserController {
             super.passwordResetRequest(email);
         } catch (NoSuchElementException exc) {
             return "redirect:/login?error=no-user-found&username=" + email;
+        } catch (BadRegistrationRequest exc) {
+            ErrorType type = exc.getErrorType();
+            model.addAttribute("err", type);
+            if (ErrorType.TOO_MUCH_REPEAT_REQUESTS.equals(type)) {
+                return "redirect:/login?request=repeat-requests&username=" + email;
+            }
         }
         return "redirect:/login?request=reset&username=" + email;
     }

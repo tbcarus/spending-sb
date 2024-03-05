@@ -2,7 +2,8 @@ package ru.tbcarus.spendingsb.util;
 
 public class ConfigUtil {
 
-    public static final int DEFAULT_EXPIRED_DAYS = 1;
+    public static final int DEFAULT_EXPIRED_DAYS = 3;
+    public static final int ACTIVE_REQUESTS_MAX = 3;
 
     public static String getStringDefaultDays() {
         switch (DEFAULT_EXPIRED_DAYS) {

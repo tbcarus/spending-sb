@@ -102,7 +102,7 @@ public abstract class AbstractUserController {
 
     protected EmailAction resendRequest(String email, String code) {
         log.info("update link for registration or password recovery for user {}", email);
-        return emailActionService.resendRequest(email, code);
+        return emailActionService.resendActivationRequest(email, code);
     }
 
     protected EmailAction passwordResetRequest(String email) {

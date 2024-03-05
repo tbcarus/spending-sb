@@ -76,37 +76,46 @@ public class EmailActionService {
         return emailAction;
     }
 
-    public EmailAction resendRequest(String email, String code) {
+    public EmailAction resendActivationRequest(String email, String code) {
+        // Повторный запрос активации пользователя
         EmailAction old = repository.getByCode(code);
-        if (old.isExpired()) {
-            if (checkRepeatRequest(old)) {
-                throw new BadRegistrationRequest(ErrorType.TOO_MUCH_REPEAT_REQUESTS);
-            }
-            EmailAction emailAction = create(old.getUser(), old.getType());
-            try {
-                sendEmail(emailAction);
-            } catch (MessagingException e) {
-                log.error("Nothing was sent {}", e.getCause().getMessage());
-            }
-            return emailAction;
-        }
-        return old;
+        return resentRequest(old.getUser(), old, old.getType());
     }
 
-    private boolean checkRepeatRequest(EmailAction emailAction) {
+    public EmailAction passwordResetRequest(String email) {
+        // запрос на смену пароля
+        User user = userRepository.findByEmail(email).orElseThrow();
+        return resentRequest(user, null, EmailRequestType.RESET_PASSWORD);
+    }
+
+    private EmailAction resentRequest(User user, EmailAction old, EmailRequestType type) {
+        if (!checkRepeatRequest(user, type)) {
+            throw new BadRegistrationRequest(ErrorType.TOO_MUCH_REPEAT_REQUESTS);
+        }
+        EmailAction emailAction = create(user, type);
+        try {
+            sendEmail(emailAction);
+        } catch (MessagingException e) {
+            log.error("Nothing was sent {}", e.getCause().getMessage());
+        }
+        return emailAction;
+    }
+
+    private boolean checkRepeatRequest(User user, EmailRequestType type) {
         // Проверка на многократные запросы. Исключение вызывается при:
         // - запросы на смену пароля. Есть неиспользованный запрос на восстановление пароля.
         // - переход по старой ссылке восстановления пароля, но есть новая
         // - запросы на активацию. Новый запрос при переходе по старой ссылке с истекшим сроком (или по любой ссылке), но есть новая неиспользованная ссылка. Если пользователь уже активирован
-        List<EmailAction> list = repository.findAllByUserIdAndDateTimeBetweenAndTypeOrderByDateTimeDesc(emailAction.getUser().getId(),
+        List<EmailAction> list = repository.findAllByUserIdAndDateTimeBetweenAndTypeOrderByDateTimeDesc(user.getId(),
                 LocalDateTime.now().minusDays(ConfigUtil.DEFAULT_EXPIRED_DAYS),
                 LocalDateTime.now(),
-                emailAction.getType());
+                type);
 
-        return !list.isEmpty();
+        return list.size() < ConfigUtil.ACTIVE_REQUESTS_MAX;
     }
 
     public EmailAction activationRequest(User user) {
+        // Запрос активации после регистрации пользователя
         log.info("User {} request for activate profile", user.getEmail());
         EmailAction emailAction = create(user, EmailRequestType.ACTIVATE);
         try {
@@ -115,26 +124,6 @@ public class EmailActionService {
             log.error("Nothing was sent {}", e.getCause().getMessage());
         }
         return emailAction;
-    }
-
-    public EmailAction passwordResetRequest(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow();
-
-        EmailAction emailAction = create(user, EmailRequestType.RESET_PASSWORD);
-        try {
-            sendEmail(emailAction);
-        } catch (MessagingException e) {
-            log.error("Nothing was sent {}", e.getCause().getMessage());
-        }
-        return emailAction;
-    }
-
-    private void checkRepeatPasswordRequestRequest(User user) {
-        // Проверка на многократные запросы. Исключение вызывается при:
-        // - запросы на смену пароля. Есть неиспользованный запрос на восстановление пароля.
-        // - переход по старой ссылке восстановления пароля, но есть новая
-        // - запросы на активацию. Новый запрос при переходе по старой ссылке с истекшим сроком (или по любой ссылке), но есть новая неиспользованная ссылка. Если пользователь уже активирован
-
     }
 
     @Transactional
