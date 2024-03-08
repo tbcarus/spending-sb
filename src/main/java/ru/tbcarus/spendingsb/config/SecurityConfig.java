@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -21,10 +22,15 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/login",
+                        .requestMatchers("/login", "/login-error",
                                 "/payments/profile/register",
                                 "/payments/profile/register/**",
                                 "/images/**",
@@ -34,6 +40,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/login").defaultSuccessUrl("/payments")
+                        .failureUrl("/login-error")
+                        .failureHandler(authenticationFailureHandler())
                         .permitAll())
 //                .formLogin(form -> form.permitAll())
                 .logout((logout) -> logout.permitAll());

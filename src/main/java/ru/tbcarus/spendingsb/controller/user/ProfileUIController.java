@@ -119,7 +119,7 @@ public class ProfileUIController extends AbstractUserController {
     }
 
     @PostMapping("/register/resend-request")
-    public String resendRequest(Model model, @RequestParam String email, @RequestParam String code) {
+    public String resendRequest(Model model, @RequestParam String email, @RequestParam(required = false) String code) {
         // Запрос новой ссылки, если период действия предыдущей истёк
         try {
             super.resendRequest(email, code);

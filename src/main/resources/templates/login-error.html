@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Список затрат</title>
+    <div th:replace="~{fragments/headTag :: headTag}"></div>
+</head>
+<body>
+<!--@thymesVar id="err" type="ru.tbcarus.spendingsb.model.ErrorType"-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<nav th:replace="~{fragments/loginBodyHeader :: loginBodyHeader}"></nav>
+<div class="jumbotron bg-light">
+    <div class="container py-4">
+        <div th:if="${param.error}">
+            <div th:if="${param.error[0] == 'banned'}" class="alert alert-danger">
+                <span th:text="'Пользователь ' + ${param.email} + ' заблокирован.'">заблокирован</span>
+            </div>
+            <div th:if="${param.error[0].equals('wrong=email-format')}" class="alert alert-warning">
+                Неверный формат адреса почты
+            </div>
+            <div th:if="${param.error[0] == 'no-user-found'}" class="alert alert-warning">
+                <span th:text="'Пользователь ' + ${param.email} + ' не зарегистрирован.'"></span>
+            </div>
+        </div>
+        <div th:if="${param.reset}">
+            <div class="alert alert-warning">
+                Invalid username or password. For password recovery type your e-mail and click the button.
+                <form th:method="post" th:action="@{/payments/profile/register/password-reset-request}">
+                    <input type="text" name="email" placeholder="e-mail">
+                    <button class="btn btn-lg btn-primary" type="submit">Отправить</button>
+                </form>
+            </div>
+        </div>
+        <div th:if="${param.activate}">
+            <form th:if="${param.activate[0] == 'true'}" th:method="post"
+                  th:action="@{/payments/profile/register/resend-request}">
+                <div class="alert alert-warning">
+                    <span th:text="'Пользователь ' + ${param.email} + ' не активирован. Отвравьте новый запрос, письмо со сылкой для активации будет отправлено на указанный email.'"></span>
+                </div>
+                <input hidden type="text" th:value="${param.email}" th:name="email">
+                <button class="btn btn-lg btn-primary" type="submit">Отправить</button>
+            </form>
+        </div>
+        <br>
+        <span>Обратитесь по адресу q@w.e</span>
+    </div>
+</div>
+<!--    copyright-->
+<div th:replace="~{fragments/footer :: copy}"></div>
+<script type="text/javascript">
+    function login(username, password) {
+        document.getElementById("username").value = username;
+        document.getElementById("password").value = password;
+        document.getElementById("btnLogin").click();
+        // $('input[name="username"]').val(username);
+        // $('input[name="password"]').val(password);
+        // $("#login_form").submit();
+    }
+</script>
+</body>
+</html>

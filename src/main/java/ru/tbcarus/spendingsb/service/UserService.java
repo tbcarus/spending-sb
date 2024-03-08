@@ -4,6 +4,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -13,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
@@ -29,6 +34,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@Validated
 public class UserService implements UserDetailsService {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
     public final JpaUserRepository userRepository;
@@ -63,7 +69,7 @@ public class UserService implements UserDetailsService {
         return opt.get();
     }
 
-    public User getByEmail(String email) {
+    public User getByEmail(@Email @NotEmpty @NotNull String email) {
         Optional<User> opt = userRepository.findByEmail(email);
         if (!opt.isPresent()) {
             throw new NotFoundException();
