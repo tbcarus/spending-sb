@@ -30,7 +30,7 @@
             <div class="alert alert-warning">
                 Invalid username or password. For password recovery type your e-mail and click the button.
                 <form th:method="post" th:action="@{/payments/profile/register/password-reset-request}">
-                    <input type="text" name="email" placeholder="e-mail">
+                    <input type="text" name="email" th:value="${param.email}" placeholder="e-mail">
                     <button class="btn btn-lg btn-primary" type="submit">Отправить</button>
                 </form>
             </div>
@@ -46,7 +46,10 @@
             </form>
         </div>
         <br>
-        <span>Обратитесь по адресу q@w.e</span>
+        <span>
+            В случае возникновения сложностей, замечаний или предложений, пожалуйста, напишите по почте
+            <a href="mailto:spending-sb@yandex.ru">spending-sb@yandex.ru</a>.
+        </span>
     </div>
 </div>
 <!--    copyright-->

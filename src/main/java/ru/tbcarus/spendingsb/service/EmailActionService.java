@@ -76,10 +76,10 @@ public class EmailActionService {
         return emailAction;
     }
 
-    public EmailAction resendActivationRequest(String email, String code) {
+    public EmailAction resendActivationRequest(String email) {
         // Повторный запрос активации пользователя
-        EmailAction old = repository.getByCode(code);
-        return resentRequest(old.getUser(), old, old.getType());
+        User user = userRepository.getByEmail(email);
+        return resentRequest(user, null, EmailRequestType.ACTIVATE);
     }
 
     public EmailAction passwordResetRequest(String email) {
