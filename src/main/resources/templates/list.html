@@ -1,10 +1,10 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
 <!--@thymesVar id="DU" type="ru.tbcarus.spendingsb.util.DateUtil"-->
 <!--@thymesVar id="pt" type="ru.tbcarus.spendingsb.model.PaymentType"-->
 <!--@thymesVar id="p" type="ru.tbcarus.spendingsb.model.Payment"-->
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,18 +20,20 @@
 <div class="container shadow">
 
     <!--    Верхняя строка-->
-    <div class="row" style="background-color: rgb(255, 87, 34)">
-        <div class="col-md-2"></div>
-        <div class="col-md-8 d-flex justify-content-center">
+    <div class="row" style="background-color: #ff5722;">
+        <div class="col-md-2 pt-1 pb-1"></div>
+        <div class="col-md-8 d-flex justify-content-center pt-1 pb-1">
                     <span th:text="'Период: ' + ${user.startPeriodDate.format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY_RU)}
                         + ' - '
                         + ${user.getEndPeriodDate().format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY_RU)}"
                           class="text-white">Period
                     </span>
         </div>
-        <div class="col-md-2 d-flex justify-content-end">
-            <a th:href="@{/payments/profile}" th:text="${user.name}"
-               class="text-white">User</a>
+        <div class="col-md-2 d-flex justify-content-end pt-1 pb-1">
+            <b>
+                <a th:href="@{/payments/profile}" th:text="${user.name}"
+                   class="text-white">User</a>
+            </b>
         </div>
     </div>
 
@@ -41,29 +43,30 @@
             <div class="col-md-2">
                 <input type="button" th:onclick="|window.location.href = '@{/payments}'|"
                        value="Обновить"
-                       class="btn btn-secondary"
+                       class="btn btn-top m-2"
                 />
             </div>
             <div class="col-md-8 d-flex justify-content-center">
                 <button type="submit"
-                        class="btn btn-secondary">
+                        class="btn btn-top m-2"
+                        style="width: 900px;">
                     Сохранить
                 </button>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 d-flex justify-content-end">
                 <input type="button" th:onclick="|window.location.href = '@{/payments/create}'|"
                        value="Добавить новую запись"
-                       class="btn btn-secondary"/>
+                       class="btn btn-top m-2"/>
             </div>
         </div>
 
         <!--    Строка с суммой всех затрат и выбором даты-->
-        <div class="row align-items-center text-warning" style="background-color: rgb(96, 125, 139); height: 40px">
-            <div class="col-md-2 text-warning">
-                <strong th:text="'Всего: ' + ${sumAll}"></strong>
+        <div class="row align-items-center" style="background-color: rgb(96, 125, 139); height: 40px">
+            <div class="col-md-2 pt-1 pb-1">
+                <b th:text="'Всего: ' + ${sumAll}" style="color: rgb(255,152,0)" class="pt-1 pb-1"></b>
             </div>
             <div class="col-md-8 d-flex justify-content-center">
-                <strong> Внести записи на дату:&nbsp;</strong>
+                <b style="color: rgb(255,152,0)" class="pt-1 pb-1"> Внести записи на дату:&nbsp;</b>
                 <input th:type="date" th:name="chosen_date"
                        th:value="${T(ru.tbcarus.spendingsb.util.DateUtil).getLocalDateTimeNow().format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY)}">
             </div>
@@ -73,7 +76,6 @@
         <!--    Таблица затрат-->
         <div class="row">
             <div class="col-md-12">
-                <!--            <table class="table w-auto table-striped table-sm table-bordered align-middle text-center">-->
                 <table class="table table-bordered table-striped table-sm align-middle text-center">
                     <thead class="">
                     </thead>
@@ -84,21 +86,23 @@
                         <!--        </th>-->
                         <div th:each="pt : ${paymentTypes}">
                             <td>
-                                <a th:href="@{'/payments/byType?type=' + ${pt.name}}">
-                                    <span th:text="${pt.title}">
+                                <a th:href="@{'/payments/byType?type=' + ${pt.name}}" class="text-black">
+                                    <b th:text="${pt.title}">
                                         ТИП
-                                    </span>
+                                    </b>
                                 </a>
                             </td>
-                            <td th:if="${pt.descriptionOutput}" th:text="Описание">ОП</td>
+                            <td th:if="${pt.descriptionOutput}" class="text-black">
+                                <b th:text="Описание">ОП</b>
+                            </td>
                         </div>
                     </tr>
 
                     <!--        Вывод сумм трат по типам-->
                     <tr>
                         <div th:each="pt : ${paymentTypes}">
-                            <td>
-                                <p th:text="${sumMapByType.get(pt)}">SUM</p>
+                            <td class="pt-1 pb-1">
+                                <span th:text="${sumMapByType.get(pt)}">SUM</span>
                             </td>
                             <td th:if="${pt.descriptionOutput}"></td>
                         </div>
@@ -106,13 +110,16 @@
 
                     <!--        Вывод ячеек для добавления трат-->
                     <div th:each="i : ${#numbers.sequence(0,1,1)}">
-                        <tr>
+                        <tr class="table-input">
                             <div th:each="pt : ${paymentTypes}">
                                 <td>
-                                    <input type="text" th:name="${pt.name}" style="width: 70px">
+                                    <input class="rounded-2 border-1" type="text" th:name="${pt.name}"
+                                           style="width: 70px; height: 29px; border-color: #bababa;">
                                 </td>
                                 <td th:if="${pt.descriptionOutput}">
-                                    <input type="text" th:name="${pt.name + '_description'}" style="width: 110px">
+                                    <input class="rounded-2 border-1" type="text"
+                                           th:name="${pt.name + '_description'}"
+                                           style="width: 110px; height: 29px; border-color: #bababa;">
                                 </td>
                             </div>
                         </tr>
@@ -128,7 +135,7 @@
                                         <!--                              th:text="${PaymentsMap.get(pt)[i].price}">V</span>-->
                                         <input type="button" th:if="${i < PaymentsMap.get(pt).size()}"
                                                th:onclick="|window.location.href = '@{/payments/{id}(id=${PaymentsMap.get(pt)[i].id})}'|"
-                                               th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-secondary"/>
+                                               th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-payment"/>
                                     </td>
                                     <td th:if="${pt.descriptionOutput}">
                         <span th:if="${i < PaymentsMap.get(pt).size()}"
@@ -149,18 +156,18 @@
         <div class="col-md-4">
             <input type="button" th:onclick="|window.location.href = '@{/payments/toCurrentDate}'|"
                    value="Показать записи до сегодняшней даты"
-                   class="btn btn-secondary"/>
+                   class="btn btn-bottom p-2"/>
         </div>
         <div class="col-md-4 d-flex justify-content-center">
             <input type="button" th:onclick="|window.location.href = '@{/payments/allTime}'|"
                    value="Показать записи за всё время"
-                   class="btn btn-secondary"/>
+                   class="btn btn-bottom p-2"/>
 
         </div>
         <div class="col-md-4 d-flex justify-content-end">
             <input type="button" th:onclick="|window.location.href = '@{/payments/allUsersPayments}'|"
                    value="Показать записи всех пользователей"
-                   class="btn btn-secondary"/>
+                   class="btn btn-bottom p-2"/>
         </div>
     </div>
 
@@ -170,13 +177,13 @@
     <form th:method="POST" th:action="@{/payments/profile/changeStartDate}">
         <div class="row">
             <div class="col-md-12 d-flex justify-content-center">
-                <select name="start_day">
+                <select name="start_day" class="m-1">
                     <option th:value="${user.startPeriodDate.dayOfMonth}"
                             th:text="${user.startPeriodDate.dayOfMonth}" selected hidden>TEXT
                     </option>
                     <option th:each="i : ${#numbers.sequence(1, 28, 1)}" th:value="${i}" th:text="${i}"></option>
                 </select>
-                <select name="start_month">
+                <select name="start_month" class="m-1">
                     <option th:value="${user.startPeriodDate.month.value}"
                             th:text="${user.startPeriodDate.month.getDisplayName(
                             T(java.time.format.TextStyle).FULL,
@@ -189,7 +196,7 @@
                             T(java.util.Locale).forLanguageTag('ru'))}">
                     </option>
                 </select>
-                <select name="start_year">
+                <select name="start_year" class="m-1">
                     <option th:value="${user.startPeriodDate.year}"
                             th:text="${user.startPeriodDate.year}" selected hidden>
 
@@ -199,7 +206,7 @@
                             th:text="${i}">
                     </option>
                 </select>
-                <button type="submit" class="btn btn-secondary">
+                <button type="submit" class="btn btn-top p-2 m-1">
                     Изменить начальную дату
                 </button>
             </div>

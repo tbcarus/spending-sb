@@ -1,0 +1,55 @@
+body {
+    font-family: 'Verdana';
+    font-size: 9pt;
+}
+
+span {
+
+    color: black;
+}
+
+.table-input > td {
+    background-color: #ddffdd;
+}
+
+.btn-top {
+    background: #8bc34a;
+    color: black;
+    border: 0;
+    font-family: 'Verdana';
+    font-size: 9pt;
+}
+
+.btn-top:hover, .btn-top:focus, .btn-top:active, .btn-top.active, .open>.dropdown-toggle.btn-top {
+    color: black;
+    background-color: #ffc107;
+    border: 0;
+}
+
+.btn-payment {
+    background: #ffc107;
+    color: black;
+    border: 0;
+    font-family: 'Verdana';
+    font-size: 9pt;
+}
+
+.btn-payment:hover, .btn-payment:focus, .btn-payment:active, .btn-payment.active, .open>.dropdown-toggle.btn-payment {
+    color: black;
+    background-color: #8bc34a;
+    border: 0;
+}
+
+.btn-bottom {
+    background: #87ceeb;
+    color: black;
+    border: 0;
+    font-family: 'Verdana';
+    font-size: 9pt;
+}
+
+.btn-bottom:hover, .btn-bottom:focus, .btn-bottom:active, .btn-bottom.active, .open>.dropdown-toggle.btn-bottom {
+    color: black;
+    background-color: #8bc34a;
+    border: 0;
+}

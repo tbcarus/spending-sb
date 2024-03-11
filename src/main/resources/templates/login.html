@@ -20,16 +20,6 @@
 <!--</form>-->
 <div class="jumbotron bg-light">
     <div class="container py-4">
-        <div th:if="${param.error}" class="alert alert-warning">
-            Invalid username or password. For password recovery type your e-mail and click the button.
-            <div th:if="${param.error[0] == 'no-user-found'}" class="alert alert-danger" th:text="'Пользователь ' + ${param.username} + ' не зарегистрирован.'">
-
-            </div>
-            <form th:method="post" th:action="@{/payments/profile/register/password-reset-request}">
-                <input type="text" name="email" placeholder="e-mail">
-                <button class="btn btn-lg btn-primary" type="submit">Отправить</button>
-            </form>
-        </div>
         <div th:if="${param.logout}" class="alert alert-success">
             You have been logged out.
         </div>
