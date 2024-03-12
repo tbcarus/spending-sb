@@ -15,7 +15,7 @@
 <!--@thymesVar id="paymentType" type="ru.tbcarus.spendingsb.model.PaymentType"-->
 <!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
 <div class="position-absolute top-50 start-50 translate-middle">
-    <form th:method="POST" action="../payments">
+    <form th:method="POST" th:action="@{/payments}">
         <input type="hidden" name="id" th:value="${payment.id}">
         <table class="table-primary table-bordered">
             <tr>
@@ -33,7 +33,7 @@
             <tr>
                 <td class="d-flex justify-content-end">Тип:</td>
                 <td>
-                    <select name="payment_type">
+                    <select name="type">
                         <option th:unless="${payment.isNew()}" th:value="${payment.type}" th:text="${payment.type.title}">DEFAULT</option>
                         <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
                                 th:value="${paymentType}" th:text="${paymentType.title}">Type

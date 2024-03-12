@@ -93,9 +93,9 @@ public class PaymentUIController extends AbstractPaymentController {
     @PostMapping
     public String updateOrCreate(HttpServletRequest request,
                                  @RequestParam(value = "id", required = false) String id,
-                                 @RequestParam("payment_type") PaymentType type,
+                                 @RequestParam("type") PaymentType type,
                                  @RequestParam("price") int price,
-                                 @RequestParam("description") String description,
+                                 @RequestParam(value = "description", required = false) String description,
                                  @RequestParam("date") LocalDate date,
                                  @AuthenticationPrincipal User user) {
         try {
