@@ -1,11 +1,11 @@
-<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
-<!--@thymesVar id="DU" type="ru.tbcarus.spendingsb.util.DateUtil"-->
-<!--@thymesVar id="pt" type="ru.tbcarus.spendingsb.model.PaymentType"-->
-<!--@thymesVar id="p" type="ru.tbcarus.spendingsb.model.Payment"-->
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+<!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
+<!--@thymesVar id="DU" type="ru.tbcarus.spendingsb.util.DateUtil"-->
+<!--@thymesVar id="paymentType" type="ru.tbcarus.spendingsb.model.PaymentType"-->
+<!--@thymesVar id="pt" type="ru.tbcarus.spendingsb.model.PaymentType"-->
+<!--@thymesVar id="p" type="ru.tbcarus.spendingsb.model.Payment"-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,33 +18,48 @@
         crossorigin="anonymous"></script>
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
 <div style="width: 600px" class="text-center mx-auto">
-    <table class="table shadow table-striped table-sm" style="font-size: 14px">
+    <table class="table shadow table-striped table-sm">
         <tr class="d-flex">
-            <th class="text-center col-md-12" th:text="${paymentType.title}"></th>
+            <th class="text-center col-md-12">
+                <b th:text="${paymentType.title}"></b>
+            </th>
         </tr>
         <tr class="d-flex">
-            <th class="text-center col-md-12" th:text="${sum}"></th>
+            <th class="text-center col-md-12">
+                <b th:text="${sum}"></b>
+            </th>
         </tr>
         <tr class="d-flex">
             <td class="col-md-2">Стоимость</td>
             <td class="col-md-3">Описание</td>
             <td class="col-md-2">Дата</td>
             <td class="col-md-2">Пользователь</td>
-            <td class="col-md-3"></td>
+            <td class="col-md-3">Удалить</td>
         </tr>
         <tr class="d-flex" th:each="p : ${list}">
-            <td class="col-md-2" th:text="${p.price}">PRICE</td>
-            <td class="col-md-3" th:text="${p.description}"></td>
-            <td class="col-md-2" th:text="${p.date.format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY_RU)}"></td>
-            <td class="col-md-2" th:text="${p.user.name}"></td>
+            <td class="col-md-2">
+                <input type="button"
+                       th:onclick="|window.location.href = '@{/payments/{id}(id=${p.id})}'|"
+                       th:value="${p.price}" class="btn btn-payment"/>
+            </td>
+            <td class="col-md-3 pt-2 pb-2">
+                <span th:text="${p.description}">DESCRIPTION</span>
+            </td>
+            <td class="col-md-2 pt-2 pb-2">
+                <span th:text="${p.date.format(T(ru.tbcarus.spendingsb.util.DateUtil).DTFORMATTER_DATE_ONLY_RU)}">DATE</span>
+            </td>
+            <td class="col-md-2 pt-2 pb-2">
+                <span th:text="${p.user.name}">USER</span>
+            </td>
             <td class="col-md-3">
                 <input type="button" value="Удалить запись"
-                       th:onclick="|window.location.href = '@{/payments/delete?id={id}(id=${p.id})}'|">
+                       th:onclick="|window.location.href = '@{/payments/delete?id={id}(id=${p.id})}'|"
+                       class="btn btn-del">
             </td>
         </tr>
         <tr class="d-flex">
             <td class="text-center col-md-12">
-                <input type="button" value="Назад" th:onclick="|window.location.href = '@{/payments}'|">
+                <input type="button" value="Назад" th:onclick="|window.location.href = '@{/payments}'|" class="btn btn-top">
             </td>
         </tr>
     </table>

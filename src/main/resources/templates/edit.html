@@ -17,24 +17,28 @@
 <div class="position-absolute top-50 start-50 translate-middle">
     <form th:method="POST" th:action="@{/payments}">
         <input type="hidden" name="id" th:value="${payment.id}">
-        <table class="table-primary table-bordered">
+        <table class="table shadow table-striped">
             <tr>
                 <td colspan="2" class="text-center">
-                    <input th:if="${payment.id}" type="button" value="Удалить запись"
+                    <input th:if="${payment.id}" type="button" class="btn btn-del" value="Удалить запись"
                            th:onclick="|window.location.href = 'delete?id=${payment.id}'|"
                            th:method="delete">
                 </td>
             </tr>
             <tr th:if="${user.isInGroup()}">
-                <td th:unless="${payment.isNew()}" colspan="2" class="text-center" th:text="${payment.user.getName()} + ' (' + ${payment.user.getEmail()} + ')'">
-                    Пользователь
+                <td th:unless="${payment.isNew()}" colspan="2" class="text-center">
+                    <span th:text="${payment.user.getName()} + ' (' + ${payment.user.getEmail()} + ')'">Пользователь</span>
                 </td>
             </tr>
             <tr>
-                <td class="d-flex justify-content-end">Тип:</td>
+                <td class="d-flex justify-content-end">
+                    <b>Тип:</b>
+                </td>
                 <td>
-                    <select name="type">
-                        <option th:unless="${payment.isNew()}" th:value="${payment.type}" th:text="${payment.type.title}">DEFAULT</option>
+                    <select name="type" class="rounded-2 border-1">
+                        <option th:unless="${payment.isNew()}" th:value="${payment.type}"
+                                th:text="${payment.type.title}">DEFAULT
+                        </option>
                         <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
                                 th:value="${paymentType}" th:text="${paymentType.title}">Type
                         </option>
@@ -42,35 +46,40 @@
                 </td>
             </tr>
             <tr>
-                <td class="d-flex justify-content-end">Сумма:</td>
+                <td class="d-flex justify-content-end">
+                    <b>Сумма:</b>
+                </td>
                 <td>
-                    <input type="text" name="price" th:value="${payment.price}">
+                    <input type="text" name="price" th:value="${payment.price}" class="rounded-2 border-1">
                 </td>
             </tr>
             <tr>
-                <td class="d-flex justify-content-end">Описание:</td>
+                <td class="d-flex justify-content-end">
+                    <b>Описание:</b>
+                </td>
                 <td>
-                    <input type="text" name="description" th:value="${payment.description}">
+                    <input type="text" name="description" th:value="${payment.description}" class="rounded-2 border-1">
                 </td>
             </tr>
             <tr>
-                <td class="d-flex justify-content-end">Дата:</td>
+                <td class="d-flex justify-content-end">
+                    <b>Дата:</b>
+                </td>
                 <td>
-                    <input type="date" name="date" th:value="${payment.date}">
+                    <input type="date" name="date" th:value="${payment.date}" class="rounded-2 border-1">
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     <div class="d-flex justify-content-around">
-                        <button type="submit">Сохранить</button>
-                        <input type="button" value=" Отменить " th:onclick="|window.location.href='@{/payments}'|">
+                        <button type="submit" class="btn btn-top">Сохранить</button>
+                        <input type="button" value=" Отменить " class="btn btn-top" th:onclick="|window.location.href='@{/payments}'|">
                     </div>
                 </td>
             </tr>
         </table>
     </form>
     <!--    copyright-->
-    <br>
     <div th:replace="~{fragments/footer :: copy}"></div>
 </div>
 </body>

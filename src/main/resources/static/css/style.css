@@ -4,7 +4,6 @@ body {
 }
 
 span {
-
     color: black;
 }
 
@@ -51,5 +50,19 @@ span {
 .btn-bottom:hover, .btn-bottom:focus, .btn-bottom:active, .btn-bottom.active, .open>.dropdown-toggle.btn-bottom {
     color: black;
     background-color: #8bc34a;
+    border: 0;
+}
+
+.btn-del {
+    background: #f44336;
+    color: white;
+    border: 0;
+    font-family: 'Verdana';
+    font-size: 9pt;
+}
+
+.btn-del:hover, .btn-del:focus, .btn-del:active, .btn-del.active, .open>.dropdown-toggle.btn-del {
+    color: white;
+    background-color: #673ab7;
     border: 0;
 }

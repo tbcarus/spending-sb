@@ -14,68 +14,69 @@
         crossorigin="anonymous"></script>
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
 
-<div style="width: 400px" class="text-center mx-auto">
+<div style="width: 400px" class="position-absolute top-50 start-50 translate-middle">
     <form th:method="POST" action="../payments/profile">
         <input type="hidden" name="uuid" th:value="${user.id}">
         <table class="table table-striped shadow">
             <tr>
                 <td style="vertical-align: middle; text-align: right">
-                    Имя:
+                    <b>Имя:</b>
                 </td>
                 <td>
-                    <input type="text" name="name" th:value="${user.name}" style="width: 150px">
+                    <input type="text" name="name" th:value="${user.name}" style="width: 150px"
+                           class="rounded-2 border-1">
                 </td>
             </tr>
             <tr>
                 <td style="vertical-align: middle; text-align: right">
-                    Начальный день месяца:
+                    <b>Начальный день месяца:</b>
                 </td>
                 <td>
-                    <select name="start_day">
+                    <select name="start_day" class="rounded-2 border-1">
                         <option th:value="${user.startPeriodDate.dayOfMonth}" selected
                                 hidden th:text="${user.startPeriodDate.dayOfMonth}">SELECTED
                         </option>
-                            <option th:each="i : ${#numbers.sequence(1,28,1)}" th:value="${i}" th:text="${i}">DAY</option>
+                        <option th:each="i : ${#numbers.sequence(1,28,1)}" th:value="${i}" th:text="${i}">DAY</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <td style="vertical-align: middle; text-align: right">
-                    Старый пароль:
+                    <b>Старый пароль:</b>
                 </td>
                 <td>
-                    <input type="password" name="old_pass" style="width: 150px">
+                    <input type="password" name="old_pass" style="width: 150px" class="rounded-2 border-1">
                 </td>
             </tr>
             <tr>
                 <td style="vertical-align: middle; text-align: right">
-                    Новый пароль:
+                    <b>Новый пароль:</b>
                 </td>
                 <td>
-                    <input type="password" name="new_pass" style="width: 150px">
+                    <input type="password" name="new_pass" style="width: 150px" class="rounded-2 border-1">
                 </td>
             </tr>
             <tr>
                 <td style="vertical-align: middle; text-align: right">
-                    Повторить пароль:
+                    <b>Повторить пароль:</b>
                 </td>
                 <td>
-                    <input type="password" name="new_pass_reply" style="width: 150px">
+                    <input type="password" name="new_pass_reply" style="width: 150px" class="rounded-2 border-1">
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button type="submit">Сохранить</button>
-                    <input type="button" value="На главную" th:onclick="|window.location.href = '@{/payments}'|">
+                    <div class="d-flex justify-content-around">
+                        <button type="submit" class="btn btn-top">Сохранить</button>
+                        <input type="button" class="btn btn-top" value="На главную"
+                               th:onclick="|window.location.href = '@{/payments}'|">
+                    </div>
                 </td>
             </tr>
-
         </table>
     </form>
+    <!--    copyright-->
+    <div th:replace="~{fragments/footer :: copy}"></div>
 </div>
-
-<!--    copyright-->
-<br>
-<div th:replace="~{fragments/footer :: copy}"></div>
 </body>
 </html>

@@ -25,13 +25,13 @@
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        <input type="button" value=" Принять " th:onclick="|window.location.href='@{{id}/accept(id=${note.id})}'|">
+                        <input type="button" class="btn btn-top" value=" Принять " th:onclick="|window.location.href='@{{id}/accept(id=${note.id})}'|">
                     </div>
                     <div class="col-4">
-                        <input type="button" value=" Удалить " th:onclick="|window.location.href='@{{id}/delete(id=${note.id})}'|">
+                        <input type="button" class="btn btn-del" value=" Удалить " th:onclick="|window.location.href='@{{id}/delete(id=${note.id})}'|">
                     </div>
                     <div class="col-4">
-                        <input type="button" value=" Отменить " th:onclick="history.back()">
+                        <input type="button" class="btn btn-bottom" value=" Отменить " th:onclick="history.back()">
                     </div>
                 </div>
             </div>
@@ -40,7 +40,6 @@
 </div>
 
 <!--    copyright-->
-<br>
 <div th:replace="~{fragments/footer :: copy}"></div>
 </body>
 </html>
