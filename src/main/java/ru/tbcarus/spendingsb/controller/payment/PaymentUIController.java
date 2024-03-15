@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
+import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
@@ -76,9 +77,15 @@ public class PaymentUIController extends AbstractPaymentController {
 
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable int id, @AuthenticationPrincipal User user) {
-        Payment payment = super.get(user, id);
-        model.addAttribute("payment", payment);
+        Payment payment;
         model.addAttribute("user", user);
+        try {
+            payment = super.get(user, id);
+        } catch (NotFoundException exc) {
+            model.addAttribute("msg", exc.getMessage());
+            return "error";
+        }
+        model.addAttribute("payment", payment);
         return "edit";
     }
 

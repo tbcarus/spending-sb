@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Уведомления</title>
+    <title>Error</title>
     <div th:replace="~{fragments/headTag :: headTag}"></div>
 </head>
 <body>
@@ -16,10 +16,9 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
-
 <div class="container shadow">
     <div class="p-2">
-        <div class="alert alert-warning m-0" th:text="${err.title}">QWERTY</div>
+        <div th:if="${msg}" class="alert alert-warning m-0 text-center" th:text="${msg}">QWERTY</div>
     </div>
 </div>
 <!--    copyright-->

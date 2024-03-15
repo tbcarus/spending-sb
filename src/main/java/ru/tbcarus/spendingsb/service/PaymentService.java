@@ -54,7 +54,7 @@ public class PaymentService {
         sp = sp.and(filterById(payId));
         Payment payment = paymentRepository.get(sp);
         if (payment == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("Запись не найдена.");
         }
         return payment;
     }
