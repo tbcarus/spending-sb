@@ -7,6 +7,13 @@ span {
     color: black;
 }
 
+.inactive {
+    color: #cccccc;
+}
+.active {
+    color: #000000;
+}
+
 .table-input > td {
     background-color: #ddffdd;
 }

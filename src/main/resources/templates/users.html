@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
+<script th:src="@{/js/chbx.js}"></script>
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
 <div class="jumbotron pt-4 p-5 bg-light">
     <div class="container">
@@ -33,16 +34,34 @@
             </thead>
             <tbody>
             <tr th:each="u : ${users}">
-                <td><a th:href="'users/'+${u.id}" th:text="${u.name}"></a> </td>
-                <td th:text="${u.email}"></td>
-                <td th:text="${u.roles}"></td>
+
                 <td>
-                    <input type="checkbox" th:checked="${u.enabled}">
+                    <a th:id="name-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}"
+                       th:href="'users/'+${u.id}" th:text="${u.name}"></a>
                 </td>
                 <td>
-                    <input type="checkbox" th:checked="${u.banned}">
+                    <div th:id="email-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}"
+                         th:text="${u.email}"></div>
                 </td>
-                <td><a th:href="'users/delete?id='+${u.id}">Удалить</a></td>
+                <td>
+                    <div th:id="roles-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}"
+                         th:text="${u.roles}"></div>
+                </td>
+                <td>
+                    <input type="checkbox" th:checked="${u.enabled}" th:id="enable-+${u.id}"
+                           th:onclick="activeCheckbox([[${u.id}]])">
+                </td>
+                <td>
+                    <input type="checkbox" th:checked="${u.banned}" th:id="ban-+${u.id}"
+                           th:onclick="banCheckbox([[${u.id}]])">
+                </td>
+                <td><a th:href="'users/delete?id='+${u.id}">
+                    <div th:id="del-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}">
+                        Удалить
+                    </div>
+                </a>
+                </td>
+
             </tr>
             </tbody>
         </table>

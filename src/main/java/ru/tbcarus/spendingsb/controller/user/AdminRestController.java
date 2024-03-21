@@ -2,6 +2,7 @@ package ru.tbcarus.spendingsb.controller.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.model.Role;
 import ru.tbcarus.spendingsb.model.User;
@@ -47,5 +48,17 @@ public class AdminRestController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         super.delete(id);
+    }
+
+    @PostMapping("/{id}/enable")
+    @ResponseStatus(HttpStatus.OK)
+    public User enable(@AuthenticationPrincipal User user, @PathVariable int id, @RequestParam(name = "param") boolean enable) {
+        return super.enable(id, enable);
+    }
+
+    @PostMapping("/{id}/ban")
+    @ResponseStatus(HttpStatus.OK)
+    public User ban(@AuthenticationPrincipal User user, @PathVariable int id, @RequestParam(name = "param") boolean ban) {
+        return super.ban(id, ban);
     }
 }

@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/users").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/rest/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/login").defaultSuccessUrl("/payments")

@@ -119,4 +119,12 @@ public abstract class AbstractUserController {
         log.info("Entrance with reset password link for {} with code {}", email, code);
         return emailActionService.passwordResetGet(email, code, EmailRequestType.RESET_PASSWORD);
     }
+
+    protected User enable(int userId, boolean enable) {
+        return userService.enable(userId, enable);
+    }
+
+    protected User ban(int userId, boolean ban) {
+        return userService.ban(userId, ban);
+    }
 }

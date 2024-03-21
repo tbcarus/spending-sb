@@ -126,10 +126,23 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void enable(int id, boolean enabled) {
-        User user = getById(id);
+    public User enable(int userId, boolean enabled) {
+        User user = getById(userId);
+        if (user.isBanned()) {
+            throw new IllegalRequestDataException("User banned!");
+        }
         user.setEnabled(enabled);
-        userRepository.save(user);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User ban(int userId, boolean ban) {
+        User user = getById(userId);
+        user.setBanned(ban);
+        if (ban) {
+            user.setEnabled(false);
+        }
+        return userRepository.save(user);
     }
 
     @Override
