@@ -34,34 +34,32 @@
             </thead>
             <tbody>
             <tr th:each="u : ${users}">
-
                 <td>
-                    <a th:id="name-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}"
+                    <a th:id="name-+${u.id}" th:class="${u.enabled} ? 'active': (${u.banned} ? 'banned' : 'inactive')"
                        th:href="'users/'+${u.id}" th:text="${u.name}"></a>
                 </td>
                 <td>
-                    <div th:id="email-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}"
+                    <div th:id="email-+${u.id}" th:class="${u.enabled} ? 'active': (${u.banned} ? 'banned' : 'inactive')"
                          th:text="${u.email}"></div>
                 </td>
                 <td>
-                    <div th:id="roles-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}"
+                    <div th:id="roles-+${u.id}" th:class="${u.enabled} ? 'active': (${u.banned} ? 'banned' : 'inactive')"
                          th:text="${u.roles}"></div>
                 </td>
                 <td>
                     <input type="checkbox" th:checked="${u.enabled}" th:id="enable-+${u.id}"
-                           th:onclick="activeCheckbox([[${u.id}]])">
+                           th:onclick="activeCheckbox([[${u.id}]])" th:disabled="${u.banned}">
                 </td>
                 <td>
                     <input type="checkbox" th:checked="${u.banned}" th:id="ban-+${u.id}"
                            th:onclick="banCheckbox([[${u.id}]])">
                 </td>
-                <td><a th:href="'users/delete?id='+${u.id}">
-                    <div th:id="del-+${u.id}" th:class="${!u.enabled ? 'inactive': 'active'}">
+                <td><a th:href="'users/delete?id='+${u.id}" th:class="${u.enabled} ? 'active': (${u.banned} ? 'banned' : 'inactive')">
+                    <div th:id="del-+${u.id}">
                         Удалить
                     </div>
                 </a>
                 </td>
-
             </tr>
             </tbody>
         </table>

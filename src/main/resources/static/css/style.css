@@ -13,6 +13,9 @@ span {
 .active {
     color: #000000;
 }
+.banned {
+    color: #e75b5b;
+}
 
 .table-input > td {
     background-color: #ddffdd;
