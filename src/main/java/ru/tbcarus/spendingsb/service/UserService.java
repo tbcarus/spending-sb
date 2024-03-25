@@ -278,4 +278,10 @@ public class UserService implements UserDetailsService {
         u.removeRole(Role.SUPERUSER);
         userRepository.save(u);
     }
+
+    public User clearNewNotify(User user) {
+        User u = userRepository.getByEmail(user.getEmail());
+        u.setNewNotify(false);
+        return userRepository.save(u);
+    }
 }

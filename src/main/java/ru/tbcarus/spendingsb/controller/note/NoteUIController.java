@@ -23,6 +23,9 @@ public class NoteUIController extends AbstractNoteController{
     public String getAll(Model model, @AuthenticationPrincipal User user) {
         List<Note> notes = super.getAll(user);
         model.addAttribute("notes", notes);
+        if (user.isNewNotify()) {
+            user = userService.clearNewNotify(user);
+        }
         model.addAttribute("user", user);
         return "notes";
     }
