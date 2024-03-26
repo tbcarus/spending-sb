@@ -1,7 +1,9 @@
 package ru.tbcarus.spendingsb.controller.note;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +26,8 @@ public class NoteUIController extends AbstractNoteController{
         List<Note> notes = super.getAll(user);
         model.addAttribute("notes", notes);
         if (user.isNewNotify()) {
-            user = userService.clearNewNotify(user);
+            user.setNewNotify(false);
+            userService.clearNewNotify(user);
         }
         model.addAttribute("user", user);
         return "notes";

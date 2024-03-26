@@ -34,6 +34,9 @@ public class PaymentUIController extends AbstractPaymentController {
     public String getAll(Model model, @AuthenticationPrincipal User user) {
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user, user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
+        if (userService.getByEmail(user.getEmail()).isNewNotify()) {
+            user.setNewNotify(true);
+        }
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
