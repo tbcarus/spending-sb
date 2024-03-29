@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS friends;
 DROP TABLE IF EXISTS email_requests;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS costs;
@@ -13,8 +14,8 @@ CREATE TABLE users
     NAME              TEXT                DEFAULT 'Имя не задано'::TEXT,
     email             TEXT                              NOT NULL,
     PASSWORD          TEXT                              NOT NULL,
-    enabled           bool                DEFAULT FALSE  NOT NULL,
-    banned            bool                DEFAULT FALSE  NOT NULL,
+    enabled           bool                DEFAULT FALSE NOT NULL,
+    banned            bool                DEFAULT FALSE NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
     friends           TEXT                DEFAULT ''    NOT NULL,
     friends_id        TEXT                DEFAULT ''    NOT NULL,
@@ -77,6 +78,20 @@ CREATE TABLE email_requests
             REFERENCES users on delete cascade,
     used      BOOLEAN      DEFAULT FALSE NOT NULL
 
+);
+
+create table friends
+(
+    id           integer not null
+        primary key,
+    color        varchar(255) default '#ffc107'::character varying,
+    friend_email varchar(255),
+    friend_id    integer not null,
+    user_email   varchar(255),
+    user_id      integer
+        constraint friend_user_id_fk
+            references users
+            on delete cascade
 );
 
 

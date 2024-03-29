@@ -227,26 +227,28 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void sendFriendInvite(User user, String email) {
-        if (user.getFriendsList().contains(email)) {
-            throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
-        }
-        if (user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
-            throw new IncorrectAddition(ErrorType.TOO_MUCH_FRIENDS);
-        }
-        if (user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
-            throw new IncorrectAddition(ErrorType.TOO_MUCH_INVITES);
-        }
+        if (!email.equals(user.getEmail())) {
+            if (user.getFriendsList().contains(email)) {
+                throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
+            }
+            if (user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
+                throw new IncorrectAddition(ErrorType.TOO_MUCH_FRIENDS);
+            }
+            if (user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
+                throw new IncorrectAddition(ErrorType.TOO_MUCH_INVITES);
+            }
 
-        User userDest = getByEmail(email);
-        if (userDest.isInGroup()) {
-            throw new IncorrectAddition(ErrorType.HAS_GROUP);
-        }
+            User userDest = getByEmail(email);
+            if (userDest.isInGroup()) {
+                throw new IncorrectAddition(ErrorType.HAS_GROUP);
+            }
 
-        Note note = new Note(NoteType.INVITE, false, LocalDateTime.now(), "Объединение досок",
-                "Пользователь " + user.getEmail() + " объединение досок", email, user);
-        noteService.create(note);
-        userDest.setNewNotify(true);
-        update(userDest, userDest.getId());
+            Note note = new Note(NoteType.INVITE, false, LocalDateTime.now(), "Объединение досок",
+                    "Пользователь " + user.getEmail() + " объединение досок", email, user);
+            noteService.create(note);
+            userDest.setNewNotify(true);
+            update(userDest, userDest.getId());
+        }
     }
 
     public Specification<User> filterByEmail(String email) {

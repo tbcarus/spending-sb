@@ -3,6 +3,8 @@ package ru.tbcarus.spendingsb.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,6 +66,10 @@ public class User implements UserDetails, HasId {
     private String friendsId = ""; // строка с id через пробел. Костыль, так как в тратах id пользователя. Может, потом стоит убрать список email-ов
 
     private boolean newNotify;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Friend> friendList;
 
     public User() {
         this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
@@ -258,6 +264,14 @@ public class User implements UserDetails, HasId {
     public void unban() {
         this.banned = false;
     }
+
+//    public void addToFriendList(Friend friend) {
+//        friendList.add(friend);
+//    }
+//
+//    public void deleteFromFriendList(Friend friend) {
+//        friendList.remove(friend);
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
