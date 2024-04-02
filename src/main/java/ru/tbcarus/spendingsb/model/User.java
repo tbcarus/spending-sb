@@ -1,14 +1,17 @@
 package ru.tbcarus.spendingsb.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -24,16 +27,6 @@ public class User implements UserDetails, HasId {
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     protected Integer id;
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     @NotBlank(message = "Имя не может быть пустым")
     @Size(min = 2, max = 128, message = "Длина имени от 2 до 128")
@@ -61,15 +54,12 @@ public class User implements UserDetails, HasId {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
-    private String friends = ""; // строка с email-ами через пробел. 5 друзей МАКС
-
-    private String friendsId = ""; // строка с id через пробел. Костыль, так как в тратах id пользователя. Может, потом стоит убрать список email-ов
-
     private boolean newNotify;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Friend> friendList;
+    @JsonManagedReference
+    private List<Friend> friendsList = new ArrayList<>();
 
     public User() {
         this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
@@ -123,89 +113,44 @@ public class User implements UserDetails, HasId {
         this.roles = new HashSet<>(roles);
     }
 
-    public List<String> getFriendsList() {
-        return friends.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(friends.split(" ")));
+    public List<Friend> getFriendsList() {
+        return friendsList;
+    }
+
+    public boolean isContainFriendEmail(String email) {
+        return friendsList.stream().anyMatch(f -> email.equals(f.getFriendEmail()));
     }
 
     public List<Integer> getFriendsIdList() {
-        return friendsId.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.stream(friendsId.split(" "))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList()));
+        return friendsList.stream().map(Friend::getFriendId).collect(Collectors.toList());
     }
 
-    public void addFriend(String email) {
-        List<String> friendsList = getFriendsList();
-        if (friendsList.contains(email)) {
-            return;
-        }
-        friends = friends.isEmpty() ? email : friends + " " + email;
+    public void addFriend(Friend friend) {
+        friendsList.add(friend);
     }
 
-    public void addFriendId(int id) {
-        List<Integer> friendsList = getFriendsIdList();
-        if (friendsList.contains(id)) {
-            return;
-        }
-        friendsId = friendsId.isEmpty() ? String.valueOf(id) : friendsId + " " + id;
+    public void addFriendsList(List<Friend> list) {
+        friendsList.addAll(list);
     }
 
-    public void addFriendsList(List<String> friendsList) {
-        for (String friend : friendsList) {
-            addFriend(friend);
-        }
-    }
-
-    public void addFriendsIdList(List<Integer> friendsIdList) {
-        for (int friendId : friendsIdList) {
-            addFriendId(friendId);
-        }
-    }
-
-    public void addFriends(String... friendsArray) {
+    public void addFriends(Friend... friendsArray) {
         addFriendsList(Arrays.asList(friendsArray));
     }
 
-    public void addFriendsId(Integer... friendsIdArray) {
-        addFriendsIdList(Arrays.asList(friendsIdArray));
-    }
-
-    public void setFriendsList(List<String> friendsList) {
-        StringBuilder sb = new StringBuilder();
-        for (String email : friendsList) {
-            sb.append(email);
-            sb.append(" ");
-        }
-        this.friends = sb.toString().trim();
-    }
-
-    public void setFriendsIdList(List<Integer> friendsIdList) {
-        StringBuilder sb = new StringBuilder();
-        for (int id : friendsIdList) {
-            sb.append(id);
-            sb.append(" ");
-        }
-        this.friendsId = sb.toString().trim();
+    public void setFriendsList(List<Friend> friendsList) {
+        this.friendsList = friendsList;
     }
 
     public void removeAllFriends() {
-        friends = "";
+        friendsList.clear();
     }
 
-    public void removeAllFriendsId() {
-        friendsId = "";
+    public void removeFriend(Friend friend) {
+        friendsList.remove(friend);
     }
 
     public void removeFriend(String email) {
-        friends = friends.replace(email, "").replaceAll("\\s+", " ").trim();
-    }
-
-    public void removeFriendId(int id) {
-        String idStr = String.valueOf(id);
-        friendsId = friendsId.replace(idStr, "").replaceAll("\\s+", " ").trim();
-    }
-
-    public void setRoles(Collection<Role> roles) {
-        this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+        friendsList.removeIf(f -> f.getFriendEmail().equals(email));
     }
 
     public void addRole(Role role) {
@@ -238,7 +183,7 @@ public class User implements UserDetails, HasId {
     }
 
     public boolean isInGroup() {
-        return !friendsId.isEmpty();
+        return !friendsList.isEmpty();
     }
 
     public boolean hasFriend(String email) {
@@ -265,13 +210,13 @@ public class User implements UserDetails, HasId {
         this.banned = false;
     }
 
-//    public void addToFriendList(Friend friend) {
-//        friendList.add(friend);
-//    }
-//
-//    public void deleteFromFriendList(Friend friend) {
-//        friendList.remove(friend);
-//    }
+    public void addToFriendList(Friend friend) {
+        friendsList.add(friend);
+    }
+
+    public void deleteFromFriendList(Friend friend) {
+        friendsList.remove(friend);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -300,18 +245,4 @@ public class User implements UserDetails, HasId {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
-
-    //    @OneToMany
-//    private List<Payment> payments;
-//
-//    private String family;
-//    @Transient
-//    private List<Integer> familyIdList;
-//
-//    public List<Integer> getFamiyIdList() {
-//        return Arrays.stream(family.split(" "))
-//                .map(s -> Integer.parseInt(s))
-//                .collect(Collectors.toList());
-//    }
 }
