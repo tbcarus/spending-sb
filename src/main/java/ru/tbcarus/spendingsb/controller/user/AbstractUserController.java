@@ -82,7 +82,7 @@ public abstract class AbstractUserController {
 
     protected List<User> getFriends(User user) {
         log.info("get friends list by user {}", user.getId());
-        return userService.getFriends(user.getFriendsList());
+        return userService.getFriends(user.getFriendsListStr());
     }
 
     protected void addSU(User user, int id) {

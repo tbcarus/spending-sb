@@ -79,11 +79,11 @@ public class NoteService {
 
         recipient.setFriends(sender.getFriends()); // скопировать список друзей пользователю от приглашающего + сам приглашающий
         recipient.setFriendsId(sender.getFriendsId());
-        recipient.addFriend(sender.getEmail());
+        recipient.addFriendStr(sender.getEmail());
         recipient.addFriendId(sender.getId());
 
         Friend friendForRecipient = new Friend(recipient, sender);
-        recipient.addToFriendList(friendForRecipient);
+        recipient.addFriend(friendForRecipient);
 //        recipient.getFriendList().add(friendForRecipient);
 //        Friend fSaved = friendRepository.save(friendForRecipient);
 
@@ -91,14 +91,14 @@ public class NoteService {
         recipient.setStartPeriodDate(sender.getStartPeriodDate()); // синхронизация начальной даты
         userRepository.save(recipient); // сохранить пользователя
 
-        for (String email : sender.getFriendsList()) {
+        for (String email : sender.getFriendsListStr()) {
             // пройтись по списку друзей приглашающего и всем добавить нового пользователя
             User user = userRepository.getByEmail(email);
-            user.addFriend(recipient.getEmail());
+            user.addFriendStr(recipient.getEmail());
             user.addFriendId(recipient.getId());
             userRepository.save(user);
         }
-        sender.addFriend(recipient.getEmail());
+        sender.addFriendStr(recipient.getEmail());
         sender.addFriendId(recipient.getId());
         userRepository.save(sender);
 

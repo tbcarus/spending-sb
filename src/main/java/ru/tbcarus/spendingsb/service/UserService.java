@@ -4,7 +4,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -178,20 +177,20 @@ public class UserService implements UserDetailsService {
         User userExcluded = getById(id);
 
         // Проверить, что пользователь в этой группе
-        if (!user.getFriendsList().contains(userExcluded.getEmail())) {
+        if (!user.getFriendsListStr().contains(userExcluded.getEmail())) {
             throw new NotFoundException("user " + userExcluded.getEmail() + " is not friend for " + user.getEmail());
         }
 
         // Удалить пользователя у всех в группе
-        for (String email : userExcluded.getFriendsList()) {
+        for (String email : userExcluded.getFriendsListStr()) {
             User u = getByEmail(email);
-            u.removeFriend(userExcluded.getEmail());
+            u.removeFriendStr(userExcluded.getEmail());
             u.removeFriendId(userExcluded.getId());
             userRepository.save(u);
         }
 
         // Очистить список друзей у пользователя, восстановить суперюзера
-        userExcluded.removeAllFriends();
+        userExcluded.removeAllFriendsStr();
         userExcluded.removeAllFriendsId();
         userExcluded.addRole(Role.SUPERUSER);
         userRepository.save(userExcluded);
@@ -200,18 +199,18 @@ public class UserService implements UserDetailsService {
     public void deleteGroupGroupSelf(User user) {
         boolean isFirst = true;
         // Удалить себя из списков юзеров группы
-        for (String email : user.getFriendsList()) {
+        for (String email : user.getFriendsListStr()) {
             User u = getByEmail(email);
             if (user.isSuperUser() && isFirst) { // Если удаляется суперюзер, то суперюзер даётся первому в списке
                 u.addRole(Role.SUPERUSER);
                 isFirst = false;
             }
-            u.removeFriend(user.getEmail());
+            u.removeFriendStr(user.getEmail());
             u.removeFriendId(user.getId());
             userRepository.save(u);
         }
 
-        user.removeAllFriends();        // Очистить у себя список группы
+        user.removeAllFriendsStr();        // Очистить у себя список группы
         user.removeAllFriendsId();
         user.addRole(Role.SUPERUSER);   // Восстановить суперюзера
         userRepository.save(user);
@@ -236,13 +235,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void sendFriendInvite(User user, String email) {
         if (!email.equals(user.getEmail())) {
-            if (user.getFriendsList().contains(email)) {
+            if (user.getFriendsListStr().contains(email)) {
                 throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
             }
-            if (user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
+            if (user.getFriendsListStr().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
                 throw new IncorrectAddition(ErrorType.TOO_MUCH_FRIENDS);
             }
-            if (user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
+            if (user.getFriendsListStr().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
                 throw new IncorrectAddition(ErrorType.TOO_MUCH_INVITES);
             }
 

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -70,7 +68,7 @@ public class User implements UserDetails, HasId {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
-    private List<Friend> friendList;
+    private List<Friend> friendsList;
 
     public User() {
         this.startPeriodDate = LocalDate.now().withDayOfMonth(1);
@@ -124,7 +122,7 @@ public class User implements UserDetails, HasId {
         this.roles = new HashSet<>(roles);
     }
 
-    public List<String> getFriendsList() {
+    public List<String> getFriendsListStr() {
         return friends.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(friends.split(" ")));
     }
 
@@ -134,8 +132,8 @@ public class User implements UserDetails, HasId {
                 .collect(Collectors.toList()));
     }
 
-    public void addFriend(String email) {
-        List<String> friendsList = getFriendsList();
+    public void addFriendStr(String email) {
+        List<String> friendsList = getFriendsListStr();
         if (friendsList.contains(email)) {
             return;
         }
@@ -150,9 +148,9 @@ public class User implements UserDetails, HasId {
         friendsId = friendsId.isEmpty() ? String.valueOf(id) : friendsId + " " + id;
     }
 
-    public void addFriendsList(List<String> friendsList) {
+    public void addFriendsListStr(List<String> friendsList) {
         for (String friend : friendsList) {
-            addFriend(friend);
+            addFriendStr(friend);
         }
     }
 
@@ -162,15 +160,15 @@ public class User implements UserDetails, HasId {
         }
     }
 
-    public void addFriends(String... friendsArray) {
-        addFriendsList(Arrays.asList(friendsArray));
+    public void addFriendsStr(String... friendsArray) {
+        addFriendsListStr(Arrays.asList(friendsArray));
     }
 
     public void addFriendsId(Integer... friendsIdArray) {
         addFriendsIdList(Arrays.asList(friendsIdArray));
     }
 
-    public void setFriendsList(List<String> friendsList) {
+    public void setFriendsListStr(List<String> friendsList) {
         StringBuilder sb = new StringBuilder();
         for (String email : friendsList) {
             sb.append(email);
@@ -188,7 +186,7 @@ public class User implements UserDetails, HasId {
         this.friendsId = sb.toString().trim();
     }
 
-    public void removeAllFriends() {
+    public void removeAllFriendsStr() {
         friends = "";
     }
 
@@ -196,7 +194,7 @@ public class User implements UserDetails, HasId {
         friendsId = "";
     }
 
-    public void removeFriend(String email) {
+    public void removeFriendStr(String email) {
         friends = friends.replace(email, "").replaceAll("\\s+", " ").trim();
     }
 
@@ -243,7 +241,7 @@ public class User implements UserDetails, HasId {
     }
 
     public boolean hasFriend(String email) {
-        return getFriendsList().contains(email);
+        return getFriendsListStr().contains(email);
     }
 
     public boolean hasFriendId(int id) {
@@ -266,14 +264,18 @@ public class User implements UserDetails, HasId {
         this.banned = false;
     }
 
-    public void addToFriendList(Friend friend) {
-        friendList.add(friend);
+    public void addFriend(Friend friend) {
+        friendsList.add(friend);
         friend.setUser(this);
     }
 
-    public void deleteFromFriendList(Friend friend) {
-        friendList.remove(friend);
+    public void deleteFriend(Friend friend) {
+        friendsList.remove(friend);
         friend.setUser(null);
+    }
+
+    public void removeAllFriends() {
+        friendsList = new ArrayList<>();
     }
 
     @Override
