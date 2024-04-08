@@ -1,5 +1,6 @@
 package ru.tbcarus.spendingsb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -67,8 +68,8 @@ public class User implements UserDetails, HasId {
 
     private boolean newNotify;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Friend> friendList;
 
     public User() {
@@ -265,13 +266,15 @@ public class User implements UserDetails, HasId {
         this.banned = false;
     }
 
-//    public void addToFriendList(Friend friend) {
-//        friendList.add(friend);
-//    }
-//
-//    public void deleteFromFriendList(Friend friend) {
-//        friendList.remove(friend);
-//    }
+    public void addToFriendList(Friend friend) {
+        friendList.add(friend);
+        friend.setUser(this);
+    }
+
+    public void deleteFromFriendList(Friend friend) {
+        friendList.remove(friend);
+        friend.setUser(null);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -301,6 +304,9 @@ public class User implements UserDetails, HasId {
         return true;
     }
 
+    public String toString() {
+        return "User(id=" + id + ", name=" + name + ", email=" + email + ", enabled=" + enabled + ", banned=" + banned + ", startPeriodDate=" + startPeriodDate + ", roles=" + roles + ", newNotify=" + newNotify + ")";
+    }
 
     //    @OneToMany
 //    private List<Payment> payments;

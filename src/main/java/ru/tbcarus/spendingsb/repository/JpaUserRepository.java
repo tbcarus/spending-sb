@@ -18,6 +18,6 @@ public interface JpaUserRepository extends JpaRepository<User, Integer>, JpaSpec
     List<User> findAllByOrderByName();
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.friendList WHERE u.id=:userId")
-    List<Friend> getWithFriends(int userId);
+    User getWithFriends(int userId);
 
 }

@@ -9,6 +9,7 @@ import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.*;
 import ru.tbcarus.spendingsb.repository.DataJpaNoteRepository;
+import ru.tbcarus.spendingsb.repository.JpaFriendRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public class NoteService {
 
     @Autowired
     JpaUserRepository userRepository;
+
+    @Autowired
+    JpaFriendRepository friendRepository;
 
     public Note create(Note note) {
         return noteRepository.save(note);
@@ -66,6 +70,7 @@ public class NoteService {
 
     @Transactional
     public void inviteAccept(int noteId, User recipient) {
+        recipient = userRepository.getWithFriends(recipient.getId());
         if(recipient.isInGroup()) {
             throw new IncorrectAddition(ErrorType.HAS_GROUP);
         }
@@ -76,6 +81,12 @@ public class NoteService {
         recipient.setFriendsId(sender.getFriendsId());
         recipient.addFriend(sender.getEmail());
         recipient.addFriendId(sender.getId());
+
+        Friend friendForRecipient = new Friend(recipient, sender);
+        recipient.addToFriendList(friendForRecipient);
+//        recipient.getFriendList().add(friendForRecipient);
+//        Friend fSaved = friendRepository.save(friendForRecipient);
+
         recipient.removeRole(Role.SUPERUSER); // убрать суперюзера
         recipient.setStartPeriodDate(sender.getStartPeriodDate()); // синхронизация начальной даты
         userRepository.save(recipient); // сохранить пользователя
