@@ -5,6 +5,7 @@ import ru.tbcarus.spendingsb.model.User;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static ru.tbcarus.spendingsb.model.AbstractBaseEntity.START_SEQ;
 
@@ -29,7 +30,7 @@ public class UserTestData {
         User updated = new User(user);
         updated.setName("newName");
         updated.setEnabled(false);
-        updated.setRoles(List.of(Role.ADMIN, Role.SUPERUSER));
+        updated.setRoles(Set.of(Role.ADMIN, Role.SUPERUSER));
         return updated;
     }
 }
