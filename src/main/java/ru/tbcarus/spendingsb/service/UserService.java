@@ -68,13 +68,13 @@ public class UserService implements UserDetailsService {
         return opt.get();
     }
 
-//    public User getByIdWithFriends(int id) {
-//        User user =  userRepository.getWithFriends(id);
-//        if (user == null) {
-//            throw new NotFoundException();
-//        }
-//        return user;
-//    }
+    public User getByIdWithFriends(int id) {
+        User user =  userRepository.getWithFriends(id);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return user;
+    }
 
     public User getByEmail(@Email @NotEmpty @NotNull String email) {
         Optional<User> opt = userRepository.findByEmail(email);

@@ -77,33 +77,27 @@ public class NoteService {
         Note note = getNoteWithUser(noteId, recipient.getEmail());
         User sender = note.getUser();
 
-        recipient.setFriends(sender.getFriends()); // скопировать список друзей пользователю от приглашающего + сам приглашающий
-        recipient.setFriendsId(sender.getFriendsId());
-        recipient.addFriendStr(sender.getEmail());
-        recipient.addFriendId(sender.getId());
+        for (Friend friend : sender.getFriendsList()) {
+            // пройтись по списку друзей приглашаемого
+            // добавление приглашаемого в друзья всем пользователям группы
+            User user = userRepository.getWithFriends(friend.getFriendId());
+            user.addFriend(new Friend(user, recipient));
+            userRepository.save(user);
+            recipient.addFriend(new Friend(recipient, user)); // добавление в друзья всех из списка приглашающего
+        }
 
-        Friend friendForRecipient = new Friend(recipient, sender);
-        recipient.addFriend(friendForRecipient);
-//        recipient.getFriendList().add(friendForRecipient);
-//        Friend fSaved = friendRepository.save(friendForRecipient);
-
+        recipient.addFriend(new Friend(recipient, sender)); // добавить приглашающего в друзья
         recipient.removeRole(Role.SUPERUSER); // убрать суперюзера
         recipient.setStartPeriodDate(sender.getStartPeriodDate()); // синхронизация начальной даты
+        sender.addFriend(new Friend(sender, recipient)); // добавить приглашаемого в друзья
+
+        noteRepository.deleteAllNotesByUserEmailAndType(recipient.getEmail(), NoteType.INVITE); // удалить все полученные приглашения у приглашаемого
+        noteRepository.deleteAllNotesByUserEmailAndType(sender.getEmail(), NoteType.INVITE); // удалить все полученные приглашения у приглашающего
+        noteRepository.deleteAllOwnInvites(recipient.getId(), NoteType.INVITE); // удалить все отправленные приглашения у приглашаемого
+        recipient.setNewNotify(false);
         userRepository.save(recipient); // сохранить пользователя
-
-        for (String email : sender.getFriendsListStr()) {
-            // пройтись по списку друзей приглашающего и всем добавить нового пользователя
-            User user = userRepository.getByEmail(email);
-            user.addFriendStr(recipient.getEmail());
-            user.addFriendId(recipient.getId());
-            userRepository.save(user);
-        }
-        sender.addFriendStr(recipient.getEmail());
-        sender.addFriendId(recipient.getId());
+        sender.setNewNotify(false);
         userRepository.save(sender);
-
-        noteRepository.deleteAllNotesByUserEmailAndType(recipient.getEmail(), NoteType.INVITE); // удалить все полученные приглашения
-        noteRepository.deleteAllOwnInvites(recipient.getId(), NoteType.INVITE); // удалить все отправленные приглашения
     }
 
 }

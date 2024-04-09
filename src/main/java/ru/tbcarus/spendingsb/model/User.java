@@ -237,7 +237,7 @@ public class User implements UserDetails, HasId {
     }
 
     public boolean isInGroup() {
-        return !friendsId.isEmpty();
+        return !friendsList.isEmpty();
     }
 
     public boolean hasFriend(String email) {
@@ -262,6 +262,13 @@ public class User implements UserDetails, HasId {
 
     public void unban() {
         this.banned = false;
+    }
+
+    public void setFriendsList(List<Friend> list) {
+        this.friendsList.clear();
+        if (list != null) {
+            this.friendsList.addAll(list);
+        }
     }
 
     public void addFriend(Friend friend) {

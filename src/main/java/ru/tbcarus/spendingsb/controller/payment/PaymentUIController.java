@@ -32,6 +32,7 @@ public class PaymentUIController extends AbstractPaymentController {
     // Записи за выбранный период (месяц от начальной даты)
     @GetMapping("")
     public String getAll(Model model, @AuthenticationPrincipal User user) {
+        user = userService.getByIdWithFriends(user.getId());
         Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
                 super.getAllByUserIdAndDateBetween(user, user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
         if (userService.getByEmail(user.getEmail()).isNewNotify()) {

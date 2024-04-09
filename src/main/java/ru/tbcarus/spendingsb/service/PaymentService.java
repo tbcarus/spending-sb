@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
+import ru.tbcarus.spendingsb.model.Friend;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
@@ -124,8 +125,8 @@ public class PaymentService {
     public Specification<Payment> filterByGroup(User user) {
         Specification<Payment> sp = filterByUserId(user.getId());
         if (user.isInGroup()) {
-            for (int friendId : user.getFriendsIdList()) {
-                sp = sp.or(filterByUserId(friendId));
+            for (Friend friend : user.getFriendsList()) {
+                sp = sp.or(filterByUserId(friend.getFriendId()));
             }
         }
         return sp;
