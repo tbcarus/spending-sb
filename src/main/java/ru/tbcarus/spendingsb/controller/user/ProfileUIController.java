@@ -241,6 +241,7 @@ public class ProfileUIController extends AbstractUserController {
 
     @RequestMapping("/group")
     public String getFriends(@AuthenticationPrincipal User user, Model model) {
+        user = userService.getByIdWithFriends(user.getId());
         List<User> friends = super.getFriends(user);
         model.addAttribute("user", user);
         model.addAttribute("friends", friends);
@@ -250,6 +251,7 @@ public class ProfileUIController extends AbstractUserController {
     @RequestMapping("/group/{id}/delete")
     // Удалить пользователя из группы. Может только суперпользователь
     public String deleteUserFromGroup(@AuthenticationPrincipal User user, @PathVariable int id, Model model) {
+        user = userService.getByIdWithFriends(user.getId());
         super.deleteUserFromGroup(user, id);
         return "redirect:/payments/profile/group";
     }

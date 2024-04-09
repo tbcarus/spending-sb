@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -161,20 +162,22 @@ public class UserService implements UserDetailsService {
         throw new UsernameNotFoundException("User ‘" + username + "’ not found");
     }
 
-    public List<User> getFriends(List<String> friendsList) {
-        if (friendsList.isEmpty()) {
+    public List<User> getFriends(User user) {
+        if (user.getFriendsList().isEmpty()) {
             return new ArrayList<User>();
         }
-        Specification<User> sp = filterByEmail(friendsList.get(0));
-        friendsList.remove(0);
-        for (String email : friendsList) {
-            sp = sp.or(filterByEmail(email));
+        List<Friend> copy = new ArrayList<>(user.getFriendsList());
+        Specification<User> sp = filterByEmail(copy.get(0).getFriendEmail());
+        copy.remove(0);
+        for (Friend f : copy) {
+            sp = sp.or(filterByEmail(f.getFriendEmail()));
         }
         return userRepository.findAll(sp);
     }
 
+    @PreAuthorize("hasRole('ROLE_SUPERUSER')")
     public void deleteUserFromGroup(User user, int id) {
-        User userExcluded = getById(id);
+        User userExcluded = getByIdWithFriends(id);
 
         // Проверить, что пользователь в этой группе
         if (!user.getFriendsListStr().contains(userExcluded.getEmail())) {
