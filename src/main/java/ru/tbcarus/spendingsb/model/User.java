@@ -282,7 +282,11 @@ public class User implements UserDetails, HasId {
     }
 
     public void removeAllFriends() {
-        friendsList = new ArrayList<>();
+        friendsList.clear();
+    }
+
+    public boolean hasFriend(int id) {
+        return friendsList.stream().anyMatch(f -> f.getFriendId() == id);
     }
 
     @Override

@@ -45,6 +45,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     EmailActionService emailActionService;
 
+    @Autowired
+    FriendService friendService;
+
     public UserService(JpaUserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -176,25 +179,21 @@ public class UserService implements UserDetailsService {
     }
 
     @PreAuthorize("hasRole('ROLE_SUPERUSER')")
-    public void deleteUserFromGroup(User user, int id) {
-        User userExcluded = getByIdWithFriends(id);
-
+    @Transactional
+    public void deleteUserFromGroup(User user, int friendId) {
+        User userExcluded = getByIdWithFriends(friendId);
         // Проверить, что пользователь в этой группе
-        if (!user.getFriendsListStr().contains(userExcluded.getEmail())) {
+        if (!user.hasFriend(friendId)) {
             throw new NotFoundException("user " + userExcluded.getEmail() + " is not friend for " + user.getEmail());
         }
-
         // Удалить пользователя у всех в группе
-        for (String email : userExcluded.getFriendsListStr()) {
-            User u = getByEmail(email);
-            u.removeFriendStr(userExcluded.getEmail());
-            u.removeFriendId(userExcluded.getId());
+        for (Friend f : userExcluded.getFriendsList()) {
+            User u = getById(f.getFriendId());
+            u.deleteFriend(new Friend(u, userExcluded));
             userRepository.save(u);
         }
-
         // Очистить список друзей у пользователя, восстановить суперюзера
-        userExcluded.removeAllFriendsStr();
-        userExcluded.removeAllFriendsId();
+        userExcluded.removeAllFriends();
         userExcluded.addRole(Role.SUPERUSER);
         userRepository.save(userExcluded);
     }
