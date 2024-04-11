@@ -198,22 +198,21 @@ public class UserService implements UserDetailsService {
         userRepository.save(userExcluded);
     }
 
+    @Transactional
     public void deleteGroupGroupSelf(User user) {
         boolean isFirst = true;
         // Удалить себя из списков юзеров группы
-        for (String email : user.getFriendsListStr()) {
-            User u = getByEmail(email);
+        for (Friend f : user.getFriendsList()) {
+            User u = getByIdWithFriends(f.getFriendId());
             if (user.isSuperUser() && isFirst) { // Если удаляется суперюзер, то суперюзер даётся первому в списке
                 u.addRole(Role.SUPERUSER);
                 isFirst = false;
             }
-            u.removeFriendStr(user.getEmail());
-            u.removeFriendId(user.getId());
+            u.deleteFriend(new Friend(u, user));
             userRepository.save(u);
         }
 
-        user.removeAllFriendsStr();        // Очистить у себя список группы
-        user.removeAllFriendsId();
+        user.removeAllFriends();        // Очистить у себя список группы
         user.addRole(Role.SUPERUSER);   // Восстановить суперюзера
         userRepository.save(user);
     }

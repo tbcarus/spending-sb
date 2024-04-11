@@ -259,6 +259,7 @@ public class ProfileUIController extends AbstractUserController {
     @RequestMapping("/group/delete")
     // Удалиться из группы самому
     public String deleteFromGroupSelf(@AuthenticationPrincipal User user, Model model) {
+        user = userService.getByIdWithFriends(user.getId());
         super.deleteFromGroupSelf(user);
         return "redirect:/payments/profile/group";
     }
