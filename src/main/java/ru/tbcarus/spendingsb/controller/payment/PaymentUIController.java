@@ -82,6 +82,7 @@ public class PaymentUIController extends AbstractPaymentController {
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable int id, @AuthenticationPrincipal User user) {
         Payment payment;
+        user = userService.getByIdWithFriends(user.getId());
         model.addAttribute("user", user);
         try {
             payment = super.get(user, id);
@@ -109,6 +110,7 @@ public class PaymentUIController extends AbstractPaymentController {
                                  @RequestParam(value = "description", required = false) String description,
                                  @RequestParam("date") LocalDate date,
                                  @AuthenticationPrincipal User user) {
+        user = userService.getByIdWithFriends(user.getId());
         try {
             if (price == 0) {
                 // Если трата нулевая, то это считается ошибкой

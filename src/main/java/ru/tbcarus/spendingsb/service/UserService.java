@@ -271,20 +271,22 @@ public class UserService implements UserDetailsService {
         };
     }
 
-    public void addSU(User user, int id) {
-        if (!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
+    @PreAuthorize("hasRole('ROLE_SUPERUSER')")
+    public void addSU(User user, int friendId) {
+        if (!user.isSuperUser() && user.hasFriend(friendId)) {
             throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
         }
-        User u = getById(id);
+        User u = getById(friendId);
         u.addRole(Role.SUPERUSER);
         userRepository.save(u);
     }
 
-    public void removeSU(User user, int id) {
-        if (!user.isSuperUser() && user.getFriendsIdList().contains(id)) {
+    @PreAuthorize("hasRole('ROLE_SUPERUSER')")
+    public void removeSU(User user, int friendId) {
+        if (!user.isSuperUser() && user.hasFriend(friendId)) {
             throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
         }
-        User u = getById(id);
+        User u = getById(friendId);
         u.removeRole(Role.SUPERUSER);
         userRepository.save(u);
     }

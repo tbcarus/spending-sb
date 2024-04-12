@@ -266,12 +266,14 @@ public class ProfileUIController extends AbstractUserController {
 
     @RequestMapping("/group/{id}/addSU")
     public String addSU(@AuthenticationPrincipal User user, @PathVariable int id, Model model) {
+        user = userService.getByIdWithFriends(user.getId());
         super.addSU(user, id);
         return "redirect:/payments/profile/group";
     }
 
     @RequestMapping("/group/{id}/removeSU")
     public String removeSU(@AuthenticationPrincipal User user, @PathVariable int id, Model model) {
+        user = userService.getByIdWithFriends(user.getId());
         super.removeSU(user, id);
         return "redirect:/payments/profile/group";
     }
