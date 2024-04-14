@@ -119,11 +119,11 @@ public class UserService implements UserDetailsService {
     public void changeStartDate(User user, LocalDate startDate) {
         user.setStartPeriodDate(startDate);
         userRepository.save(user);
-        if (!user.getFriendsIdList().isEmpty()) {
-            for (int id : user.getFriendsIdList()) {
-                User u = getById(id);
+        if (user.isInGroup()) {
+            for (Friend f : user.getFriendsList()) {
+                User u = getById(f.getFriendId());
                 u.setStartPeriodDate(startDate);
-                userRepository.save(user);
+                userRepository.save(u);
             }
         }
     }
@@ -236,13 +236,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void sendFriendInvite(User user, String email) {
         if (!email.equals(user.getEmail())) {
-            if (user.getFriendsListStr().contains(email)) {
+            if (user.hasFriend(email)) {
                 throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
             }
-            if (user.getFriendsListStr().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
+            if (user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
                 throw new IncorrectAddition(ErrorType.TOO_MUCH_FRIENDS);
             }
-            if (user.getFriendsListStr().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
+            if (user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
                 throw new IncorrectAddition(ErrorType.TOO_MUCH_INVITES);
             }
 

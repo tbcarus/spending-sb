@@ -60,10 +60,6 @@ public class User implements UserDetails, HasId {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
-    private String friends = ""; // строка с email-ами через пробел. 5 друзей МАКС
-
-    private String friendsId = ""; // строка с id через пробел. Костыль, так как в тратах id пользователя. Может, потом стоит убрать список email-ов
-
     private boolean newNotify;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -122,87 +118,6 @@ public class User implements UserDetails, HasId {
         this.roles = new HashSet<>(roles);
     }
 
-    public List<String> getFriendsListStr() {
-        return friends.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.asList(friends.split(" ")));
-    }
-
-    public List<Integer> getFriendsIdList() {
-        return friendsId.isEmpty() ? new ArrayList<>() : new ArrayList<>(Arrays.stream(friendsId.split(" "))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList()));
-    }
-
-    public void addFriendStr(String email) {
-        List<String> friendsList = getFriendsListStr();
-        if (friendsList.contains(email)) {
-            return;
-        }
-        friends = friends.isEmpty() ? email : friends + " " + email;
-    }
-
-    public void addFriendId(int id) {
-        List<Integer> friendsList = getFriendsIdList();
-        if (friendsList.contains(id)) {
-            return;
-        }
-        friendsId = friendsId.isEmpty() ? String.valueOf(id) : friendsId + " " + id;
-    }
-
-    public void addFriendsListStr(List<String> friendsList) {
-        for (String friend : friendsList) {
-            addFriendStr(friend);
-        }
-    }
-
-    public void addFriendsIdList(List<Integer> friendsIdList) {
-        for (int friendId : friendsIdList) {
-            addFriendId(friendId);
-        }
-    }
-
-    public void addFriendsStr(String... friendsArray) {
-        addFriendsListStr(Arrays.asList(friendsArray));
-    }
-
-    public void addFriendsId(Integer... friendsIdArray) {
-        addFriendsIdList(Arrays.asList(friendsIdArray));
-    }
-
-    public void setFriendsListStr(List<String> friendsList) {
-        StringBuilder sb = new StringBuilder();
-        for (String email : friendsList) {
-            sb.append(email);
-            sb.append(" ");
-        }
-        this.friends = sb.toString().trim();
-    }
-
-    public void setFriendsIdList(List<Integer> friendsIdList) {
-        StringBuilder sb = new StringBuilder();
-        for (int id : friendsIdList) {
-            sb.append(id);
-            sb.append(" ");
-        }
-        this.friendsId = sb.toString().trim();
-    }
-
-    public void removeAllFriendsStr() {
-        friends = "";
-    }
-
-    public void removeAllFriendsId() {
-        friendsId = "";
-    }
-
-    public void removeFriendStr(String email) {
-        friends = friends.replace(email, "").replaceAll("\\s+", " ").trim();
-    }
-
-    public void removeFriendId(int id) {
-        String idStr = String.valueOf(id);
-        friendsId = friendsId.replace(idStr, "").replaceAll("\\s+", " ").trim();
-    }
-
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
@@ -238,14 +153,6 @@ public class User implements UserDetails, HasId {
 
     public boolean isInGroup() {
         return !friendsList.isEmpty();
-    }
-
-    public boolean hasFriend(String email) {
-        return getFriendsListStr().contains(email);
-    }
-
-    public boolean hasFriendId(int id) {
-        return getFriendsIdList().contains(id);
     }
 
     public void setEnabled() {
@@ -289,6 +196,10 @@ public class User implements UserDetails, HasId {
         return friendsList.stream().anyMatch(f -> f.getFriendId() == id);
     }
 
+    public boolean hasFriend(String email) {
+        return friendsList.stream().anyMatch(f -> f.getFriendEmail().equals(email));
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles
@@ -320,17 +231,4 @@ public class User implements UserDetails, HasId {
     public String toString() {
         return "User(id=" + id + ", name=" + name + ", email=" + email + ", enabled=" + enabled + ", banned=" + banned + ", startPeriodDate=" + startPeriodDate + ", roles=" + roles + ", newNotify=" + newNotify + ")";
     }
-
-    //    @OneToMany
-//    private List<Payment> payments;
-//
-//    private String family;
-//    @Transient
-//    private List<Integer> familyIdList;
-//
-//    public List<Integer> getFamiyIdList() {
-//        return Arrays.stream(family.split(" "))
-//                .map(s -> Integer.parseInt(s))
-//                .collect(Collectors.toList());
-//    }
 }

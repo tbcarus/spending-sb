@@ -69,6 +69,7 @@ public class ProfileUIController extends AbstractUserController {
                                   HttpServletRequest request,
                                   @AuthenticationPrincipal User user) {
         LocalDate newLD = LocalDate.of(year, month, day);
+        user = userService.getByIdWithFriends(user.getId());
         super.changeStartDate(user, newLD);
         String[] uri = request.getHeader("referer").split("payments"); // Для перехода на страницу запроса при изменении начально даты
         return uri.length == 1 ? "redirect:/payments" : "redirect:/payments" + uri[1];
@@ -209,6 +210,7 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping("/addfriend")
     public String sendFriendInvite(Model model, @AuthenticationPrincipal User user, String email) {
+        user = userService.getByIdWithFriends(user.getId());
         model.addAttribute("user", user);
         try {
             super.sendFriendInvite(user, email);

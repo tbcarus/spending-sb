@@ -17,8 +17,6 @@ CREATE TABLE users
     enabled           bool                DEFAULT FALSE NOT NULL,
     banned            bool                DEFAULT FALSE NOT NULL,
     start_period_date TIMESTAMP           DEFAULT NOW() NOT NULL,
-    friends           TEXT                DEFAULT ''    NOT NULL,
-    friends_id        TEXT                DEFAULT ''    NOT NULL,
     new_notify        bool                DEFAULT FALSE NOT NULL
 );
 
