@@ -8,7 +8,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${emailAction.getType().title}"></title>
-    <div th:replace="~{fragments/headTag :: headTag}"></div>
+<!--    <div th:replace="~{fragments/headTag :: headTag}"></div>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+          crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{css/style.css}">
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
@@ -21,7 +26,7 @@
             <table align="center" width="50%" cellspacing="0" cellpadding="0">
                 <tbody>
                 <tr>
-                    <td bgcolor="#538792" align="right" style="color: #ffffff">
+                    <td align="right" style="color: #ffffff; background-color: #538792">
                         <h1>Spending web App&nbsp;</h1>
                     </td>
                 </tr>
