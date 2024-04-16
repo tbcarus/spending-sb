@@ -119,13 +119,11 @@ public class UserService implements UserDetailsService {
     public void changeStartDate(User user, LocalDate startDate) {
         user.setStartPeriodDate(startDate);
         userRepository.save(user);
-        if (user.isInGroup()) {
-            for (Friend f : user.getFriendsList()) {
-                User u = getById(f.getFriendId());
-                u.setStartPeriodDate(startDate);
-                userRepository.save(u);
-            }
-        }
+//        for (Friend f : user.getFriendsList()) {
+//            User u = getById(f.getFriendId());
+//            u.setStartPeriodDate(startDate);
+//            userRepository.save(u);
+//        }
     }
 
     public void delete(int id) {

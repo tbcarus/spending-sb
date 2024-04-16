@@ -18,7 +18,7 @@
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
 <div class="container shadow">
     <div class="p-2">
-        <div th:if="${msg}" class="alert alert-warning m-0 text-center" th:text="${msg}">QWERTY</div>
+        <div th:if="${err}" class="alert alert-warning m-0 text-center" th:text="${err}">QWERTY</div>
     </div>
 </div>
 <!--    copyright-->

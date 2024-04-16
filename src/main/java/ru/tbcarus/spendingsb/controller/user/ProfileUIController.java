@@ -236,7 +236,7 @@ public class ProfileUIController extends AbstractUserController {
 
     @RequestMapping("/error")
     public String IncorrectAddition(@AuthenticationPrincipal User user, Model model, @RequestParam String type) {
-        model.addAttribute("err", ErrorType.valueOf(type));
+        model.addAttribute("err", ErrorType.valueOf(type).getTitle());
         model.addAttribute("user", user);
         return "error";
     }
