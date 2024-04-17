@@ -27,6 +27,11 @@
             <tr>
                 <th>Имя</th>
                 <th>Почта</th>
+                <th th:if="${user.isSuperUser()}">
+                    Дата
+                    <input type="button" value="Set EQ" class="btn btn-top"
+                           th:onclick="|window.location.href = '@{group/level-dates}'|"/>
+                </th>
                 <th>Role</th>
                 <th th:if="${user.isSuperUser()}">Права</th>
                 <th th:if="${user.isSuperUser()}">Удалить</th>
@@ -36,6 +41,9 @@
             <tr th:each="u : ${friends}">
                 <td th:text="${u.name}"></td>
                 <td th:text="${u.email}"></td>
+                <td th:if="${user.isSuperUser()}">
+                    <span th:text="${u.getStartPeriodDate()}">D_A_T_E</span>
+                </td>
                 <td>
                     <span th:if="${u.isSuperUser()}">Super User</span>
                 </td>

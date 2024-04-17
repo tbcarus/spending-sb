@@ -85,6 +85,10 @@ public abstract class AbstractUserController {
         return userService.getFriends(user);
     }
 
+    protected void levelDates(User user) {
+        userService.levelDates(user);
+    }
+
     protected void addSU(User user, int id) {
         log.info("superuser {} add SU role for user {}", user.getId(), id);
         userService.addSU(user, id);

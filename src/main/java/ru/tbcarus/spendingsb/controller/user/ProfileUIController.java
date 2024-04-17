@@ -250,6 +250,13 @@ public class ProfileUIController extends AbstractUserController {
         return "group";
     }
 
+    @GetMapping("/group/level-dates")
+    public String levelDates(@AuthenticationPrincipal User user, Model model) {
+        user = userService.getByIdWithFriends(user.getId());
+        super.levelDates(user);
+        return "redirect:/payments/profile/group";
+    }
+
     @RequestMapping("/group/{id}/delete")
     // Удалить пользователя из группы. Может только суперпользователь
     public String deleteUserFromGroup(@AuthenticationPrincipal User user, @PathVariable int id, Model model) {

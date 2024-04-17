@@ -126,6 +126,15 @@ public class UserService implements UserDetailsService {
 //        }
     }
 
+    @Transactional
+    public void levelDates(User user) {
+        for (Friend f : user.getFriendsList()) {
+            User u = getById(f.getFriendId());
+            u.setStartPeriodDate(user.getStartPeriodDate());
+            userRepository.save(u);
+        }
+    }
+
     public void delete(int id) {
         Optional<User> opt = userRepository.findById(id);
         if (opt.isEmpty()) {
