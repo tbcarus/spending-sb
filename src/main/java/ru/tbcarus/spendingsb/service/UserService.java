@@ -28,9 +28,7 @@ import ru.tbcarus.spendingsb.util.UserUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -73,7 +71,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getByIdWithFriends(int id) {
-        User user =  userRepository.getWithFriends(id);
+        User user = userRepository.getWithFriends(id);
         if (user == null) {
             throw new NotFoundException();
         }
@@ -183,6 +181,17 @@ public class UserService implements UserDetailsService {
             sp = sp.or(filterByEmail(f.getFriendEmail()));
         }
         return userRepository.findAll(sp);
+    }
+
+    public Map<User, Friend> getFriendsMap(User user) {
+        List<User> users = getFriends(user);
+        List<Friend> copy = new ArrayList<>(user.getFriendsList());
+        Map<User, Friend> userMap = new HashMap<>();
+        for (User u : users) {
+            Friend f = copy.stream().filter(friend -> friend.getFriendEmail().equals(u.getEmail())).findFirst().get();
+            userMap.put(u, f);
+        }
+        return userMap;
     }
 
     @PreAuthorize("hasRole('ROLE_SUPERUSER')")

@@ -10,6 +10,8 @@
 <body>
 <!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
 <!--@thymesVar id="u" type="ru.tbcarus.spendingsb.model.User"-->
+<!--@thymesVar id="f" type="ru.tbcarus.spendingsb.model.Friend"-->
+<!--@thymesVar id="friendsMap" type="java.util.Map"-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
@@ -26,6 +28,7 @@
             <thead>
             <tr>
                 <th>Имя</th>
+                <th>Цвет</th>
                 <th>Почта</th>
                 <th th:if="${user.isSuperUser()}">
                     Дата
@@ -38,8 +41,15 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="u : ${friends}">
+            <tr th:each="entry : ${friendsMap}" th:with="u=${entry.getKey()}, f=${entry.getValue()}">
                 <td th:text="${u.name}"></td>
+                <td>
+                    <input type="color" class="form-control form-control-color"
+                           th:id="f-color-+${f.id}" th:name="head"
+                           th:value="${f.color}"
+                           style="background-color: #9fcfca;"
+                           th:onchange="changeColor([[${f.id}]])"/>
+                </td>
                 <td th:text="${u.email}"></td>
                 <td th:if="${user.isSuperUser()}">
                     <span th:text="${u.getStartPeriodDate()}">D_A_T_E</span>
@@ -61,5 +71,18 @@
 <!--    copyright-->
 <br>
 <div th:replace="~{fragments/footer :: copy}"></div>
+
+<script>
+    function changeColor(id) {
+        let color = document.getElementById("f-color-" + id).value;
+
+        let request = new XMLHttpRequest();
+        let csrfToken = document.getElementsByName("_csrf")[0].value;
+        request.open("POST", "http://localhost:8080/spending/rest/friends/" + id + "/change-color");
+        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.send("color=" + color + "&_csrf=" + csrfToken);
+
+    }
+</script>
 </body>
 </html>

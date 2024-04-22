@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.EmailRequestType;
+import ru.tbcarus.spendingsb.model.Friend;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.EmailActionService;
 import ru.tbcarus.spendingsb.service.NoteService;
@@ -12,6 +13,7 @@ import ru.tbcarus.spendingsb.util.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public abstract class AbstractUserController {
@@ -83,6 +85,11 @@ public abstract class AbstractUserController {
     protected List<User> getFriends(User user) {
         log.info("get friends list by user {}", user.getId());
         return userService.getFriends(user);
+    }
+
+    protected Map<User, Friend> getFriendsMap(User user) {
+        log.info("get friends map by user {}", user.getId());
+        return userService.getFriendsMap(user);
     }
 
     protected void levelDates(User user) {

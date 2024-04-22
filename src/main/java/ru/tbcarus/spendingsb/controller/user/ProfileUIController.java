@@ -16,6 +16,7 @@ import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.ErrorType;
+import ru.tbcarus.spendingsb.model.Friend;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.NoteService;
 import ru.tbcarus.spendingsb.service.UserService;
@@ -23,6 +24,7 @@ import ru.tbcarus.spendingsb.util.DateUtil;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -245,8 +247,10 @@ public class ProfileUIController extends AbstractUserController {
     public String getFriends(@AuthenticationPrincipal User user, Model model) {
         user = userService.getByIdWithFriends(user.getId());
         List<User> friends = super.getFriends(user);
+        Map<User, Friend> friendsMap = super.getFriendsMap(user);
         model.addAttribute("user", user);
         model.addAttribute("friends", friends);
+        model.addAttribute("friendsMap", friendsMap);
         return "group";
     }
 
