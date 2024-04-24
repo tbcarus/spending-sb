@@ -205,7 +205,11 @@ public class UserService implements UserDetailsService {
         // Удалить пользователя у всех в группе
         for (Friend f : userExcluded.getFriendsList()) {
             User u = getById(f.getFriendId());
-            u.deleteFriend(new Friend(u, userExcluded));
+            Optional<Friend> opt = u.getFriendsList()
+                    .stream()
+                    .filter(fr -> fr.getFriendEmail().equals(userExcluded.getEmail()))
+                    .findFirst();
+            opt.ifPresent(u::deleteFriend);
             userRepository.save(u);
         }
         // Очистить список друзей у пользователя, восстановить суперюзера

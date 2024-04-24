@@ -188,6 +188,16 @@ public class User implements UserDetails, HasId {
         friend.setUser(null);
     }
 
+    public void deleteFriend(String email) {
+        for (Friend f : friendsList) {
+            if (f.getFriendEmail().equals(email)) {
+                friendsList.remove(f);
+                f.setUser(null);
+                break;
+            }
+        }
+    }
+
     public void removeAllFriends() {
         friendsList.clear();
     }
