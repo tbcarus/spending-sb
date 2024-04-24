@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
+import ru.tbcarus.spendingsb.model.Friend;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/payments")
@@ -38,6 +40,12 @@ public class PaymentUIController extends AbstractPaymentController {
         if (userService.getByEmail(user.getEmail()).isNewNotify()) {
             user.setNewNotify(true);
         }
+        // создание мапы цветов трат друзей
+        Map<Integer, String> colorMap = user.getFriendsList()
+                .stream()
+                .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
+        colorMap.put(user.getId(), "#ffc107");
+        model.addAttribute("colorMap", colorMap); // добавление цвета собственных записей
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }

@@ -36,7 +36,7 @@ span {
 }
 
 .btn-payment {
-    background: #ffc107;
+    background: var(--pay-color, #ffc107);
     color: black;
     border: 0;
     font-family: 'Verdana';

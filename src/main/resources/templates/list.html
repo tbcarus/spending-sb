@@ -5,6 +5,8 @@
 <!--@thymesVar id="DU" type="ru.tbcarus.spendingsb.util.DateUtil"-->
 <!--@thymesVar id="pt" type="ru.tbcarus.spendingsb.model.PaymentType"-->
 <!--@thymesVar id="p" type="ru.tbcarus.spendingsb.model.Payment"-->
+<!--@thymesVar id="PaymentsMap" type="java.util.Map"-->
+<!--@thymesVar id="colorMap" type="java.util.Map"-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -135,7 +137,8 @@
                                         <!--                              th:text="${PaymentsMap.get(pt)[i].price}">V</span>-->
                                         <input type="button" th:if="${i < PaymentsMap.get(pt).size()}"
                                                th:onclick="|window.location.href = '@{/payments/{id}(id=${PaymentsMap.get(pt)[i].id})}'|"
-                                               th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-payment"/>
+                                               th:value="${PaymentsMap.get(pt)[i].price}" class="btn btn-payment"
+                                               th:style="--pay-color + ':' + ${colorMap.get(PaymentsMap.get(pt)[i].userID)}"/>
                                     </td>
                                     <td th:if="${pt.descriptionOutput}">
                         <span th:if="${i < PaymentsMap.get(pt).size()}"
