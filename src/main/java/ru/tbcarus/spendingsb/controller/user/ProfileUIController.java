@@ -247,10 +247,10 @@ public class ProfileUIController extends AbstractUserController {
     public String getFriends(@AuthenticationPrincipal User user, Model model) {
         user = userService.getByIdWithFriends(user.getId());
         List<User> friends = super.getFriends(user);
-        Map<User, Friend> friendsMap = super.getFriendsMap(user);
+        Map<Integer, Friend> friendsMapId = super.getFriendsMapId(user);
         model.addAttribute("user", user);
         model.addAttribute("friends", friends);
-        model.addAttribute("friendsMap", friendsMap);
+        model.addAttribute("friendsMapId", friendsMapId);
         return "group";
     }
 

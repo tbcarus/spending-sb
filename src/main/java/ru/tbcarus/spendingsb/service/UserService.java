@@ -194,6 +194,17 @@ public class UserService implements UserDetailsService {
         return userMap;
     }
 
+    public Map<Integer, Friend> getFriendsMapId(User user) {
+        List<User> users = getFriends(user);
+        List<Friend> copy = new ArrayList<>(user.getFriendsList());
+        Map<Integer, Friend> userMap = new HashMap<>();
+        for (User u : users) {
+            Friend f = copy.stream().filter(friend -> friend.getFriendEmail().equals(u.getEmail())).findFirst().get();
+            userMap.put(u.getId(), f);
+        }
+        return userMap;
+    }
+
     @PreAuthorize("hasRole('ROLE_SUPERUSER')")
     @Transactional
     public void deleteUserFromGroup(User user, int friendId) {

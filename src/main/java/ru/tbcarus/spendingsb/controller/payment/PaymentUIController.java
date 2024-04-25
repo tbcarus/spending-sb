@@ -44,19 +44,25 @@ public class PaymentUIController extends AbstractPaymentController {
         Map<Integer, String> colorMap = user.getFriendsList()
                 .stream()
                 .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
-        colorMap.put(user.getId(), "#ffc107");
-        model.addAttribute("colorMap", colorMap); // добавление цвета собственных записей
+        colorMap.put(user.getId(), "#ffc107"); // добавление цвета собственных записей
+        model.addAttribute("colorMap", colorMap);
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
     @GetMapping("/byType")
     public String getByType(Model model, @RequestParam("type") PaymentType type, @AuthenticationPrincipal User user) {
+        user = userService.getByIdWithFriends(user.getId());
         List<Payment> list = super.getPaymentsByTypeUserIdBetween(user, type, user.getId(), user.getStartPeriodDate(), user.getEndPeriodDate());
         model.addAttribute("user", user);
         model.addAttribute("list", list);
         model.addAttribute("paymentType", type);
         model.addAttribute("sum", PaymentsUtil.getSumByType(list));
+        Map<Integer, String> colorMap = user.getFriendsList()
+                .stream()
+                .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
+        colorMap.put(user.getId(), "#ffc107"); // добавление цвета собственных записей
+        model.addAttribute("colorMap", colorMap);
         return "typedList";
     }
 

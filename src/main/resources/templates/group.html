@@ -11,7 +11,8 @@
 <!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
 <!--@thymesVar id="u" type="ru.tbcarus.spendingsb.model.User"-->
 <!--@thymesVar id="f" type="ru.tbcarus.spendingsb.model.Friend"-->
-<!--@thymesVar id="friendsMap" type="java.util.Map"-->
+<!--@thymesVar id="friends" type="java.util.List"-->
+<!--@thymesVar id="friendsMapId" type="java.util.Map"-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
@@ -41,7 +42,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="entry : ${friendsMap}" th:with="u=${entry.getKey()}, f=${entry.getValue()}">
+<!--            <tr th:each="entry : ${friendsMap}" th:with="u=${entry.getKey()}, f=${entry.getValue()}">-->
+            <tr th:each="u : ${friends}" th:with="f=${friendsMapId.get(u.id)}">
                 <td th:text="${u.name}"></td>
                 <td>
                     <input type="color" class="form-control form-control-color"

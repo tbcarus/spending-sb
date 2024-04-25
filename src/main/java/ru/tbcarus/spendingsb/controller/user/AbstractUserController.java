@@ -92,6 +92,11 @@ public abstract class AbstractUserController {
         return userService.getFriendsMap(user);
     }
 
+    protected Map<Integer, Friend> getFriendsMapId(User user) {
+        log.info("get friends map by user {}", user.getId());
+        return userService.getFriendsMapId(user);
+    }
+
     protected void levelDates(User user) {
         userService.levelDates(user);
     }
