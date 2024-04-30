@@ -239,7 +239,11 @@ public class UserService implements UserDetailsService {
                 u.addRole(Role.SUPERUSER);
                 isFirst = false;
             }
-            u.deleteFriend(new Friend(u, user));
+            Optional<Friend> opt = u.getFriendsList()
+                    .stream()
+                    .filter(fr -> fr.getFriendEmail().equals(user.getEmail()))
+                    .findFirst();
+            opt.ifPresent(u::deleteFriend);
             userRepository.save(u);
         }
 
