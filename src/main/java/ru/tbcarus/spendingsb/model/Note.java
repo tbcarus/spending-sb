@@ -16,6 +16,7 @@ public class Note extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     private NoteType type; // тип уведомления
     private boolean read; // Прочитано?
+    private boolean shown; // Показано. Устанавливается true при входе на страницу уведомлений
     private LocalDateTime dateTime; // Дата создания
     private String title; // Заголовок
     private String text; // Текст уведомления

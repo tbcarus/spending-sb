@@ -1,8 +1,8 @@
-<!--@thymesVar id="n" type="ru.tbcarus.spendingsb.model.Note"-->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
+<!--@thymesVar id="n" type="ru.tbcarus.spendingsb.model.Note"-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,7 +27,7 @@
             <td th:text="${n.email}"></td>
             <td th:text="${n.read}"></td>
             <td>
-                <a th:href="@{invites/{id}/delete(id=${n.id})}">Удалить</a>
+                <a th:href="@{invites/{id}/delete?email={e}(id=${n.id}, e=${n.email})}">Удалить</a>
             </td>
         </tr>
         </tbody>

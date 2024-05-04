@@ -27,7 +27,7 @@ public class DataJpaNoteRepository {
         return noteRepository.findAll(spec, sort);
     }
 
-    public Note getNote(int id, String email, int userId) { // id записи, email кому адресовано, usrtId кто отправил
+    public Note getNote(int id, String email, int userId) { // id записи, email кому адресовано, userId кто отправил
         // поиск уведомления или получателю, или отправителю
         Note note = noteRepository.findById(id).filter(n -> n.getEmail().equals(email)).orElse(null);
         if (note == null) {
@@ -42,6 +42,10 @@ public class DataJpaNoteRepository {
 
     public Note save(Note note) {
         return noteRepository.save(note);
+    }
+
+    public List<Note> saveAll(List<Note> list) {
+        return noteRepository.saveAll(list);
     }
 
     public boolean deleteNote(int id, String email) {

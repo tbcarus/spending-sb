@@ -56,6 +56,7 @@ CREATE TABLE notes
     date_time TIMESTAMP(6) DEFAULT NOW() NOT NULL,
     email     VARCHAR(255)               NOT NULL,
     read      BOOLEAN      DEFAULT FALSE NOT NULL,
+    shown     BOOLEAN      DEFAULT FALSE NOT NULL,
     text      VARCHAR(255),
     title     VARCHAR(255),
     user_id   INTEGER

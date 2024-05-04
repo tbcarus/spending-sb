@@ -13,6 +13,7 @@ import ru.tbcarus.spendingsb.repository.JpaFriendRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,7 +35,11 @@ public class NoteService {
 
     public List<Note> getAll(String email) {
         // сделать все полученные сообщения не новыми, сбросить флаг у юзера
-        return noteRepository.getAllByEmail(email);
+        List<Note> notes = noteRepository.getAllByEmail(email);
+        List<Note> notShown = notes.stream().filter(n -> !n.isShown()).toList();
+        notShown.forEach(n -> n.setShown(true));
+        noteRepository.saveAll(notShown);
+        return notes;
     }
 
     public List<Note> getInvitesBySenderId(int userId) {
@@ -42,12 +47,13 @@ public class NoteService {
     }
 
     public Note getNote(int id, String email, int userId) {
-        // сделать полученное сообщение прочитанным
         Note note = noteRepository.getNote(id, email, userId);
         if (note == null) {
             log.warn("Уведомление {} для пользователя {} или от {} не найдено", id, email, userId);
             throw new NotFoundException("Уведомление не найдено");
         }
+        note.setRead(true);
+        noteRepository.save(note);
         return note;
     }
 
@@ -56,8 +62,8 @@ public class NoteService {
         return noteRepository.getNoteWithUser(noteId, email);
     }
 
-    public void deleteNote(int id, String email) {
-        if (!noteRepository.deleteNote(id, email)) {
+    public void deleteNote(int id, User user) {
+        if (!noteRepository.deleteNote(id, user.getEmail())) {
             throw new NotFoundException();
         }
     }
@@ -72,6 +78,7 @@ public class NoteService {
     public void inviteAccept(int noteId, User recipient) {
         recipient = userRepository.getWithFriends(recipient.getId());
         if(recipient.isInGroup()) {
+            // Проверка, что принимающий приглашение не в группе, хотя такого теоретически быть не должно
             throw new IncorrectAddition(ErrorType.HAS_GROUP);
         }
         Note note = getNoteWithUser(noteId, recipient.getEmail());
@@ -92,11 +99,12 @@ public class NoteService {
         sender.addFriend(new Friend(sender, recipient)); // добавить приглашаемого в друзья
 
         noteRepository.deleteAllNotesByUserEmailAndType(recipient.getEmail(), NoteType.INVITE); // удалить все полученные приглашения у приглашаемого
-        noteRepository.deleteAllNotesByUserEmailAndType(sender.getEmail(), NoteType.INVITE); // удалить все полученные приглашения у приглашающего
-        noteRepository.deleteAllOwnInvites(recipient.getId(), NoteType.INVITE); // удалить все отправленные приглашения у приглашаемого
         recipient.setNewNotify(false);
-        userRepository.save(recipient); // сохранить пользователя
+        noteRepository.deleteAllNotesByUserEmailAndType(sender.getEmail(), NoteType.INVITE); // удалить все полученные приглашения у приглашающего
         sender.setNewNotify(false);
+        noteRepository.deleteAllOwnInvites(recipient.getId(), NoteType.INVITE); // удалить все отправленные приглашения у приглашаемого
+
+        userRepository.save(recipient); // сохранить пользователя
         userRepository.save(sender);
     }
 

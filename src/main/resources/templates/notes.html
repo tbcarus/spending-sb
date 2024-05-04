@@ -29,6 +29,9 @@
                         <span th:text="${n.title}"></span>
                     </a>
                 </b>
+                <a th:if="${n.read}" th:href="'notes/' + ${n.id}">
+                    <span th:text="${n.title}"></span>
+                </a>
                 <br>
                 <span th:text="${n.text.length <= 50 ? n.text : n.text.substring(0, 50)}"></span>
             </td>

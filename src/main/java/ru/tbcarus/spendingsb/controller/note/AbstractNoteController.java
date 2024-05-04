@@ -2,9 +2,11 @@ package ru.tbcarus.spendingsb.controller.note;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.NoteService;
+import ru.tbcarus.spendingsb.service.UserService;
 
 import java.util.List;
 
@@ -13,6 +15,9 @@ public class AbstractNoteController {
 
     @Autowired
     NoteService noteService;
+
+    @Autowired
+    UserService userService;
 
     public List<Note> getAll(User user) {
         log.info("get all notes for user {}", user.getEmail());
@@ -29,18 +34,23 @@ public class AbstractNoteController {
         return noteService.getNote(id, email, user.getId());
     }
 
-    public void deleteNote(int id, String email) {
-        log.info("delete note {} for user {}", id, email);
-        noteService.deleteNote(id, email);
+    public void deleteNote(int id, User user) {
+        log.info("delete note {} for user {}", id, user.getEmail());
+        noteService.deleteNote(id, user);
+        userService.checkMyNotify(user);
     }
 
-    public void deleteOwnInvite(int id, int userId) {
-        log.info("delete own invite {} by user {}", id, userId);
-        noteService.deleteOwnInvite(id, userId);
+    public void deleteOwnInvite(int noteId, int userId, String email) {
+        log.info("delete own invite {} by user {}", noteId, userId);
+        noteService.deleteOwnInvite(noteId, userId);
+        userService.checkUserNotify(email);
     }
 
     public void inviteAccept(int noteId, User recipient) {
         log.info("accept invite {} by user {}", noteId, recipient.getEmail());
+        List<Note> recipientInvites = noteService.getInvitesBySenderId(recipient.getId());
         noteService.inviteAccept(noteId, recipient);
+        int x = 5;
+        userService.checkUsersNotify(recipientInvites);
     }
 }

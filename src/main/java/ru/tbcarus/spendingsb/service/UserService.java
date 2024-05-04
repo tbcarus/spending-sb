@@ -23,6 +23,7 @@ import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.*;
+import ru.tbcarus.spendingsb.repository.DataJpaNoteRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
 import ru.tbcarus.spendingsb.util.UserUtil;
 
@@ -36,6 +37,9 @@ import java.util.*;
 public class UserService implements UserDetailsService {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
     public final JpaUserRepository userRepository;
+
+    @Autowired
+    private DataJpaNoteRepository noteRepository;
 
     @Autowired
     private NoteService noteService;
@@ -286,7 +290,7 @@ public class UserService implements UserDetailsService {
                 throw new IncorrectAddition(ErrorType.HAS_GROUP);
             }
 
-            Note note = new Note(NoteType.INVITE, false, LocalDateTime.now(), "Объединение досок",
+            Note note = new Note(NoteType.INVITE, false, false, LocalDateTime.now(), "Объединение досок",
                     "Пользователь " + user.getEmail() + " объединение досок", email, user);
             noteService.create(note);
             userDest.setNewNotify(true);
@@ -327,8 +331,37 @@ public class UserService implements UserDetailsService {
     }
 
     public User clearNewNotify(User user) {
-        User u = userRepository.getByEmail(user.getEmail());
-        u.setNewNotify(false);
-        return userRepository.save(u);
+//        User u = userRepository.getByEmail(user.getEmail());
+//        u.setNewNotify(false);
+        user.setNewNotify(false);
+        return userRepository.save(user);
+    }
+
+    public void checkMyNotify(User user) {
+        // Проверка наличия непоказанных уведомлений (например, если удалять уведомление запросом,
+        // не заходя на страницу уведомлений, или без запроса всех уведомлений)
+        List<Note> notes = noteRepository.getAllByEmail(user.getEmail());
+        List<Note> notShown = notes.stream().filter(n -> !n.isShown()).toList();
+        if (notShown.isEmpty()) {
+            user.setNewNotify(false);
+            userRepository.save(user);
+        }
+    }
+
+    public void checkUserNotify(String email) {
+        // Проверка наличия уведомлений у юзера, у которого удаляется отправленное приглашение
+        List<Note> notes = noteRepository.getAllByEmail(email);
+        List<Note> notShown = notes.stream().filter(n -> !n.isShown()).toList();
+        if (notShown.isEmpty()) {
+            User user = userRepository.getByEmail(email);
+            user.setNewNotify(false);
+            userRepository.save(user);
+        }
+    }
+
+    public void checkUsersNotify(List<Note> noteList) {
+        for (Note note : noteList) {
+            checkUserNotify(note.getEmail());
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
@@ -21,9 +22,11 @@ public class NoteUIController extends AbstractNoteController{
 
     @RequestMapping("/notes")
     public String getAll(Model model, @AuthenticationPrincipal User user) {
+        user = userService.getByIdWithFriends(user.getId());
         List<Note> notes = super.getAll(user);
         model.addAttribute("notes", notes);
         if (user.isNewNotify()) {
+            // сбросить флаг новых уведомлений при входе на страницу
             user.setNewNotify(false);
             userService.clearNewNotify(user);
         }
@@ -48,14 +51,14 @@ public class NoteUIController extends AbstractNoteController{
     }
 
     @RequestMapping("/notes/{id}/delete")
-    public String deleteNote(@PathVariable int id, @AuthenticationPrincipal User user) {
-        super.deleteNote(id, user.getEmail());
+    public String deleteNote(@PathVariable int id, @AuthenticationPrincipal User user, Model model) {
+        super.deleteNote(id, user);
         return "redirect:/profile/notes";
     }
 
     @RequestMapping("/invites/{id}/delete")
-    public String deleteOwnInvite(@PathVariable int id, @AuthenticationPrincipal User user) {
-        super.deleteOwnInvite(id, user.id());
+    public String deleteOwnInvite(@PathVariable int id, @AuthenticationPrincipal User user, @RequestParam String email) {
+        super.deleteOwnInvite(id, user.id(), email);
         return "redirect:/profile/invites";
     }
 
