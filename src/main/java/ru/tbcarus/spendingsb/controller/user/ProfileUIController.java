@@ -14,6 +14,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
 import ru.tbcarus.spendingsb.exception.IncorrectAddition;
+import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.ErrorType;
 import ru.tbcarus.spendingsb.model.Friend;
@@ -219,25 +220,32 @@ public class ProfileUIController extends AbstractUserController {
         } catch (IncorrectAddition exc) {
             switch (exc.getErrorType()) {
                 case ALREADY_IN_GROUP:
-                    model.addAttribute("err", ErrorType.ALREADY_IN_GROUP);
-                    return "redirect:/payments/profile/error?type=" + ErrorType.ALREADY_IN_GROUP.name();
+                    model.addAttribute("err", ErrorType.ALREADY_IN_GROUP.getTitle());
+//                    return "redirect:/payments/profile/error?type=" + ErrorType.ALREADY_IN_GROUP.name();
+                    return "error";
                 case HAS_GROUP:
-                    model.addAttribute("err", ErrorType.HAS_GROUP);
-                    return "redirect:/payments/profile/error?type=" + ErrorType.HAS_GROUP.name();
+                    model.addAttribute("err", ErrorType.HAS_GROUP.getTitle());
+//                    return "redirect:/payments/profile/error?type=" + ErrorType.HAS_GROUP.name();
+                    return "error";
                 case TOO_MUCH_FRIENDS:
-                    model.addAttribute("err", ErrorType.TOO_MUCH_FRIENDS);
-                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH_FRIENDS.name();
+                    model.addAttribute("err", ErrorType.TOO_MUCH_FRIENDS.getTitle());
+//                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH_FRIENDS.name();
+                    return "error";
                 case TOO_MUCH_INVITES:
-                    model.addAttribute("err", ErrorType.TOO_MUCH_INVITES);
-                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH_INVITES.name();
-
+                    model.addAttribute("err", ErrorType.TOO_MUCH_INVITES.getTitle());
+//                    return "redirect:/payments/profile/error?type=" + ErrorType.TOO_MUCH_INVITES.name();
+                    return "error";
             }
+        } catch (NotFoundException exc) {
+            model.addAttribute("err", exc.getMessage());
+            return "error";
         }
         return "redirect:/payments";
     }
 
     @RequestMapping("/error")
     public String IncorrectAddition(@AuthenticationPrincipal User user, Model model, @RequestParam String type) {
+        user = userService.getByIdWithFriends(user.getId());
         model.addAttribute("err", ErrorType.valueOf(type).getTitle());
         model.addAttribute("user", user);
         return "error";

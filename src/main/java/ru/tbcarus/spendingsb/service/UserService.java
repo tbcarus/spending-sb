@@ -85,7 +85,7 @@ public class UserService implements UserDetailsService {
     public User getByEmail(@Email @NotEmpty @NotNull String email) {
         Optional<User> opt = userRepository.findByEmail(email);
         if (opt.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Пользователь " + email + " не найден.");
         }
         return opt.get();
     }
