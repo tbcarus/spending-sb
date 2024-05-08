@@ -33,7 +33,7 @@ public class AdminPaymentRestController extends AbstractPaymentController {
             @RequestParam(required = false) Integer userId,
             @RequestParam(required = false) LocalDate after,
             @RequestParam(required = false) LocalDate before) {
-        return super.getPaymentsByTypeUserIdBetween(user, type, userId, after, before);
+        return super.getPaymentsByTypeUserBetween(user, type, after, before);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

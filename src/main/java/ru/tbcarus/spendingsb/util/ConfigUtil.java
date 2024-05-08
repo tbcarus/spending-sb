@@ -5,6 +5,8 @@ public class ConfigUtil {
     public static final int DEFAULT_EXPIRED_DAYS = 3;
     public static final int ACTIVE_REQUESTS_MAX = 3;
 
+    public static final String SELF_COLOR = "#ffc107";
+
     public static String getStringDefaultDays() {
         switch (DEFAULT_EXPIRED_DAYS) {
             case 1:

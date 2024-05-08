@@ -1,6 +1,5 @@
 package ru.tbcarus.spendingsb.controller.note;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.User;
-import ru.tbcarus.spendingsb.service.UserService;
 
 import java.util.List;
 
@@ -17,19 +15,10 @@ import java.util.List;
 @RequestMapping("/profile")
 public class NoteUIController extends AbstractNoteController{
 
-    @Autowired
-    UserService userService;
-
     @RequestMapping("/notes")
     public String getAll(Model model, @AuthenticationPrincipal User user) {
-        user = userService.getByIdWithFriends(user.getId());
         List<Note> notes = super.getAll(user);
         model.addAttribute("notes", notes);
-        if (user.isNewNotify()) {
-            // сбросить флаг новых уведомлений при входе на страницу
-            user.setNewNotify(false);
-            userService.clearNewNotify(user);
-        }
         model.addAttribute("user", user);
         return "notes";
     }
@@ -67,7 +56,4 @@ public class NoteUIController extends AbstractNoteController{
         super.inviteAccept(id, user);
         return "redirect:/payments/profile/group";
     }
-
-
-
 }

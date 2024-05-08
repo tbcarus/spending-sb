@@ -331,8 +331,6 @@ public class UserService implements UserDetailsService {
     }
 
     public User clearNewNotify(User user) {
-//        User u = userRepository.getByEmail(user.getEmail());
-//        u.setNewNotify(false);
         user.setNewNotify(false);
         return userRepository.save(user);
     }

@@ -21,11 +21,17 @@ public class AbstractNoteController {
 
     public List<Note> getAll(User user) {
         log.info("get all notes for user {}", user.getEmail());
+        user = getByIdWithFriends(user.getId());
+        if (user.isNewNotify()) {
+            // сбросить флаг новых уведомлений при входе на страницу
+            clearNewNotify(user);
+        }
         return noteService.getAll(user.getEmail());
     }
 
     public List<Note> getInvites(User user) {
         log.info("get all invites from user {}", user.getId());
+        user = getByIdWithFriends(user.getId());
         return noteService.getInvitesBySenderId(user.id());
     }
 
@@ -52,5 +58,13 @@ public class AbstractNoteController {
         noteService.inviteAccept(noteId, recipient);
         int x = 5;
         userService.checkUsersNotify(recipientInvites);
+    }
+
+    public User clearNewNotify(User user) {
+        return userService.clearNewNotify(user);
+    }
+
+    public User getByIdWithFriends(int id) {
+        return userService.getByIdWithFriends(id);
     }
 }

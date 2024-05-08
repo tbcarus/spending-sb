@@ -1,7 +1,6 @@
 package ru.tbcarus.spendingsb.controller.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +11,6 @@ import ru.tbcarus.spendingsb.model.Friend;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
-import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.DateUtil;
 import ru.tbcarus.spendingsb.util.PaymentsUtil;
 import ru.tbcarus.spendingsb.util.UtilsClass;
@@ -28,101 +26,83 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/payments")
 public class PaymentUIController extends AbstractPaymentController {
 
-    @Autowired
-    UserService userService;
-
     // Записи за выбранный период (месяц от начальной даты)
+    // OK
     @GetMapping("")
     public String getAll(Model model, @AuthenticationPrincipal User user) {
-        user = userService.getByIdWithFriends(user.getId());
-        Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
-                super.getAllByUserIdAndDateBetween(user, user.id(), user.getStartPeriodDate(), user.getEndPeriodDate()));
-        if (userService.getByEmail(user.getEmail()).isNewNotify()) {
-            user.setNewNotify(true);
-        }
-        // создание мапы цветов трат друзей
-        Map<Integer, String> colorMap = user.getFriendsList()
-                .stream()
-                .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
-        colorMap.put(user.getId(), "#ffc107"); // добавление цвета собственных записей
+        user = super.getByIdWithFriends(user.getId());
+        Map<PaymentType, List<Payment>> paymentsMap = super.getAllMapByUserAndDateBetween(user, user.getStartPeriodDate(), user.getEndPeriodDate());
+        // создание мапы цветов трат
+        Map<Integer, String> colorMap = super.getColorMap(user);
         model.addAttribute("colorMap", colorMap);
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
+    // OK
     @GetMapping("/byType")
     public String getByType(Model model, @RequestParam("type") PaymentType type, @AuthenticationPrincipal User user) {
-        user = userService.getByIdWithFriends(user.getId());
-        List<Payment> list = super.getPaymentsByTypeUserIdBetween(user, type, user.getId(), user.getStartPeriodDate(), user.getEndPeriodDate());
+        user = super.getByIdWithFriends(user.getId());
+        List<Payment> list = super.getPaymentsByTypeUserBetween(user, type, user.getStartPeriodDate(), user.getEndPeriodDate());
         model.addAttribute("user", user);
         model.addAttribute("list", list);
         model.addAttribute("paymentType", type);
         model.addAttribute("sum", PaymentsUtil.getSumByType(list));
-        Map<Integer, String> colorMap = user.getFriendsList()
-                .stream()
-                .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
-        colorMap.put(user.getId(), "#ffc107"); // добавление цвета собственных записей
+        Map<Integer, String> colorMap = super.getColorMap(user);
         model.addAttribute("colorMap", colorMap);
         return "typedList";
     }
 
     // Записи от выбранной даты до текущего момента
+    // OK
     @GetMapping("/toCurrentDate")
     public String getAllToCurrentDate(Model model, @AuthenticationPrincipal User user) {
-        user = userService.getByIdWithFriends(user.getId());
-        Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
-                super.getAllByUserIdAndDateBetween(user, user.id(), user.getStartPeriodDate(), DateUtil.getLocalDateTimeNow().toLocalDate()));
-        // создание мапы цветов трат друзей
-        Map<Integer, String> colorMap = user.getFriendsList()
-                .stream()
-                .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
-        colorMap.put(user.getId(), "#ffc107"); // добавление цвета собственных записей
+        user = super.getByIdWithFriends(user.getId());
+        Map<PaymentType, List<Payment>> paymentsMap =
+                super.getAllMapByUserAndDateBetween(user, user.getStartPeriodDate(), DateUtil.getLocalDateTimeNow().toLocalDate());
+        // создание мапы цветов трат
+        Map<Integer, String> colorMap = super.getColorMap(user);
         model.addAttribute("colorMap", colorMap);
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
     // Все записи за всё время
+    // OK
     @GetMapping("/allTime")
     public String getAllSelectedPeriod(Model model, @AuthenticationPrincipal User user) {
-        user = userService.getByIdWithFriends(user.getId());
-        Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
-                super.getAllByUserId(user));
-        // создание мапы цветов трат друзей
-        Map<Integer, String> colorMap = user.getFriendsList()
-                .stream()
-                .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
-        colorMap.put(user.getId(), "#ffc107"); // добавление цвета собственных записей
+        user = super.getByIdWithFriends(user.getId());
+        Map<PaymentType, List<Payment>> paymentsMap = super.getAllMapByUserId(user);
+        // создание мапы цветов трат
+        Map<Integer, String> colorMap = super.getColorMap(user);
         model.addAttribute("colorMap", colorMap);
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
     // Записи всех пользователей за всё время
+    // OK
     @GetMapping("/allUsersPayments")
     public String getAllPayments(Model model, @AuthenticationPrincipal User user) {
-        user = userService.getByIdWithFriends(user.getId());
-        Map<PaymentType, List<Payment>> paymentsMap = PaymentsUtil.getPaymentsMap(
-                super.getAll());
+        user = super.getByIdWithFriends(user.getId());
+        Map<PaymentType, List<Payment>> paymentsMap = super.getAllMap();
         // создание мапы цветов трат друзей
-        Map<Integer, String> colorMap = user.getFriendsList()
-                .stream()
-                .collect(Collectors.toMap(Friend::getFriendId, Friend::getColor));
-        colorMap.put(user.getId(), "#ffc107"); // добавление цвета собственных записей
+        Map<Integer, String> colorMap = super.getColorMap(user);
         model.addAttribute("colorMap", colorMap);
         addStandardAttr(model, user, paymentsMap);
         return "list";
     }
 
+    // OK
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable int id, @AuthenticationPrincipal User user) {
         Payment payment;
-        user = userService.getByIdWithFriends(user.getId());
+        user = super.getByIdWithFriends(user.getId());
         model.addAttribute("user", user);
         try {
             payment = super.get(user, id);
         } catch (NotFoundException exc) {
-            model.addAttribute("msg", exc.getMessage());
+            model.addAttribute("err", exc.getMessage());
             return "error";
         }
         model.addAttribute("payment", payment);
@@ -145,7 +125,7 @@ public class PaymentUIController extends AbstractPaymentController {
                                  @RequestParam(value = "description", required = false) String description,
                                  @RequestParam("date") LocalDate date,
                                  @AuthenticationPrincipal User user) {
-        user = userService.getByIdWithFriends(user.getId());
+        user = super.getByIdWithFriends(user.getId());
         try {
             if (price == 0) {
                 // Если трата нулевая, то это считается ошибкой

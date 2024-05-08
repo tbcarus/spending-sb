@@ -17,11 +17,13 @@ import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.repository.DataJpaPaymentRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
+import ru.tbcarus.spendingsb.util.PaymentsUtil;
 import ru.tbcarus.spendingsb.util.SecurityUtil;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -40,6 +42,13 @@ public class PaymentService {
         sp = sp.and(filterByDate(after, before));
 
         return sortList(paymentRepository.getPayments(sp, sort));
+    }
+
+    public Map<PaymentType, List<Payment>> getPaymentsMap(User user, LocalDate after, LocalDate before) {
+        Specification<Payment> sp = filterByGroup(user);
+        sp = sp.and(filterByDate(after, before));
+
+        return PaymentsUtil.getPaymentsMap(sortList(paymentRepository.getPayments(sp, sort)));
     }
 
     public List<Payment> getPaymentsByType(User user, PaymentType type, LocalDate after, LocalDate before) {
