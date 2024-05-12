@@ -21,7 +21,6 @@ public class AbstractNoteController {
 
     public List<Note> getAll(User user) {
         log.info("get all notes for user {}", user.getEmail());
-        user = getByIdWithFriends(user.getId());
         if (user.isNewNotify()) {
             // сбросить флаг новых уведомлений при входе на страницу
             clearNewNotify(user);
@@ -31,7 +30,6 @@ public class AbstractNoteController {
 
     public List<Note> getInvites(User user) {
         log.info("get all invites from user {}", user.getId());
-        user = getByIdWithFriends(user.getId());
         return noteService.getInvitesBySenderId(user.id());
     }
 
@@ -56,7 +54,6 @@ public class AbstractNoteController {
         log.info("accept invite {} by user {}", noteId, recipient.getEmail());
         List<Note> recipientInvites = noteService.getInvitesBySenderId(recipient.getId());
         noteService.inviteAccept(noteId, recipient);
-        int x = 5;
         userService.checkUsersNotify(recipientInvites);
     }
 

@@ -17,6 +17,7 @@ public class NoteUIController extends AbstractNoteController{
 
     @RequestMapping("/notes")
     public String getAll(Model model, @AuthenticationPrincipal User user) {
+        user = super.getByIdWithFriends(user.getId());
         List<Note> notes = super.getAll(user);
         model.addAttribute("notes", notes);
         model.addAttribute("user", user);
@@ -25,6 +26,7 @@ public class NoteUIController extends AbstractNoteController{
 
     @RequestMapping("/invites")
     public String getInvites(Model model, @AuthenticationPrincipal User user) {
+        user = super.getByIdWithFriends(user.getId());
         List<Note> notes = super.getInvites(user);
         model.addAttribute("notes", notes);
         model.addAttribute("user", user);
