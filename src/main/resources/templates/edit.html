@@ -15,7 +15,7 @@
 <!--@thymesVar id="paymentType" type="ru.tbcarus.spendingsb.model.PaymentType"-->
 <!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
 <div class="position-absolute top-50 start-50 translate-middle">
-    <form th:method="POST" th:action="@{/payments}">
+    <form th:method="POST" th:action="@{/payments}" th:object="${payment}" class="form">
         <input type="hidden" name="id" th:value="${payment.id}">
         <table class="table shadow table-striped">
             <tr>
@@ -50,7 +50,10 @@
                     <b>Сумма:</b>
                 </td>
                 <td>
-                    <input type="text" name="price" th:value="${payment.price}" class="rounded-2 border-1">
+<!--                    <input type="text" name="price" th:value="${payment.price}" class="rounded-2 border-1">-->
+                    <label for="price">Сумма:</label>
+                    <input type="text" class="form-control rounded-2 border-1" id="price" name="price" th:field="*{price}" th:value="*{price}">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
                 </td>
             </tr>
             <tr>

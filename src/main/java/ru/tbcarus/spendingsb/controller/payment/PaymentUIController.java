@@ -1,9 +1,11 @@
 package ru.tbcarus.spendingsb.controller.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
@@ -109,8 +111,10 @@ public class PaymentUIController extends AbstractPaymentController {
         return "edit";
     }
 
+    // OK
     @GetMapping("/create")
     public String create(Model model, @AuthenticationPrincipal User user) {
+        user = super.getByIdWithFriends(user.getId());
         Payment payment = new Payment(LocalDate.now());
         model.addAttribute("payment", payment);
         model.addAttribute("user", user);
@@ -118,32 +122,33 @@ public class PaymentUIController extends AbstractPaymentController {
     }
 
     @PostMapping
-    public String updateOrCreate(HttpServletRequest request,
-                                 @RequestParam(value = "id", required = false) String id,
-                                 @RequestParam("type") PaymentType type,
-                                 @RequestParam("price") int price,
-                                 @RequestParam(value = "description", required = false) String description,
-                                 @RequestParam("date") LocalDate date,
-                                 @AuthenticationPrincipal User user) {
+    public String updateOrCreate(@Valid Payment p, BindingResult result, @AuthenticationPrincipal User user, Model model) {
+        if (result.hasErrors()) {
+            user = super.getByIdWithFriends(user.getId());
+            model.addAttribute("user", user);
+            if (p.getId() == 0) {
+                return "edit";
+            } else {
+                return "edit";
+            }
+        }
         user = super.getByIdWithFriends(user.getId());
         try {
-            if (price == 0) {
+            if (p.getPrice() == 0) {
                 // Если трата нулевая, то это считается ошибкой
                 throw new IllegalRequestDataException("Сумма траты не должна быть нулевой");
             }
         } catch (IllegalRequestDataException exc) {
-            if (id.isEmpty()) {
+            if (p.getId() == 0) {
                 return "redirect:/payments/create";
             } else {
-                return "redirect:/payments/" + id;
+                return "redirect:/payments/" + p.getId();
             }
         }
-        Payment payment = new Payment(type, price, description, date);
-        if (id.isEmpty()) {
-            super.create(payment);
+        if (p.getId() == 0) {
+            super.create(p);
         } else {
-            payment.setId(Integer.parseInt(id));
-            super.update(user, payment);
+            super.update(user, p);
         }
         return "redirect:/payments";
     }
