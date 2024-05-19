@@ -1,89 +1,101 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      class="h-100">
 <head>
     <meta charset="UTF-8">
     <title>Edit</title>
     <div th:replace="~{fragments/headTag :: headTag}"></div>
 </head>
-<body>
+<body class="h-100">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
-<nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
+
 <!--@thymesVar id="payment" type="ru.tbcarus.spendingsb.model.Payment"-->
 <!--@thymesVar id="paymentType" type="ru.tbcarus.spendingsb.model.PaymentType"-->
 <!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
-<div class="position-absolute top-50 start-50 translate-middle">
-    <form th:method="POST" th:action="@{/payments}" th:object="${payment}" class="form">
-        <input type="hidden" name="id" th:value="${payment.id}">
-        <table class="table shadow table-striped">
-            <tr>
-                <td colspan="2" class="text-center">
-                    <input th:if="${payment.id}" type="button" class="btn btn-del" value="Удалить запись"
-                           th:onclick="|window.location.href = 'delete?id=${payment.id}'|"
-                           th:method="delete">
-                </td>
-            </tr>
-            <tr th:if="${user.isInGroup()}">
-                <td th:unless="${payment.isNew()}" colspan="2" class="text-center">
-                    <span th:text="${payment.user.getName()} + ' (' + ${payment.user.getEmail()} + ')'">Пользователь</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="d-flex justify-content-end">
-                    <b>Тип:</b>
-                </td>
-                <td>
-                    <select name="type" class="rounded-2 border-1">
-                        <option th:unless="${payment.isNew()}" th:value="${payment.type}"
-                                th:text="${payment.type.title}">DEFAULT
-                        </option>
-                        <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
-                                th:value="${paymentType}" th:text="${paymentType.title}">Type
-                        </option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="d-flex justify-content-end">
-                    <b>Сумма:</b>
-                </td>
-                <td>
-<!--                    <input type="text" name="price" th:value="${payment.price}" class="rounded-2 border-1">-->
-                    <label for="price">Сумма:</label>
-                    <input type="text" class="form-control rounded-2 border-1" id="price" name="price" th:field="*{price}" th:value="*{price}">
-                    <p class="alert alert-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
-                </td>
-            </tr>
-            <tr>
-                <td class="d-flex justify-content-end">
-                    <b>Описание:</b>
-                </td>
-                <td>
-                    <input type="text" name="description" th:value="${payment.description}" class="rounded-2 border-1">
-                </td>
-            </tr>
-            <tr>
-                <td class="d-flex justify-content-end">
-                    <b>Дата:</b>
-                </td>
-                <td>
-                    <input type="date" name="date" th:value="${payment.date}" class="rounded-2 border-1">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <div class="d-flex justify-content-around">
-                        <button type="submit" class="btn btn-top">Сохранить</button>
-                        <input type="button" value=" Отменить " class="btn btn-top" th:onclick="|window.location.href='@{/payments}'|">
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </form>
-    <!--    copyright-->
-    <div th:replace="~{fragments/footer :: copy}"></div>
+
+<div class="container-fluid d-flex h-100 flex-column">
+    <!-- I want this container to stretch to the height of the parent -->
+    <div class="row">
+        <div class="col">
+            <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
+        </div>
+    </div>
+    <div class="row bg-light flex-fill d-flex align-items-center">
+        <!-- I want this row height to fill the remaining height -->
+        <div class="col portlet-container portlet-dropzone">
+            <!-- if row is not the right to stretch the remaining height, this column also fine -->
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-4 shadow" style="width: 300px">
+                    <form th:method="POST" th:action="@{/payments}" th:object="${payment}" class="form">
+                        <input type="hidden" name="id" th:value="${payment.id}">
+                        <div class="row bg-white" th:if="${user.isInGroup()}" th:unless="${payment.isNew()}">
+                            <div class="col p-2 d-flex justify-content-center">
+                                <span th:text="${payment.user.getName()} + ' (' + ${payment.user.getEmail()} + ')'">Пользователь</span>
+                                </td>
+                            </div>
+                        </div>
+                        <div class="row bg-dark bg-opacity-10" th:if="${payment.id}">
+                            <div class="col p-2 d-flex justify-content-center">
+                                <input type="button" class="btn btn-del" value="Удалить запись"
+                                       th:onclick="|window.location.href = 'delete?id=${payment.id}'|"
+                                       th:method="delete">
+                            </div>
+                        </div>
+                        <div class="row bg-white">
+                            <div class="col p-2 d-flex justify-content-end align-items-center fw-bold">Тип:</div>
+                            <div class="col-8 p-2 d-flex justify-content-start">
+                                <select name="type" class="rounded-2 border-1">
+                                    <option th:unless="${payment.isNew()}" th:value="${payment.type}"
+                                            th:text="${payment.type.title}">DEFAULT
+                                    </option>
+                                    <option th:each="paymentType : ${T(ru.tbcarus.spendingsb.model.PaymentType).values()}"
+                                            th:value="${paymentType}" th:text="${paymentType.title}">Type
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row bg-dark bg-opacity-10">
+                            <div class="col p-2 d-flex justify-content-end align-items-center fw-bold">Сумма:</div>
+                            <div class="col-8 p-2 d-flex justify-content-start">
+                                <input type="text" class="rounded-2 border-1" id="price" name="price"
+                                       th:field="*{price}"
+                                       th:value="*{price}">
+                                <p class="alert alert-danger" th:if="${#fields.hasErrors('price')}"
+                                   th:errors="*{price}"></p>
+                            </div>
+                        </div>
+                        <div class="row bg-white">
+                            <div class="col p-2 d-flex justify-content-end align-items-center fw-bold">Описание:</div>
+                            <div class="col-8 p-2 d-flex justify-content-start">
+                                <input type="text" name="description" th:value="${payment.description}"
+                                       class="rounded-2 border-1">
+                            </div>
+                        </div>
+                        <div class="row bg-dark bg-opacity-10">
+                            <div class="col p-2 d-flex justify-content-end align-items-center fw-bold">Дата:</div>
+                            <div class="col-8 p-2 d-flex justify-content-start">
+                                <input type="date" name="date" th:value="${payment.date}" class="rounded-2 border-1">
+                            </div>
+                        </div>
+                        <div class="row bg-white">
+                            <div class="col p-2 d-flex justify-content-around">
+                                <button type="submit" class="btn btn-top">Сохранить</button>
+                                <input type="button" value=" Отменить " class="btn btn-top"
+                                       th:onclick="|window.location.href='@{/payments}'|">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col"></div>
+            </div>
+            <!--    copyright-->
+            <div th:replace="~{fragments/footer :: copy}"></div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
