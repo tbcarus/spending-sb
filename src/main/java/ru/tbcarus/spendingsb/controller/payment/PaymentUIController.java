@@ -9,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
-import ru.tbcarus.spendingsb.model.Friend;
 import ru.tbcarus.spendingsb.model.Payment;
 import ru.tbcarus.spendingsb.model.PaymentType;
 import ru.tbcarus.spendingsb.model.User;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/payments")
@@ -126,9 +124,11 @@ public class PaymentUIController extends AbstractPaymentController {
         if (result.hasErrors()) {
             user = super.getByIdWithFriends(user.getId());
             model.addAttribute("user", user);
-            if (p.getId() == 0) {
+            if (p.isNew() || p.getId() == 0) {
                 return "edit";
             } else {
+                Payment payment = super.get(user, p.getId());
+                p.setUser(payment.getUser());
                 return "edit";
             }
         }
@@ -139,13 +139,13 @@ public class PaymentUIController extends AbstractPaymentController {
                 throw new IllegalRequestDataException("Сумма траты не должна быть нулевой");
             }
         } catch (IllegalRequestDataException exc) {
-            if (p.getId() == 0) {
+            if (p.isNew() || p.getId() == 0) {
                 return "redirect:/payments/create";
             } else {
                 return "redirect:/payments/" + p.getId();
             }
         }
-        if (p.getId() == 0) {
+        if (p.isNew() || p.getId() == 0) {
             super.create(p);
         } else {
             super.update(user, p);
