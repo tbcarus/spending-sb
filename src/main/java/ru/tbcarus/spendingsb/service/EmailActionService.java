@@ -46,13 +46,13 @@ public class EmailActionService {
         User user = emailAction.getUser();
         user.setEnabled();
         userRepository.save(user);
-//        emailAction.setUsed(true);
+        emailAction.setUsed(true);
         return repository.save(emailAction);
     }
 
     public EmailAction passwordResetGet(String email, String code, EmailRequestType type) {
         EmailAction emailAction = emailActionCheck(email, code, type);
-//        emailAction.setUsed(true);
+        emailAction.setUsed(true);
         return repository.save(emailAction);
     }
 

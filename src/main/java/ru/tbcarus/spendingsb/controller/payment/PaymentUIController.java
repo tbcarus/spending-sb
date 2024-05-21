@@ -163,7 +163,7 @@ public class PaymentUIController extends AbstractPaymentController {
             for (int i = 0; i < strPrice.length; i++) {
                 if (strPrice[i] != null && !strPrice[i].isEmpty()) {
                     int price = UtilsClass.toInt(strPrice[i]);
-                    if (price == Integer.MIN_VALUE) {
+                    if (price == Integer.MIN_VALUE || price == 0) {
                         continue;
                     }
                     String description = "";

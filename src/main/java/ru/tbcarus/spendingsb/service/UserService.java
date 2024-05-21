@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -50,6 +51,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     FriendService friendService;
 
+    @Autowired
+    PasswordEncoder encoder;
+
     public UserService(JpaUserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -57,6 +61,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User create(User user) {
         user.setEmail(user.getEmail().toLowerCase());
+        user.setPassword(encoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         emailActionService.activationRequest(savedUser);
         return savedUser;
@@ -266,9 +271,8 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.getByEmail(email);
         EmailAction emailAction = emailActionService.get(code);
-        user.setPassword(password);
+        user.setPassword(encoder.encode(password));
         userRepository.save(user);
-
         return user;
     }
 

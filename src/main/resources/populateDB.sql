@@ -4,9 +4,9 @@ DELETE FROM user_roles;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO users(id, name, email, password, start_period_date)
-VALUES (100000, 'User', 'l2@og.in', 'password2', '2022-04-03'), --100000
-       (100001, 'Admin', 'l@og.in', 'password', '2022-04-10'),  --100001
-       (100002, 'SuperUser', 'l1@og.in', 'password3', '2023-04-10'); --100002
+VALUES (100000, 'User', 'l2@og.in', '$2a$10$kW5r2uWsy.AEquzE2s2M5.ors6Y87zrxm7rkMn2EN.lxT4jToWeEi', '2022-04-03'), --100000 password2
+       (100001, 'Admin', 'l@og.in', '$2a$10$fD3RXbUxjnGynKSgaRoWhuE8uMqHm2VkMtMi83r.pXJYB/2rdR92C', '2022-04-10'),  --100001 password
+       (100002, 'SuperUser', 'l1@og.in', '$2a$10$1N17sucxD0zW5FnyHvcBsuFCkXXtBVN9LK954nTP53SgXfq00UcYe', '2023-04-10'); --100002 password3
 
 INSERT INTO costs(type, price, description, date, user_id)
 VALUES ('DINNER', 250, '', '2023-02-01', 100000),         --100003
