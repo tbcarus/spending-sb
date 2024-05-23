@@ -32,12 +32,13 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login", "/login-error",
-                                "/payments/profile/register",
+//                                "/payments/profile/register",
                                 "/payments/profile/register/**",
+//                                "/register",
+                                "/register/**",
                                 "/images/**",
-                                "/test",
-                                "/css/**",
-                                "/users").permitAll()
+//                                "/test",
+                                "/css/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/rest/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

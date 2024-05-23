@@ -26,7 +26,7 @@
                 <div th:if="${err != null}">
                     <div class="alert alert-danger m-0" th:text="${err.title}">QWERTY</div>
                     <div class="d-flex justify-content-center p-2" th:if="${resendRequest}">
-                        <form th:method="post" th:action="@{/payments/profile/register/resend-request}">
+                        <form th:method="post" th:action="@{/register/resend-request}">
                             <input hidden="hidden" type="text" th:value="${param.email}" th:name="email">
                             <input hidden="hidden" type="text" th:value="${param.code}" th:name="code">
                             <button class="btn btn-lg btn-primary" type="submit">Повторить запрос</button>

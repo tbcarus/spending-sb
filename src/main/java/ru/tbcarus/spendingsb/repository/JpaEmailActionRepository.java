@@ -14,6 +14,8 @@ public interface JpaEmailActionRepository extends JpaRepository<EmailAction, Int
 
     EmailAction getByCode(String code);
 
+    EmailAction getByUserIdAndCode(Integer user_id, String code);
+
     Optional<EmailAction> findByCode(String code);
 
     List<EmailAction> findAllByUserIdAndDateTimeBetweenAndTypeOrderByDateTimeDesc(Integer userId,

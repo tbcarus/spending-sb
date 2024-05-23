@@ -31,7 +31,7 @@ public class EmailContextUtil {
         Map<String, Object> map = new HashMap<>();
         map.put("name", emailAction.getUser().getName());
         map.put("emailAction", emailAction);
-        map.put("link", "http://localhost:8080/spending/payments/profile/register/"
+        map.put("link", "http://localhost:8080/spending/register/"
                 + emailAction.getType().name()
                 + "?email="
                 + emailAction.getUser().getEmail()

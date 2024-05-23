@@ -111,31 +111,6 @@ public abstract class AbstractUserController {
         userService.removeSU(user, id);
     }
 
-    protected EmailAction registerConfirm(String email, String code) {
-        log.info("Registration confirm request for {} with code {}", email, code);
-        return emailActionService.registerConfirm(email, code, EmailRequestType.ACTIVATE);
-    }
-
-    protected EmailAction resendRequest(String email) {
-        log.info("update link for registration or password recovery for user {}", email);
-        return emailActionService.resendActivationRequest(email);
-    }
-
-    protected EmailAction passwordResetRequest(String email) {
-        log.info("Request reset password for user {}", email);
-        return emailActionService.passwordResetRequest(email);
-    }
-
-    protected User resetPassword(String email, String code, String password, String passwordReply) {
-        log.info("Reset password for user {}", email);
-        return userService.resetPassword(email, code, password, passwordReply);
-    }
-
-    protected EmailAction passwordResetGet(String email, String code) {
-        log.info("Entrance with reset password link for {} with code {}", email, code);
-        return emailActionService.passwordResetGet(email, code, EmailRequestType.RESET_PASSWORD);
-    }
-
     protected User enable(int userId, boolean enable) {
         return userService.enable(userId, enable);
     }

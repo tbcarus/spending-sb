@@ -29,7 +29,7 @@
         <div th:if="${param.reset}">
             <div class="alert alert-warning">
                 Invalid username or password. For password recovery type your e-mail and click the button.
-                <form th:method="post" th:action="@{/payments/profile/register/password-reset-request}">
+                <form th:method="post" th:action="@{/register/password-reset-request}">
                     <input type="text" name="email" th:value="${param.email}" placeholder="e-mail">
                     <button class="btn btn-lg btn-primary" type="submit">Отправить</button>
                 </form>
@@ -37,7 +37,7 @@
         </div>
         <div th:if="${param.activate}">
             <form th:if="${param.activate[0] == 'true'}" th:method="post"
-                  th:action="@{/payments/profile/register/resend-request}">
+                  th:action="@{/register/resend-request}">
                 <div class="alert alert-warning">
                     <span th:text="'Пользователь ' + ${param.email} + ' не активирован. Отвравьте новый запрос, письмо со сылкой для активации будет отправлено на указанный email.'"></span>
                 </div>
