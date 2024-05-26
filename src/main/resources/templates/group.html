@@ -21,7 +21,7 @@
     <div class="container">
         <h3 class="text-center">Моя группа</h3>
         <div class="">
-            <button class="btn btn-del mb-2" th:onclick="|window.location.href = '@{/payments/profile/group/delete}'|">
+            <button class="btn btn-del mb-2" th:onclick="|window.location.href = '@{/group/delete}'|">
                 Удалиться из группы
             </button>
         </div>
@@ -34,7 +34,7 @@
                 <th th:if="${user.isSuperUser()}">
                     Дата
                     <input type="button" value="Set EQ" class="btn btn-top"
-                           th:onclick="|window.location.href = '@{group/level-dates}'|"/>
+                           th:onclick="|window.location.href = '@{/group/level-dates}'|"/>
                 </th>
                 <th>Role</th>
                 <th th:if="${user.isSuperUser()}">Права</th>
@@ -60,10 +60,10 @@
                     <span th:if="${u.isSuperUser()}">Super User</span>
                 </td>
                 <td th:if="${user.isSuperUser()}">
-                    <a th:unless="${u.isSuperUser()}" th:href="@{group/{id}/addSU(id=${u.id()})}">Сделать SU</a>
-                    <a th:if="${u.isSuperUser()}" th:href="@{group/{id}/removeSU(id=${u.id()})}">Убрать SU</a>
+                    <a th:unless="${u.isSuperUser()}" th:href="@{/group/{id}/addSU(id=${u.id()})}">Сделать SU</a>
+                    <a th:if="${u.isSuperUser()}" th:href="@{/group/{id}/removeSU(id=${u.id()})}">Убрать SU</a>
                 </td>
-                <td th:if="${user.isSuperUser()}"><a th:href="@{group/{id}/delete(id=${u.id()})}">Удалить</a></td>
+                <td th:if="${user.isSuperUser()}"><a th:href="@{/group/{id}/delete(id=${u.id()})}">Удалить</a></td>
             </tr>
             </tbody>
         </table>

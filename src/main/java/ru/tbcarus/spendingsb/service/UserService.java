@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,16 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
 import ru.tbcarus.spendingsb.exception.IllegalRequestDataException;
-import ru.tbcarus.spendingsb.exception.IncorrectAddition;
 import ru.tbcarus.spendingsb.exception.NotFoundException;
 import ru.tbcarus.spendingsb.model.*;
 import ru.tbcarus.spendingsb.repository.DataJpaNoteRepository;
 import ru.tbcarus.spendingsb.repository.JpaUserRepository;
-import ru.tbcarus.spendingsb.util.UserUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -41,9 +39,6 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private DataJpaNoteRepository noteRepository;
-
-    @Autowired
-    private NoteService noteService;
 
     @Autowired
     EmailActionService emailActionService;
@@ -133,15 +128,6 @@ public class UserService implements UserDetailsService {
 //        }
     }
 
-    @Transactional
-    public void levelDates(User user) {
-        for (Friend f : user.getFriendsList()) {
-            User u = getById(f.getFriendId());
-            u.setStartPeriodDate(user.getStartPeriodDate());
-            userRepository.save(u);
-        }
-    }
-
     public void delete(int id) {
         Optional<User> opt = userRepository.findById(id);
         if (opt.isEmpty()) {
@@ -179,7 +165,7 @@ public class UserService implements UserDetailsService {
         throw new UsernameNotFoundException("User ‘" + username + "’ not found");
     }
 
-    public List<User> getFriends(User user) {
+    public List<User> getGroupUserList(User user) {
         if (user.getFriendsList().isEmpty()) {
             return new ArrayList<User>();
         }
@@ -192,74 +178,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll(sp);
     }
 
-    public Map<User, Friend> getFriendsMap(User user) {
-        List<User> users = getFriends(user);
-        List<Friend> copy = new ArrayList<>(user.getFriendsList());
-        Map<User, Friend> userMap = new HashMap<>();
-        for (User u : users) {
-            Friend f = copy.stream().filter(friend -> friend.getFriendEmail().equals(u.getEmail())).findFirst().get();
-            userMap.put(u, f);
-        }
-        return userMap;
-    }
-
-    public Map<Integer, Friend> getFriendsMapId(User user) {
-        List<User> users = getFriends(user);
-        List<Friend> copy = new ArrayList<>(user.getFriendsList());
-        Map<Integer, Friend> userMap = new HashMap<>();
-        for (User u : users) {
-            Friend f = copy.stream().filter(friend -> friend.getFriendEmail().equals(u.getEmail())).findFirst().get();
-            userMap.put(u.getId(), f);
-        }
-        return userMap;
-    }
-
-    @PreAuthorize("hasRole('ROLE_SUPERUSER')")
-    @Transactional
-    public void deleteUserFromGroup(User user, int friendId) {
-        User userExcluded = getByIdWithFriends(friendId);
-        // Проверить, что пользователь в этой группе
-        if (!user.hasFriend(friendId)) {
-            throw new NotFoundException("user " + userExcluded.getEmail() + " is not friend for " + user.getEmail());
-        }
-        // Удалить пользователя у всех в группе
-        for (Friend f : userExcluded.getFriendsList()) {
-            User u = getById(f.getFriendId());
-            Optional<Friend> opt = u.getFriendsList()
-                    .stream()
-                    .filter(fr -> fr.getFriendEmail().equals(userExcluded.getEmail()))
-                    .findFirst();
-            opt.ifPresent(u::deleteFriend);
-            userRepository.save(u);
-        }
-        // Очистить список друзей у пользователя, восстановить суперюзера
-        userExcluded.removeAllFriends();
-        userExcluded.addRole(Role.SUPERUSER);
-        userRepository.save(userExcluded);
-    }
-
-    @Transactional
-    public void deleteGroupGroupSelf(User user) {
-        boolean isFirst = true;
-        // Удалить себя из списков юзеров группы
-        for (Friend f : user.getFriendsList()) {
-            User u = getByIdWithFriends(f.getFriendId());
-            if (user.isSuperUser() && isFirst) { // Если удаляется суперюзер, то суперюзер даётся первому в списке
-                u.addRole(Role.SUPERUSER);
-                isFirst = false;
-            }
-            Optional<Friend> opt = u.getFriendsList()
-                    .stream()
-                    .filter(fr -> fr.getFriendEmail().equals(user.getEmail()))
-                    .findFirst();
-            opt.ifPresent(u::deleteFriend);
-            userRepository.save(u);
-        }
-
-        user.removeAllFriends();        // Очистить у себя список группы
-        user.addRole(Role.SUPERUSER);   // Восстановить суперюзера
-        userRepository.save(user);
-    }
 
     public User resetPassword(String email, String code, String password, String passwordReply) {
         if (!password.equals(passwordReply)) {
@@ -276,31 +194,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    @Transactional
-    public void sendFriendInvite(User user, String email) {
-        if (!email.equals(user.getEmail())) {
-            if (user.hasFriend(email)) {
-                throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
-            }
-            if (user.getFriendsList().size() >= UserUtil.DEFAULT_MAX_FRIENDS) {
-                throw new IncorrectAddition(ErrorType.TOO_MUCH_FRIENDS);
-            }
-            if (user.getFriendsList().size() + noteService.getInvitesBySenderId(user.getId()).size() >= 5) {
-                throw new IncorrectAddition(ErrorType.TOO_MUCH_INVITES);
-            }
 
-            User userDest = getByEmail(email);
-            if (userDest.isInGroup()) {
-                throw new IncorrectAddition(ErrorType.HAS_GROUP);
-            }
-
-            Note note = new Note(NoteType.INVITE, false, false, LocalDateTime.now(), "Объединение досок",
-                    "Пользователь " + user.getEmail() + " объединение досок", email, user);
-            noteService.create(note);
-            userDest.setNewNotify(true);
-            update(userDest, userDest.getId());
-        }
-    }
 
     public Specification<User> filterByEmail(String email) {
         return new Specification<User>() {
@@ -312,26 +206,6 @@ public class UserService implements UserDetailsService {
                 return criteriaBuilder.equal(root.get("email"), email);
             }
         };
-    }
-
-    @PreAuthorize("hasRole('ROLE_SUPERUSER')")
-    public void addSU(User user, int friendId) {
-        if (!user.isSuperUser() && user.hasFriend(friendId)) {
-            throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
-        }
-        User u = getById(friendId);
-        u.addRole(Role.SUPERUSER);
-        userRepository.save(u);
-    }
-
-    @PreAuthorize("hasRole('ROLE_SUPERUSER')")
-    public void removeSU(User user, int friendId) {
-        if (!user.isSuperUser() && user.hasFriend(friendId)) {
-            throw new IllegalRequestDataException("User is not superuser or another user is not friend!");
-        }
-        User u = getById(friendId);
-        u.removeRole(Role.SUPERUSER);
-        userRepository.save(u);
     }
 
     public User clearNewNotify(User user) {
