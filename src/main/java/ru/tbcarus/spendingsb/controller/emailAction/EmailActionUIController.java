@@ -111,7 +111,9 @@ public class EmailActionUIController extends AbstractEmailActionController {
 
     //Ok
     @PostMapping("/resend-request")
-    public String resendRequest(Model model, @RequestParam String email, @RequestParam(required = false) String code) {
+    public String resendRequest(Model model,
+                                @RequestParam String email,
+                                @RequestParam(required = false) String code) {
         // Запрос новой ссылки, если период действия предыдущей истёк
         try {
             super.resendRequest(email);

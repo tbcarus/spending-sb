@@ -1,5 +1,8 @@
 package ru.tbcarus.spendingsb.util;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.tbcarus.spendingsb.config.MailConfig;
 import ru.tbcarus.spendingsb.model.EmailAction;
 import ru.tbcarus.spendingsb.model.EmailContext;
@@ -7,6 +10,7 @@ import ru.tbcarus.spendingsb.model.EmailRequestType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EmailContextUtil {
 
@@ -31,12 +35,21 @@ public class EmailContextUtil {
         Map<String, Object> map = new HashMap<>();
         map.put("name", emailAction.getUser().getName());
         map.put("emailAction", emailAction);
-        map.put("link", "http://localhost:8080/spending/register/"
-                + emailAction.getType().name()
-                + "?email="
-                + emailAction.getUser().getEmail()
-                + "&code="
-                + emailAction.getCode());
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = Objects.requireNonNull(servletRequestAttributes).getRequest();
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder
+                .append(request.getScheme()).append("://")
+                .append(request.getServerName())
+                .append(request.getServerPort() == 80 || request.getServerPort() == 443 ? "" : ":" + request.getServerPort())
+                .append(request.getContextPath())
+                .append("/register/")
+                .append(emailAction.getType().name())
+                .append("?email=").append(emailAction.getUser().getEmail())
+                .append("&code=").append(emailAction.getCode());
+        String link = urlBuilder.toString();
+
+        map.put("link", link);
         email.setContext(map);
 
         return email;
