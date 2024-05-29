@@ -138,7 +138,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User enable(int userId, boolean enabled) {
-        User user = getById(userId);
+        User user = getByIdWithFriends(userId);
         if (user.isBanned()) {
             throw new IllegalRequestDataException("User banned!");
         }
@@ -148,7 +148,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User ban(int userId, boolean ban) {
-        User user = getById(userId);
+        User user = getByIdWithFriends(userId);
         user.setBanned(ban);
         if (ban) {
             user.setEnabled(false);

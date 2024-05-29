@@ -30,7 +30,7 @@ function activeCheckbox(id) {
 
     let request = new XMLHttpRequest();
     let csrfToken = document.getElementsByName("_csrf")[0].value;
-    request.open("POST", "http://localhost:8080/spending/rest/admin/users/" + id + "/enable");
+    request.open("POST", getUrl("/spending/rest/admin/users/" + id + "/enable"));
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send("param=" + status + "&_csrf=" + csrfToken);
     changeRecordColor(status, false, id);
@@ -41,7 +41,7 @@ function banCheckbox(id) {
 
     let request = new XMLHttpRequest();
     let csrfToken = document.getElementsByName("_csrf")[0].value;
-    request.open("POST", "http://localhost:8080/spending/rest/admin/users/" + id + "/ban");
+    request.open("POST", getUrl("/spending/rest/admin/users/" + id + "/ban"));
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send("param=" + status + "&_csrf=" + csrfToken);
     eCheckbox = document.getElementById("enable-" + id);
