@@ -3,6 +3,7 @@ package ru.tbcarus.spendingsb.controller.group;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.tbcarus.spendingsb.model.Friend;
+import ru.tbcarus.spendingsb.model.Note;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.GroupService;
 import ru.tbcarus.spendingsb.service.UserService;
@@ -28,8 +29,8 @@ public class AbstractGroupController {
         return groupService.getFriendsMapId(user);
     }
 
-    protected void sendFriendInvite(User user, String email) {
-        groupService.sendFriendInvite(user, email);
+    protected Note sendFriendInvite(User user, String email) {
+        return groupService.sendFriendInvite(user, email);
     }
 
     protected void levelDates(User user) {

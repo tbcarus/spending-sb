@@ -66,10 +66,9 @@ public class GroupService {
         return userMap;
     }
 
-
-
     @Transactional
-    public void sendFriendInvite(User user, String email) {
+    public Note sendFriendInvite(User user, String email) {
+        Note note = null;
         if (!email.equals(user.getEmail())) {
             if (user.hasFriend(email)) {
                 throw new IncorrectAddition(ErrorType.ALREADY_IN_GROUP);
@@ -86,12 +85,13 @@ public class GroupService {
                 throw new IncorrectAddition(ErrorType.HAS_GROUP);
             }
 
-            Note note = new Note(NoteType.INVITE, false, false, LocalDateTime.now(), "Объединение досок",
+            note = new Note(NoteType.INVITE, false, false, LocalDateTime.now(), "Объединение досок",
                     "Пользователь " + user.getEmail() + " объединение досок", email, user);
             noteService.create(note);
             userDest.setNewNotify(true);
             userService.update(userDest, userDest.getId());
         }
+        return note;
     }
 
     @PreAuthorize("hasRole('ROLE_SUPERUSER')")

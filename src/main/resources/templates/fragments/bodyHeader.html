@@ -10,6 +10,8 @@
 <!--@thymesVar id="user" type="ru.tbcarus.spendingsb.model.User"-->
 <!--@thymesVar id="Role" type="ru.tbcarus.spendingsb.model.Role"-->
 <nav th:fragment="bodyHeader" class="navbar navbar-expand-md navbar-dark bg-dark py-0">
+    <script th:src="@{/js/util.js}"></script>
+    <script th:src="@{/js/group.js}"></script>
     <div class="container-fluid p-1">
         <div class="navbar-collapse collapse" id="navbarCollapse" style="">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
@@ -35,7 +37,15 @@
                                 </button>
                             </li>
                         </form>
+
                         <li class="m-1">
+                            <button class="btn btn-info col-1" id="btnAddFriendRest"
+                                    onclick="addFriend()" style="width: 150px">
+                                Отправить REST
+                            </button>
+                        </li>
+
+                        <li class="m-1" th:if="${user.isSuperUser()}">
                             <input class="btn btn-danger" type="button" value=" Invites " style="width: 150px"
                                    th:onclick="|window.location.href='@{/profile/invites}'|">
                         </li>
