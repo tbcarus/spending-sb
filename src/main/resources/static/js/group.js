@@ -8,12 +8,22 @@ function changeColor(id) {
     request.send("color=" + color + "&_csrf=" + csrfToken);
 }
 
-function addFriend() {
+async function addFriend() {
     let csrfToken = document.getElementsByName("_csrf")[0].value;
     let email = document.getElementById("email").value;
-    alert(email);
-    let request = new XMLHttpRequest();
-    request.open("POST", getUrl("/spending/rest/group/addfriend"));
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send("email=" + email + "&_csrf=" + csrfToken);
+
+    let res = await fetch(getUrl("/spending/rest/group/addfriend"), {
+        method: 'post',
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: "email=" + email + "&_csrf=" + csrfToken
+    });
+    if (res.status === 200) {
+        // let note = await res.json();
+        // console.log(note);
+    } else {
+        alert(await res.text())
+    }
+
 }

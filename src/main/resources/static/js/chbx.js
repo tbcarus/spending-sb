@@ -25,25 +25,32 @@ function changeRecordColor(status, ban, id) {
     }
 }
 
-function activeCheckbox(id) {
+async function activeCheckbox(id) {
     let status = document.getElementById("enable-" + id).checked;
-
-    let request = new XMLHttpRequest();
     let csrfToken = document.getElementsByName("_csrf")[0].value;
-    request.open("POST", getUrl("/spending/rest/admin/users/" + id + "/enable"));
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send("param=" + status + "&_csrf=" + csrfToken);
+    let res = await fetch(getUrl("/spending/rest/admin/users/" + id + "/enable"), {
+        method: 'post',
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: "param=" + status + "&_csrf=" + csrfToken
+    });
     changeRecordColor(status, false, id);
+    let user = await res.json();
+    console.log(user);
 }
 
 function banCheckbox(id) {
     let status = document.getElementById("ban-" + id).checked;
-
-    let request = new XMLHttpRequest();
     let csrfToken = document.getElementsByName("_csrf")[0].value;
-    request.open("POST", getUrl("/spending/rest/admin/users/" + id + "/ban"));
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send("param=" + status + "&_csrf=" + csrfToken);
+    fetch(getUrl("/spending/rest/admin/users/" + id + "/ban"), {
+        method: 'post',
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: "param=" + status + "&_csrf=" + csrfToken
+    });
+
     eCheckbox = document.getElementById("enable-" + id);
     if (status) {
         eCheckbox.checked = false;
