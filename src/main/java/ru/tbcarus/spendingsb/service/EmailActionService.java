@@ -65,7 +65,7 @@ public class EmailActionService {
         // - истёк период действия кода
         EmailAction emailAction = repository.getByCode(code);
         if (emailAction == null
-                || !email.equals(emailAction.getUser().getEmail())
+                || !email.toLowerCase().equals(emailAction.getUser().getEmail())
                 || !type.equals(emailAction.getType())
                 || emailAction.isUsed()) {
             throw new BadRegistrationRequest(ErrorType.NOT_FOUND);
@@ -78,13 +78,13 @@ public class EmailActionService {
 
     public EmailAction resendActivationRequest(String email) {
         // Повторный запрос активации пользователя
-        User user = userRepository.getByEmail(email);
+        User user = userRepository.findByEmailIgnoreCase(email).get();
         return resentRequest(user, null, EmailRequestType.ACTIVATE);
     }
 
     public EmailAction passwordResetRequest(String email) {
         // запрос на смену пароля
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
         return resentRequest(user, null, EmailRequestType.RESET_PASSWORD);
     }
 

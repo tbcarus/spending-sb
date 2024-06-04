@@ -1,32 +1,23 @@
 package ru.tbcarus.spendingsb.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
-import ru.tbcarus.spendingsb.exception.BadRegistrationRequest;
-import ru.tbcarus.spendingsb.exception.IncorrectAddition;
-import ru.tbcarus.spendingsb.exception.NotFoundException;
-import ru.tbcarus.spendingsb.model.EmailAction;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.tbcarus.spendingsb.model.ErrorType;
-import ru.tbcarus.spendingsb.model.Friend;
 import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.NoteService;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.DateUtil;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping(value = "/payments/profile", produces = MediaType.APPLICATION_JSON_VALUE)

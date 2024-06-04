@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getByEmail(@Email @NotEmpty @NotNull String email) {
-        Optional<User> opt = userRepository.findByEmail(email);
+        Optional<User> opt = userRepository.findByEmailIgnoreCase(email);
         if (opt.isEmpty()) {
             throw new NotFoundException("Пользователь " + email + " не найден.");
         }
@@ -158,7 +158,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmail(username);
+        Optional<User> user = userRepository.findByEmailIgnoreCase(username);
         if (user.isPresent()) {
             return user.get();
         }
@@ -187,7 +187,7 @@ public class UserService implements UserDetailsService {
             throw new BadRegistrationRequest(ErrorType.WRONG_LENGTH);
         }
 
-        User user = userRepository.getByEmail(email);
+        User user = userRepository.findByEmailIgnoreCase(email).get();
         EmailAction emailAction = emailActionService.get(code);
         user.setPassword(encoder.encode(password));
         userRepository.save(user);

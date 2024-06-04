@@ -11,9 +11,11 @@ import java.util.Optional;
 
 public interface JpaUserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
+    @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")
     User getByEmail(String email);
 
-    Optional<User> findByEmail(String email);
+    @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")
+    Optional<User> findByEmailIgnoreCase(String email);
 
     List<User> findAllByOrderByName();
 

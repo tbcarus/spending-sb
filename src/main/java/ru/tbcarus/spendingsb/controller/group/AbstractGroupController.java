@@ -30,7 +30,7 @@ public class AbstractGroupController {
     }
 
     protected Note sendFriendInvite(User user, String email) {
-        return groupService.sendFriendInvite(user, email);
+        return groupService.sendFriendInvite(user, email.toLowerCase());
     }
 
     protected void levelDates(User user) {
