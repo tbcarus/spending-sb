@@ -2,6 +2,7 @@ package ru.tbcarus.spendingsb.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.tbcarus.spendingsb.model.PaymentType;
+import ru.tbcarus.spendingsb.model.User;
 import ru.tbcarus.spendingsb.service.UserService;
 import ru.tbcarus.spendingsb.util.SecurityUtil;
 
@@ -23,6 +25,13 @@ public class RootController {
         log.info("Get root");
         model.addAttribute("users", userService.getAll());
         return "redirect:/payments";
+    }
+
+    @GetMapping("/info")
+    public String info(@AuthenticationPrincipal User user, Model model) {
+        log.info("Get info page");
+        model.addAttribute("user", user);
+        return "info";
     }
 
     @PostMapping("/users")

@@ -8,16 +8,22 @@
     <div th:replace="~{fragments/headTag :: headTag}"></div>
 </head>
 <body>
+<!--@thymesVar id="err" type="ru.tbcarus.spendingsb.model.ErrorType"-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
 <nav th:replace="~{fragments/loginBodyHeader :: loginBodyHeader}"></nav>
+<!--<form th:action="@{/login}" method="post">-->
+<!--    <div><label> User Name : <input type="text" name="username"/> </label></div>-->
+<!--    <div><label> Password: <input type="password" name="password"/> </label></div>-->
+<!--    <div><input type="submit" value="Sign In"/></div>-->
+<!--</form>-->
 <div class="jumbotron bg-light">
     <div class="container py-4">
-        <div class="row d-flex justify-content-center alert alert-success" th:if="${param.logout}">
+        <div th:if="${param.logout}" class="alert alert-success">
             You have been logged out.
         </div>
-        <div class="row" th:if="${param.request}">
+        <div th:if="${param.request}">
             <div th:if="${param.request[0] == 'registered'}" class="alert alert-success">
                 <span th:text="'Пользователь ' + ${param.username} + ' зарегистрирован.'">SPAN1</span>
                 <span th:text="'На e-mail ' + ${param.username} + ' отправлено письмо для подтверждения регистрации.'">SPAN2</span>
@@ -41,32 +47,35 @@
                 </span>
             </div>
         </div>
-        <div class="row p-3">
-            <div class="col"></div>
-            <div class="col d-flex justify-content-center">
-                <a class="btn btn-lg btn-secondary" th:href="@{/register}">Регистрация &raquo;</a>
-            </div>
-            <div class="col"></div>
-        </div>
-        <div class="" th:unless="${param.logout} or ${param.request}">
-            <div class="row p-1 d-flex justify-content-center">
-                Вы находитесь на странице приложения для записи трат
-            </div>
-            <div class="row p-1 d-flex justify-content-center">
-                Пройдите регистрацию, чтобы начать пользоваться приложением
-            </div>
-            <div class="row p-1 d-flex justify-content-center">
-                Краткое описание доступно на странице информации
-            </div>
-            <div class="row p-1 d-flex justify-content-center">
-                В случае возникновения сложностей, замечаний или предложений, пожалуйста, напишите по почте
-                <a class="d-flex justify-content-center"
-                        href="mailto:spending-sb@yandex.ru">spending-sb@yandex.ru</a>
-            </div>
-        </div>
+        <br>
+        <p>
+            <a class=" btn btn-lg btn-secondary" th:href="@{/register}">Регистрация &raquo;</a>
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('l@og.in', 'password')">
+                Зайти как Admin
+            </button>
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('l1@og.in', 'password3')">
+                Зайти как SuperUser
+            </button>
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('l2@og.in', 'password2')">
+                Зайти как User
+            </button>
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('tbcarus@yandex.ru', 'pass')">
+                Зайти как new User
+            </button>
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('q1@gmail.com', 'qwerty')">
+                Зайти как q1
+            </button>
+        </p>
     </div>
 </div>
 <!--    copyright-->
 <div th:replace="~{fragments/footer :: copy}"></div>
+<script type="text/javascript">
+    function login(username, password) {
+        document.getElementById("username").value = username;
+        document.getElementById("password").value = password;
+        document.getElementById("btnLogin").click();
+    }
+</script>
 </body>
 </html>
