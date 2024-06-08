@@ -14,7 +14,8 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    public static final String MAIL_FROM = "tbcarus@yandex.ru"; //tbcarus@yandex.ru spending-sb@yandex.ru FidelAC26@yandex.ru
+    public static final String userName = "spending-sb";
+    public static final String MAIL_FROM = userName + "@yandex.ru"; //tbcarus@yandex.ru spending-sb@yandex.ru FidelAC26@yandex.ru
 
     @Bean
     public SpringTemplateEngine springTemplateEngine() {
@@ -39,8 +40,8 @@ public class MailConfig {
         mailSender.setHost("smtp.yandex.ru");
         mailSender.setPort(465);
 
-        mailSender.setUsername("tbcarus");
-        mailSender.setPassword("hpjsguumudneendo"); //hpjsguumudneendo ftialbzddhybalgh olasukznykzrucor
+        mailSender.setUsername(userName); //tbcarus spending-sb
+        mailSender.setPassword("adscmnrrdgojdgip"); //hpjsguumudneendo adscmnrrdgojdgip
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

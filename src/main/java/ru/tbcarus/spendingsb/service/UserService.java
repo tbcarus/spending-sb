@@ -102,7 +102,7 @@ public class UserService implements UserDetailsService {
             user.setEmail(update.getEmail().toLowerCase());
         }
         if (update.getPassword() != null && update.getPassword().length() >= 4 && update.getPassword().length() <= 128) {
-            user.setPassword(update.getPassword());
+            user.setPassword(encoder.encode(update.getPassword()));
         }
         user.setEnabled(update.isEnabled());
         user.setBanned(update.isBanned());
