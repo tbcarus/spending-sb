@@ -44,7 +44,7 @@ public class AbstractGroupController {
 
     public void deleteFromGroupSelf(User user) {
         log.info("user {} deleting from the group by self", user.getId());
-        groupService.deleteGroupGroupSelf(user);
+        groupService.deleteFromGroupSelf(user);
     }
 
     protected void addSU(User user, int id) {

@@ -89,7 +89,7 @@ public class GroupService {
                     "Пользователь " + user.getEmail() + " объединение досок", email, user);
             noteService.create(note);
             userDest.setNewNotify(true);
-            userService.update(userDest, userDest.getId());
+            userRepository.save(userDest);
         }
         return note;
     }
@@ -130,7 +130,7 @@ public class GroupService {
 
 
     @Transactional
-    public void deleteGroupGroupSelf(User user) {
+    public void deleteFromGroupSelf(User user) {
         boolean isFirst = true;
         // Удалить себя из списков юзеров группы
         for (Friend f : user.getFriendsList()) {
