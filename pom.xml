@@ -9,9 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.tbcarus</groupId>
-    <artifactId>spending-sb</artifactId>
+    <artifactId>spending</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spending-sb</name>
+    <packaging>war</packaging>
+    <name>spending</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
@@ -25,6 +26,11 @@
         <webjars-datatables.version>1.11.4</webjars-datatables.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -188,6 +194,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>${artifactId}</finalName>
     </build>
 
 </project>
