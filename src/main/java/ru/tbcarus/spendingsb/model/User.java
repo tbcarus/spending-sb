@@ -210,6 +210,11 @@ public class User implements UserDetails, HasId {
         return friendsList.stream().anyMatch(f -> f.getFriendEmail().equals(email));
     }
 
+    public boolean isCurrentPeriod() {
+        return startPeriodDate.minusDays(1).isBefore(LocalDate.now()) &&
+                startPeriodDate.plusMonths(1).isAfter(LocalDate.now());
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles
