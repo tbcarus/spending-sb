@@ -55,6 +55,8 @@ public class ProfileUIController extends AbstractUserController {
         user.setStartPeriodDate(ld);
         if (encoder.matches(passOld, user.getPassword()) && passNew.equals(passNewReply)) {
             user.setPassword(passNew);
+        } else {
+            user.setPassword(null);
         }
         super.update(user, user.id());
         return "redirect:/payments";
