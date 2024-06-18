@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,9 @@ public class ProfileUIController extends AbstractUserController {
     @Autowired
     NoteService noteService;
 
+    @Autowired
+    PasswordEncoder encoder;
+
     @GetMapping
     public String get(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("user", user);
@@ -37,7 +41,8 @@ public class ProfileUIController extends AbstractUserController {
     }
 
     @PostMapping
-    public String update(@RequestParam("name") String name,
+    public String update(@RequestParam("id") int id,
+                         @RequestParam("name") String name,
                          @RequestParam("start_day") int startDay,
                          @RequestParam("old_pass") String passOld,
                          @RequestParam("new_pass") String passNew,
@@ -48,11 +53,10 @@ public class ProfileUIController extends AbstractUserController {
         }
         LocalDate ld = DateUtil.setDay(startDay, user.getStartPeriodDate());
         user.setStartPeriodDate(ld);
-        if (user.getPassword().equals(passOld) && passNew.equals(passNewReply)) {
+        if (encoder.matches(passOld, user.getPassword()) && passNew.equals(passNewReply)) {
             user.setPassword(passNew);
         }
         super.update(user, user.id());
-        int x = 5;
         return "redirect:/payments";
     }
 

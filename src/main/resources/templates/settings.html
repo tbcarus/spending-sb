@@ -15,8 +15,8 @@
 <nav th:replace="~{fragments/bodyHeader :: bodyHeader}"></nav>
 
 <div style="width: 400px" class="position-absolute top-50 start-50 translate-middle">
-    <form th:method="POST" action="../payments/profile">
-        <input type="hidden" name="uuid" th:value="${user.id}">
+    <form th:method="post" th:action="@{/payments/profile}">
+        <input type="hidden" name="id" th:value="${user.id}">
         <table class="table table-striped shadow">
             <tr>
                 <td style="vertical-align: middle; text-align: right">
