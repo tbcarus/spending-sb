@@ -88,7 +88,6 @@ public abstract class AbstractPaymentController {
     }
 
     public void delete(User user, int id) {
-        int userId = SecurityUtil.authUserId();
         log.info("delete payment {} for user {}", id, user.getId());
         paymentService.delete(user, id);
     }
